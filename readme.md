@@ -35,9 +35,6 @@ http://localhost:8080/index.html
 ```java
 @Service
 public class TaskTestBiz implements ITaskTestBiz {
-    /**
-     * 支持翻译的PO类，加上@TranslateType
-     */
     @TaskCompute
     @Override
     public String hello(String name) {

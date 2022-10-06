@@ -1,25 +1,25 @@
-# task-tool spring接口调用统计工具
+# task-tool spring interface calls statistics tool
 
-服务内统计接口方法的执行次数，时间，最近错误，最大执行时长等看每个需要监控的方法的执行情况，以便于快速发现性能问题。
+Count the execution times, time, recent errors, and maximum execution time of interface methods in the service to see the execution of each method that needs to be monitored, so as to quickly find performance problems.
 
-## 功能特性
+## Features
 
-* 支持springboot,springmvc
-* 统计信息含（调用次数，最近调用时间，最长执行时间（执行时长、发生时间、对应ID）异常错误（次数、最近发生时间，对应ID））
-* 支持按分钟，小时、天等维度统计相关信息。
-* 支持uri接口的计用次数统计(可以分别计算每个来源的调用次数)
-* 支持sping内部调用次数统计，来源默认为空
-* 支持scheduler任务的次数统计
-* 支持mq的消费次数统计
-* 支持查每个接口的执行信息
+* Support springboot, springmvc
+* The statistical information includes (the number of calls, the most recent call time, the longest execution time (execution time, occurrence time, corresponding ID) abnormal error (the number of times, the most recent occurrence time, the corresponding ID))
+* Support statistics related information by minutes, hours, days and other dimensions.
+* Support the statistics of the number of times of usage of the uri interface (the number of calls of each source can be calculated separately)
+* Support the statistics of the number of internal calls of sping, the source is empty by default
+* Support the number of scheduler tasks statistics
+* Support consumption statistics of mq
+* Support to check the execution information of each interface
 
 ## Quick Start
 
 http://localhost:8080/index.html
 
-## 使用
+## Use
 
-* 1 maven引入依赖包
+* 1,import maven dependency packages
 
 ```xml
 
@@ -30,15 +30,12 @@ http://localhost:8080/index.html
 </dependency>
 ```
 
-* 2,在要统计方法上加上@TaskCompute注解
+* 2,Add the @TaskCompute annotation to the method to be counted
 
 ```java
 
 @Service
 public class TaskTestBiz implements ITaskTestBiz {
-    /**
-     * 支持翻译的PO类，加上@TranslateType
-     */
     @TaskCompute
     @Override
     public String hello(String name) {
@@ -52,10 +49,11 @@ public class TaskTestBiz implements ITaskTestBiz {
 }
 ```
 
-* 3,接口有调用后查看结果
+* 3,View the result after the interface is called
 
-http://localhost:8080/taskInfo/runInfo?key=tasktooltest
+http://localhost:8080/taskInfo/runInfo?key=tasktooltest  
+http://localhost:8080/pages/runInfo.html
 
-* 4,查看配置信息
+* 4,View configuration information
 
 http://localhost:8080/taskInfo/config?key=tasktooltest
