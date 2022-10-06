@@ -24,4 +24,9 @@ public class TaskTestController {
     public String helloError(@RequestParam("name") String name, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
         return taskTestBiz.helloError(name, sleep);
     }
+
+    @RequestMapping(value = "randomNum", method = {RequestMethod.POST, RequestMethod.GET})
+    public int randomNum() {
+        return taskTestBiz.randomNum();
+    }
 }

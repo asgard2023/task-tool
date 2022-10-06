@@ -71,8 +71,8 @@ function onEdit() {
     if (row) {
         var entityName = 'dflRole';
         $('#fm').form('clear');
-        row.sourceCounterJson=JSON.stringify(row.sourceCounterMap).replaceAll(',','<br/>')
-        row.processingDataJson=JSON.stringify(row.processingData).replaceAll(',','<br/>')
+        row.sourceCounterJson=JSON.stringify(row.sourceCounterMap).replaceAll(',',',\n')
+        row.processingDataJson=JSON.stringify(row.processingData).replaceAll(',',',\n')
         $('#dlg').dialog('open').dialog('setTitle', 'Edit 运行信息');
         $('#fm').form('load', row);
         $('#fm-category').val(row.taskCompute.category);
