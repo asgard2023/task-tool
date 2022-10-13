@@ -1,10 +1,10 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.hutool.core.date.DateUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -138,7 +138,7 @@ public class TaskToolUtils {
         for (Map.Entry<String, TaskCountVo> entry : entrySetSet) {
             TaskCountVo taskCountVo = entry.getValue().copy();
             taskCountVo.setKey(entry.getKey());
-            taskCountVo.setLatestTimes(DateFormatUtils.format(new Date(taskCountVo.getLatestTime()), "yyyy-MM-dd HH:mm:ss"));
+            taskCountVo.setLatestTimes(DateUtil.format(new Date(taskCountVo.getLatestTime()), "yyyy-MM-dd HH:mm:ss"));
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
             if (!countTypeOp.isPresent()) {
                 continue;

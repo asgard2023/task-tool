@@ -1,11 +1,11 @@
 package cn.org.opendfl.tasktool.controller;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.AppInfoVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.task.TaskToolUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,9 +42,9 @@ public class TaskInfoController {
         }
         List<TaskCountVo> list = TaskToolUtils.getTaskCountInfo();
         list = list.stream().filter(t ->
-                StringUtils.isBlank(taskCountVo.getCountType()) || StringUtils.equals(taskCountVo.getCountType(), t.getCountType())
+                CharSequenceUtil.isBlank(taskCountVo.getCountType()) || CharSequenceUtil.equals(taskCountVo.getCountType(), t.getCountType())
         ).filter(t ->
-                StringUtils.isBlank(taskCountVo.getKey()) || t.getKey().contains(taskCountVo.getKey())
+                CharSequenceUtil.isBlank(taskCountVo.getKey()) || t.getKey().contains(taskCountVo.getKey())
         ).collect(Collectors.toList());
 
 

@@ -1,10 +1,10 @@
 package cn.org.opendfl.tasktool.base;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -58,10 +58,10 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
         order = request.getParameter("order");
         String page = request.getParameter("page");
         String rows = request.getParameter("rows");
-        if (StringUtils.isEmpty(page)) {
+        if (CharSequenceUtil.isEmpty(page)) {
             page = "1";
         }
-        if (StringUtils.isEmpty(rows)) {
+        if (CharSequenceUtil.isEmpty(rows)) {
             rows = "20";
         }
         this.currentPage = Integer.parseInt(page);
@@ -97,12 +97,12 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
      */
     public String getOrderClause() {
         String sort = getSort();
-        if (StringUtils.isEmpty(sort)) {
+        if (CharSequenceUtil.isEmpty(sort)) {
             return null;
         }
         sort = camelToUnderline(sort);
         String order = getOrder();
-        if (StringUtils.isEmpty(order)) {
+        if (CharSequenceUtil.isEmpty(order)) {
             return null;
         }
         return sort + " " + order;
@@ -184,10 +184,6 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
         return this.datas;
     }
 
-    //	public boolean add(T o) {
-//		return this.datas.add(o);
-//	}
-//
     public boolean addAll(Collection<? extends T> c) {
         return this.datas.addAll(c);
     }
@@ -232,10 +228,6 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
     public <T> T[] toArray(T[] a) {
         return this.datas.toArray(a);
     }
-
-//	public Collection<T> getRows(){
-//		return this.datas;
-//	}
 
     public String getSort() {
         return sort;
