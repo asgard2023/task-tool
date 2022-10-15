@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.opendfl.task.mapper.TaMethodCountSourceMapper">
+    <resultMap id="taMethodCountSourceMap" type="cn.org.opendfl.task.po.TaMethodCountSourcePo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="method_count_id" property="methodCountId" jdbcType="INTEGER"/>
+        <result column="source" property="source" jdbcType="VARCHAR"/>
+        <result column="run_count" property="runCount" jdbcType="INTEGER"/>
+        <result column="if_del" property="ifDel" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="field">
+        id
+        ,
+		method_count_id, 
+		source, 
+		run_count, 
+		if_del, 
+		create_time, 
+		modify_time
+    </sql>
+
+    <sql id="findByPage_where">
+        <where>
+            <trim suffixOverrides="and | or">
+                <if test="id != null">id = #{id, jdbcType = INTEGER} and</if>
+                <if test="methodCountId != null">method_count_id = #{methodCountId, jdbcType = INTEGER} and</if>
+                <if test="source != null">source = #{source, jdbcType = VARCHAR} and</if>
+                <if test="runCount != null">run_count = #{runCount, jdbcType = INTEGER} and</if>
+                <if test="ifDel != null">if_del = #{ifDel, jdbcType = INTEGER} and</if>
+                <if test="createTime != null">create_time = #{createTime, jdbcType = TIMESTAMP} and</if>
+                <if test="modifyTime != null">modify_time = #{modifyTime, jdbcType = TIMESTAMP} and</if>
+                <if test="keywords != null and keywords != ''">
+                    and (
+                    id like concat(concat('%', #{keywords}),'%')
+                    or method_count_id like concat(concat('%', #{keywords}),'%')
+                    or source like concat(concat('%', #{keywords}),'%')
+                    or run_count like concat(concat('%', #{keywords}),'%')
+                    or if_del like concat(concat('%', #{keywords}),'%')
+                    or create_time like concat(concat('%', #{keywords}),'%')
+                    or modify_time like concat(concat('%', #{keywords}),'%')
+                    )
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <select id="findByPageXML" parameterType="java.util.Map" resultMap="taMethodCountSourceMap">
+        select
+        <include refid="field"></include>
+        from ta_method_count_source
+        <include refid="findByPage_where"></include>
+        <choose>
+            <when test="sidx != null">
+                order by ${sidx} ${sord}, id desc
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="page != null and rows != null">
+            limit ${startRows}, ${rows}
+        </if>
+    </select>
+
+    <select id="findCountXML" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from ta_method_count_source
+        <include refid="findByPage_where"></include>
+    </select>
+
+    <select id="findAllXML" parameterType="java.util.Map" resultMap="taMethodCountSourceMap">
+        select
+        <include refid="field"></include>
+        from ta_method_count_source
+        <where>
+            <trim suffixOverrides="and | or">
+                <if test="id != null">id = #{id, jdbcType = INTEGER} and</if>
+                <if test="methodCountId != null">method_count_id = #{methodCountId, jdbcType = INTEGER} and</if>
+                <if test="source != null">source = #{source, jdbcType = VARCHAR} and</if>
+                <if test="runCount != null">run_count = #{runCount, jdbcType = INTEGER} and</if>
+                <if test="ifDel != null">if_del = #{ifDel, jdbcType = INTEGER} and</if>
+                <if test="createTime != null">create_time = #{createTime, jdbcType = TIMESTAMP} and</if>
+                <if test="modifyTime != null">modify_time = #{modifyTime, jdbcType = TIMESTAMP} and</if>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findByIdXML" parameterType="java.lang.String" resultMap="taMethodCountSourceMap">
+        select
+        <include refid="field"></include>
+        from ta_method_count_source
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <insert id="insertXML" parameterType="cn.org.opendfl.task.po.TaMethodCountSourcePo" useGeneratedKeys="true"
+            keyProperty="id" flushCache="true">
+        insert ta_method_count_source
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="methodCountId != null">method_count_id,</if>
+            <if test="source != null">source,</if>
+            <if test="runCount != null">run_count,</if>
+            <if test="ifDel != null">if_del,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="modifyTime != null">modify_time,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id, jdbcType = INTEGER},</if>
+            <if test="methodCountId != null">#{methodCountId, jdbcType = INTEGER},</if>
+            <if test="source != null">#{source, jdbcType = VARCHAR},</if>
+            <if test="runCount != null">#{runCount, jdbcType = INTEGER},</if>
+            <if test="ifDel != null">#{ifDel, jdbcType = INTEGER},</if>
+            <if test="createTime != null">#{createTime, jdbcType = TIMESTAMP},</if>
+            <if test="modifyTime != null">#{modifyTime, jdbcType = TIMESTAMP},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXML" parameterType="cn.org.opendfl.task.po.TaMethodCountSourcePo" keyProperty="id">
+        update ta_method_count_source
+        <set>
+            <trim suffixOverrides=",">
+                <if test="id != null">id = #{id},</if>
+                <if test="methodCountId != null">method_count_id = #{methodCountId},</if>
+                <if test="source != null">source = #{source},</if>
+                <if test="runCount != null">run_count = #{runCount},</if>
+                <if test="ifDel != null">if_del = #{ifDel},</if>
+                <if test="createTime != null">create_time = #{createTime},</if>
+                <if test="modifyTime != null">modify_time = #{modifyTime},</if>
+            </trim>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deleteXML" parameterType="java.lang.String">
+        delete from ta_method_count_source
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+</mapper>

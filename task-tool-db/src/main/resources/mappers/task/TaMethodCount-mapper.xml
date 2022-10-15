@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.opendfl.task.mapper.TaMethodCountMapper">
+    <resultMap id="taMethodCountMap" type="cn.org.opendfl.task.po.TaMethodCountPo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="data_method_id" property="dataMethodId" jdbcType="INTEGER"/>
+        <result column="time_value" property="timeValue" jdbcType="INTEGER"/>
+        <result column="time_type" property="timeType" jdbcType="VARCHAR"/>
+        <result column="run_count" property="runCount" jdbcType="DECIMAL"/>
+        <result column="first_time" property="firstTime" jdbcType="TIMESTAMP"/>
+        <result column="run_time" property="runTime" jdbcType="INTEGER"/>
+        <result column="error_count" property="errorCount" jdbcType="INTEGER"/>
+        <result column="error_newly_info" property="errorNewlyInfo" jdbcType="VARCHAR"/>
+        <result column="error_newly_data_id" property="errorNewlyDataId" jdbcType="VARCHAR"/>
+        <result column="error_newly_time" property="errorNewlyTime" jdbcType="TIMESTAMP"/>
+        <result column="error_newly_server" property="errorNewlyServer" jdbcType="VARCHAR"/>
+        <result column="max_run_time" property="maxRunTime" jdbcType="INTEGER"/>
+        <result column="max_run_time_date" property="maxRunTimeDate" jdbcType="TIMESTAMP"/>
+        <result column="max_run_time_data_id" property="maxRunTimeDataId" jdbcType="VARCHAR"/>
+        <result column="max_run_server" property="maxRunServer" jdbcType="VARCHAR"/>
+        <result column="if_del" property="ifDel" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="field">
+        id
+        ,
+		data_method_id, 
+		time_value, 
+		time_type, 
+		run_count, 
+		first_time, 
+		run_time, 
+		error_count, 
+		error_newly_info, 
+		error_newly_data_id, 
+		error_newly_time, 
+		error_newly_server, 
+		max_run_time, 
+		max_run_time_date, 
+		max_run_time_data_id, 
+		max_run_server, 
+		if_del, 
+		status, 
+		create_time, 
+		modify_time
+    </sql>
+
+    <sql id="findByPage_where">
+        <where>
+            <trim suffixOverrides="and | or">
+                <if test="id != null">id = #{id, jdbcType = INTEGER} and</if>
+                <if test="dataMethodId != null">data_method_id = #{dataMethodId, jdbcType = INTEGER} and</if>
+                <if test="timeValue != null">time_value = #{timeValue, jdbcType = INTEGER} and</if>
+                <if test="timeType != null">time_type = #{timeType, jdbcType = VARCHAR} and</if>
+                <if test="runCount != null">run_count = #{runCount, jdbcType = DECIMAL} and</if>
+                <if test="firstTime != null">first_time = #{firstTime, jdbcType = TIMESTAMP} and</if>
+                <if test="runTime != null">run_time = #{runTime, jdbcType = INTEGER} and</if>
+                <if test="errorCount != null">error_count = #{errorCount, jdbcType = INTEGER} and</if>
+                <if test="errorNewlyInfo != null">error_newly_info = #{errorNewlyInfo, jdbcType = VARCHAR} and</if>
+                <if test="errorNewlyDataId != null">error_newly_data_id = #{errorNewlyDataId, jdbcType = VARCHAR} and
+                </if>
+                <if test="errorNewlyTime != null">error_newly_time = #{errorNewlyTime, jdbcType = TIMESTAMP} and</if>
+                <if test="errorNewlyServer != null">error_newly_server = #{errorNewlyServer, jdbcType = VARCHAR} and
+                </if>
+                <if test="maxRunTime != null">max_run_time = #{maxRunTime, jdbcType = INTEGER} and</if>
+                <if test="maxRunTimeDate != null">max_run_time_date = #{maxRunTimeDate, jdbcType = TIMESTAMP} and</if>
+                <if test="maxRunTimeDataId != null">max_run_time_data_id = #{maxRunTimeDataId, jdbcType = VARCHAR} and
+                </if>
+                <if test="maxRunServer != null">max_run_server = #{maxRunServer, jdbcType = VARCHAR} and</if>
+                <if test="ifDel != null">if_del = #{ifDel, jdbcType = INTEGER} and</if>
+                <if test="status != null">status = #{status, jdbcType = INTEGER} and</if>
+                <if test="createTime != null">create_time = #{createTime, jdbcType = TIMESTAMP} and</if>
+                <if test="modifyTime != null">modify_time = #{modifyTime, jdbcType = TIMESTAMP} and</if>
+                <if test="keywords != null and keywords != ''">
+                    and (
+                    id like concat(concat('%', #{keywords}),'%')
+                    or data_method_id like concat(concat('%', #{keywords}),'%')
+                    or time_value like concat(concat('%', #{keywords}),'%')
+                    or time_type like concat(concat('%', #{keywords}),'%')
+                    or run_count like concat(concat('%', #{keywords}),'%')
+                    or first_time like concat(concat('%', #{keywords}),'%')
+                    or run_time like concat(concat('%', #{keywords}),'%')
+                    or error_count like concat(concat('%', #{keywords}),'%')
+                    or error_newly_info like concat(concat('%', #{keywords}),'%')
+                    or error_newly_data_id like concat(concat('%', #{keywords}),'%')
+                    or error_newly_time like concat(concat('%', #{keywords}),'%')
+                    or error_newly_server like concat(concat('%', #{keywords}),'%')
+                    or max_run_time like concat(concat('%', #{keywords}),'%')
+                    or max_run_time_date like concat(concat('%', #{keywords}),'%')
+                    or max_run_time_data_id like concat(concat('%', #{keywords}),'%')
+                    or max_run_server like concat(concat('%', #{keywords}),'%')
+                    or if_del like concat(concat('%', #{keywords}),'%')
+                    or status like concat(concat('%', #{keywords}),'%')
+                    or create_time like concat(concat('%', #{keywords}),'%')
+                    or modify_time like concat(concat('%', #{keywords}),'%')
+                    )
+                </if>
+            </trim>
+        </where>
+    </sql>
+
+    <select id="findByPageXML" parameterType="java.util.Map" resultMap="taMethodCountMap">
+        select
+        <include refid="field"></include>
+        from ta_method_count
+        <include refid="findByPage_where"></include>
+        <choose>
+            <when test="sidx != null">
+                order by ${sidx} ${sord}, id desc
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="page != null and rows != null">
+            limit ${startRows}, ${rows}
+        </if>
+    </select>
+
+    <select id="findCountXML" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from ta_method_count
+        <include refid="findByPage_where"></include>
+    </select>
+
+    <select id="findAllXML" parameterType="java.util.Map" resultMap="taMethodCountMap">
+        select
+        <include refid="field"></include>
+        from ta_method_count
+        <where>
+            <trim suffixOverrides="and | or">
+                <if test="id != null">id = #{id, jdbcType = INTEGER} and</if>
+                <if test="dataMethodId != null">data_method_id = #{dataMethodId, jdbcType = INTEGER} and</if>
+                <if test="timeValue != null">time_value = #{timeValue, jdbcType = INTEGER} and</if>
+                <if test="timeType != null">time_type = #{timeType, jdbcType = VARCHAR} and</if>
+                <if test="runCount != null">run_count = #{runCount, jdbcType = DECIMAL} and</if>
+                <if test="firstTime != null">first_time = #{firstTime, jdbcType = TIMESTAMP} and</if>
+                <if test="runTime != null">run_time = #{runTime, jdbcType = INTEGER} and</if>
+                <if test="errorCount != null">error_count = #{errorCount, jdbcType = INTEGER} and</if>
+                <if test="errorNewlyInfo != null">error_newly_info = #{errorNewlyInfo, jdbcType = VARCHAR} and</if>
+                <if test="errorNewlyDataId != null">error_newly_data_id = #{errorNewlyDataId, jdbcType = VARCHAR} and
+                </if>
+                <if test="errorNewlyTime != null">error_newly_time = #{errorNewlyTime, jdbcType = TIMESTAMP} and</if>
+                <if test="errorNewlyServer != null">error_newly_server = #{errorNewlyServer, jdbcType = VARCHAR} and
+                </if>
+                <if test="maxRunTime != null">max_run_time = #{maxRunTime, jdbcType = INTEGER} and</if>
+                <if test="maxRunTimeDate != null">max_run_time_date = #{maxRunTimeDate, jdbcType = TIMESTAMP} and</if>
+                <if test="maxRunTimeDataId != null">max_run_time_data_id = #{maxRunTimeDataId, jdbcType = VARCHAR} and
+                </if>
+                <if test="maxRunServer != null">max_run_server = #{maxRunServer, jdbcType = VARCHAR} and</if>
+                <if test="ifDel != null">if_del = #{ifDel, jdbcType = INTEGER} and</if>
+                <if test="status != null">status = #{status, jdbcType = INTEGER} and</if>
+                <if test="createTime != null">create_time = #{createTime, jdbcType = TIMESTAMP} and</if>
+                <if test="modifyTime != null">modify_time = #{modifyTime, jdbcType = TIMESTAMP} and</if>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findByIdXML" parameterType="java.lang.String" resultMap="taMethodCountMap">
+        select
+        <include refid="field"></include>
+        from ta_method_count
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <insert id="insertXML" parameterType="cn.org.opendfl.task.po.TaMethodCountPo" useGeneratedKeys="true"
+            keyProperty="id" flushCache="true">
+        insert ta_method_count
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="dataMethodId != null">data_method_id,</if>
+            <if test="timeValue != null">time_value,</if>
+            <if test="timeType != null">time_type,</if>
+            <if test="runCount != null">run_count,</if>
+            <if test="firstTime != null">first_time,</if>
+            <if test="runTime != null">run_time,</if>
+            <if test="errorCount != null">error_count,</if>
+            <if test="errorNewlyInfo != null">error_newly_info,</if>
+            <if test="errorNewlyDataId != null">error_newly_data_id,</if>
+            <if test="errorNewlyTime != null">error_newly_time,</if>
+            <if test="errorNewlyServer != null">error_newly_server,</if>
+            <if test="maxRunTime != null">max_run_time,</if>
+            <if test="maxRunTimeDate != null">max_run_time_date,</if>
+            <if test="maxRunTimeDataId != null">max_run_time_data_id,</if>
+            <if test="maxRunServer != null">max_run_server,</if>
+            <if test="ifDel != null">if_del,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="modifyTime != null">modify_time,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id, jdbcType = INTEGER},</if>
+            <if test="dataMethodId != null">#{dataMethodId, jdbcType = INTEGER},</if>
+            <if test="timeValue != null">#{timeValue, jdbcType = INTEGER},</if>
+            <if test="timeType != null">#{timeType, jdbcType = VARCHAR},</if>
+            <if test="runCount != null">#{runCount, jdbcType = DECIMAL},</if>
+            <if test="firstTime != null">#{firstTime, jdbcType = TIMESTAMP},</if>
+            <if test="runTime != null">#{runTime, jdbcType = INTEGER},</if>
+            <if test="errorCount != null">#{errorCount, jdbcType = INTEGER},</if>
+            <if test="errorNewlyInfo != null">#{errorNewlyInfo, jdbcType = VARCHAR},</if>
+            <if test="errorNewlyDataId != null">#{errorNewlyDataId, jdbcType = VARCHAR},</if>
+            <if test="errorNewlyTime != null">#{errorNewlyTime, jdbcType = TIMESTAMP},</if>
+            <if test="errorNewlyServer != null">#{errorNewlyServer, jdbcType = VARCHAR},</if>
+            <if test="maxRunTime != null">#{maxRunTime, jdbcType = INTEGER},</if>
+            <if test="maxRunTimeDate != null">#{maxRunTimeDate, jdbcType = TIMESTAMP},</if>
+            <if test="maxRunTimeDataId != null">#{maxRunTimeDataId, jdbcType = VARCHAR},</if>
+            <if test="maxRunServer != null">#{maxRunServer, jdbcType = VARCHAR},</if>
+            <if test="ifDel != null">#{ifDel, jdbcType = INTEGER},</if>
+            <if test="status != null">#{status, jdbcType = INTEGER},</if>
+            <if test="createTime != null">#{createTime, jdbcType = TIMESTAMP},</if>
+            <if test="modifyTime != null">#{modifyTime, jdbcType = TIMESTAMP},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXML" parameterType="cn.org.opendfl.task.po.TaMethodCountPo" keyProperty="id">
+        update ta_method_count
+        <set>
+            <trim suffixOverrides=",">
+                <if test="id != null">id = #{id},</if>
+                <if test="dataMethodId != null">data_method_id = #{dataMethodId},</if>
+                <if test="timeValue != null">time_value = #{timeValue},</if>
+                <if test="timeType != null">time_type = #{timeType},</if>
+                <if test="runCount != null">run_count = #{runCount},</if>
+                <if test="firstTime != null">first_time = #{firstTime},</if>
+                <if test="runTime != null">run_time = #{runTime},</if>
+                <if test="errorCount != null">error_count = #{errorCount},</if>
+                <if test="errorNewlyInfo != null">error_newly_info = #{errorNewlyInfo},</if>
+                <if test="errorNewlyDataId != null">error_newly_data_id = #{errorNewlyDataId},</if>
+                <if test="errorNewlyTime != null">error_newly_time = #{errorNewlyTime},</if>
+                <if test="errorNewlyServer != null">error_newly_server = #{errorNewlyServer},</if>
+                <if test="maxRunTime != null">max_run_time = #{maxRunTime},</if>
+                <if test="maxRunTimeDate != null">max_run_time_date = #{maxRunTimeDate},</if>
+                <if test="maxRunTimeDataId != null">max_run_time_data_id = #{maxRunTimeDataId},</if>
+                <if test="maxRunServer != null">max_run_server = #{maxRunServer},</if>
+                <if test="ifDel != null">if_del = #{ifDel},</if>
+                <if test="status != null">status = #{status},</if>
+                <if test="createTime != null">create_time = #{createTime},</if>
+                <if test="modifyTime != null">modify_time = #{modifyTime},</if>
+            </trim>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deleteXML" parameterType="java.lang.String">
+        delete from ta_method_count
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+</mapper>

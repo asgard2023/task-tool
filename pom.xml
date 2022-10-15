@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>task-tool</module>
+        <module>task-tool-db</module>
         <module>task-tool-demo</module>
     </modules>
 

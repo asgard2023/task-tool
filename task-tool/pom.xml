@@ -31,7 +31,7 @@
     <version>1</version>
     <name>task-tool</name>
     <packaging>jar</packaging>
-    <description>springboot mysql data translate</description>
+    <description>task-tool spring interface calls statistics tool</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>

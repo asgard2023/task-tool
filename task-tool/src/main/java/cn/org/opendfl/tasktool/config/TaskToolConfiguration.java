@@ -27,9 +27,9 @@ public class TaskToolConfiguration {
     /**
      * 任务统计类型配置
      */
-    private List<TaskCountTypeVo> counterTimeTypes = Arrays.asList(new TaskCountTypeVo("H", 3600, "Hour")
-            , new TaskCountTypeVo("D", 86400, "Day")
-            , new TaskCountTypeVo("T", -1, "total"));
+    private List<TaskCountTypeVo> counterTimeTypes = Arrays.asList(new TaskCountTypeVo("H", 3600, "Hour", true)
+            , new TaskCountTypeVo("D", 86400, "Day", true)
+            , new TaskCountTypeVo("T", -1, "total", true));
 
     /**
      * 基本执行时间(单位ms)
@@ -38,4 +38,9 @@ public class TaskToolConfiguration {
     private int runTimeBase = 100;
 
     private String securityKey = "tasktooltest";
+
+    /**
+     * 是否保存服务器名
+     */
+    private boolean isSaveServerName;
 }
