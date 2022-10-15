@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运行信息</title>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/easyui.comm.valid.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui.grid.hide.js"></script>
+    <script type="text/javascript" src="../../js/easyui/Common.js"></script>
+    <script type="text/javascript" src="../../js/easyui/comm.dict.js"></script>
+    <script type="text/javascript" src="../../js/easyui/DateUtils.js"></script>
+    <script type="text/javascript" src="common.task.js"></script>
+    <script type="text/javascript" src="runInfo.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/icon.css">
+
+    <style type="text/css">
+        #fm {
+            margin: 0;
+            padding: 10px 20px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+        .fitem label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        .input_query {
+            width: 80px;
+        }
+
+        input, textarea {
+            width: 160px;
+            border: 1px solid #ccc;
+            padding: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="easyui-layout" data-options="fit:true">
+    <!-- 查询条件  -->
+    <div data-options="region:'north', title:'运行信息-条件'"
+         style="height: 80px; padding: 5px 10px;display:none;">
+        <form id="search-form">
+            <table class="search-table">
+                <tr>
+                    <td>
+                        key:
+                        <input type="text" id="query_key" name="key" class="easyui-validatebox">
+                    </td>
+                    <td>
+                        时间类型:
+                        <input id="query_countType" name="countType" class="easyui-combobox" data-options="valueField:'code',textField:'name',panelHeight:'auto'">
+                    </td>
+                    <td>
+                        <a class="easyui-linkbutton"
+                           data-options="iconCls:'icon-search'" id="search-btn" onclick="javascript:doSearch()">查询</a>
+                        <a class="easyui-linkbutton"
+                           data-options="iconCls:'icon-reload'" id="reset-btn">重置</a>
+                    </td>
+
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!-- 查询结果 center -->
+    <div data-options="region:'center', title:'查询结果'">
+        <div id="toolbar" style="display:none;">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="onEdit()">修改</a>
+        </div>
+        <table id="dg" class="easyui-datagrid"
+               data-options="onDblClickRow:onDblClick, onClickRow:onClick, onLoadError:loadError, loader:dataLoader, onLoadSuccess:function(r){$('.datagrid-btable').find('div.datagrid-cell').css('text-align','left');}"
+               toolbar="#toolbar" pagination="true" sortName="createTime" sortOrder="desc"
+               rownumbers="true" fitColumns="true" singleSelect="true" style="display:none;">
+            <thead>
+            <tr>
+                <th align="center" field="key" width="50" sortable="true">key</th>
+                <th align="center" field="countType" width="50" sortable="true">时间类型</th>
+                <th align="center" field="taskCompute.showProcessing" width="100" hidden="true" formatter="taskComputeShowProcessing" >showProcessing</th>
+                <th align="center" field="taskCompute.dataIdArgCount" width="100" hidden="true" formatter="taskComputeDataIdArgCount">dataIdArgCount</th>
+                <th align="center" field="taskCompute.category" width="100" hidden="true" formatter="taskComputeCategory">category</th>
+
+                <th align="center" field="runCounter" width="50" sortable="true">执行次数</th>
+                <th align="center" field="runTime" width="50" sortable="true">最近执行时长</th>
+                <th align="center" field="runTimeMax" width="50" sortable="true">最大执行时长</th>
+                <th align="center" field="runTimeMaxTime" width="50" sortable="true"
+                    formatter="timestampFormatDateTime">最大执行时长的时间
+                </th>
+                <th align="center" field="runTimeMaxDataId" width="50" >最大执行时长dataId</th>
+
+                <th align="center" field="errorNewlyTime" width="100" hidden="true" sortable="true"
+                    formatter="timestampFormatDateTime">错误时间
+                </th>
+                <th align="center" field="errorNewlyDataId" width="100" hidden="true">错误dataId</th>
+                <th align="center" field="errorNewlyInfo" width="100" hidden="true">错误信息</th>
+                <th align="center" field="errorCounter" width="100" hidden="true">错误次数</th>
+
+                <th align="center" field="firstTime" width="50" sortable="true" formatter="timestampFormatDateTime">
+                    创建时间
+                </th>
+                <th align="center" field="latestTime" width="50" sortable="true" formatter="timestampFormatDateTime">
+                    修改时间
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="dlg" class="easyui-dialog" style="width:500px;height:500px;padding:5px 10px;display:none;"
+     closed="true" buttons="#dlg-buttons">
+    <form id="fm" method="post" novalidate>
+        <div class="fitem">
+            <label>key:</label>
+            <input name="key" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
+            <label>时间类型:</label>
+            <input name="countType" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
+            <label>执行次数:</label>
+            <input name="runCounter" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>最近执行时长:</label>
+            <input name="runTime" class="easyui-validatebox">
+        </div>
+
+        <fieldset>
+            最长执行时间
+            <div class="fitem">
+                <label>最大时长:</label>
+                <input name="runTimeMax" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>最大时长时间:</label>
+                <input name="runTimeMaxTime" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>最大时长dataId:</label>
+                <input name="runTimeMaxDataId" class="easyui-validatebox">
+            </div>
+        </fieldset>
+
+
+        <div class="fitem">
+            <label>来源次数统计:</label>
+            <textarea name="sourceCounterJson" style="height:60px;width:220px"></textarea>
+        </div>
+        <div class="fitem">
+            <label>正在处理的数据:</label>
+            <textarea name="processingDataJson" style="height:60px;width:220px"></textarea>
+        </div>
+        <fieldset>
+            最新异常错误信息
+            <div class="fitem">
+                <label>错误时间:</label>
+                <input name="errorNewlyTime" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>错误dataId:</label>
+                <input name="errorNewlyDataId" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>错误次数:</label>
+                <input name="errorCounter" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>错识信息:</label>
+                <textarea name="errorNewlyInfo" style="height:60px;width:220px"></textarea>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            配置信息
+            <div class="fitem">
+                <label>分类:</label>
+                <input name="taskCompute.category" id="fm-category" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>dataId参数序号:</label>
+                <input name="taskCompute.dataIdArgCount" id="fm-dataIdArgCount" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>显示正在执行数据:</label>
+                <input name="taskCompute.showProcessing" id="fm-showProcessing" class="easyui-validatebox">
+            </div>
+        </fieldset>
+
+    </form>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+           onclick="javascript:$('#dlg').dialog('close')">Cancel</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
