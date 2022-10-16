@@ -9,6 +9,7 @@ import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.utils.InetAddressUtils;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.time.DateUtils;
 import org.ccs.opendfl.base.BaseService;
 import org.ccs.opendfl.base.BeanUtils;
 import org.ccs.opendfl.base.MyPageInfo;
@@ -25,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * 任务运行次数统计记录 业务实现
- * @author chenjh
  * @Date: 2022年10月15日 下午8:15:58
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -85,11 +86,19 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         return this.mapper.selectOneByExample(example);
     }
 
-    public TaMethodCountPo getMethodCountByTimeType(String timeType, Integer timeValue, Integer dataMethodId, Integer timeSeconds) {
-        TaMethodCountPo search = new TaMethodCountPo();
-        search.load(timeType, timeValue, dataMethodId, timeSeconds);
-        search.setIfDel(0);
-        List<TaMethodCountPo> list = this.findBy(search);
+    public TaMethodCountPo getMethodCountByTimeType(String timeType, Integer timeValue, Integer dataMethodId, Integer timeSeconds, Date date) {
+        Example example = new Example(TaMethodCountPo.class);
+        example.selectProperties("id,dataMethodId,timeSeconds,timeType,timeValue,createTime".split(","));
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("timeType", timeType);
+        criteria.andEqualTo("timeValue", timeValue);
+        criteria.andEqualTo("dataMethodId", dataMethodId);
+        criteria.andEqualTo("timeSeconds", timeSeconds);
+        criteria.andEqualTo("ifDel", 0);
+
+        //用于查两个间隔期内数据唯一
+        criteria.andGreaterThanOrEqualTo("createTime", DateUtils.addSeconds(date, -timeSeconds * 2));
+        List<TaMethodCountPo> list = this.mapper.selectByExample(example);
         if (CollUtil.isNotEmpty(list)) {
             return list.get(0);
         }
@@ -172,7 +181,7 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
     }
 
     public Integer autoSave(String timeType, Integer timeValue, Integer dataMethodId, int timeSeconds, Date date) {
-        TaMethodCountPo exist = this.getMethodCountByTimeType(timeType, timeValue, dataMethodId, timeSeconds);
+        TaMethodCountPo exist = this.getMethodCountByTimeType(timeType, timeValue, dataMethodId, timeSeconds, date);
         if (exist == null) {
             TaMethodCountPo entity = new TaMethodCountPo();
             entity.load(timeType, timeValue, dataMethodId, timeSeconds);
@@ -190,8 +199,8 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
     }
 
     public int updateTaskRunCount(Integer id, TaskCountVo taskCountVo, Date date) {
-        int runCount=taskCountVo.getRunCounter().get();
-        if(runCount==0){
+        int runCount = taskCountVo.getRunCounter().get();
+        if (runCount == 0) {
             return 0;
         }
         TaMethodCountPo update = new TaMethodCountPo();
@@ -202,8 +211,8 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
     }
 
     public int updateTaskErrorInfo(Integer id, TaskCountVo taskCountVo, Date date) {
-        int errorCount=taskCountVo.getErrorCounter().get();
-        if(errorCount==0){
+        int errorCount = taskCountVo.getErrorCounter().get();
+        if (errorCount == 0) {
             return 0;
         }
         TaMethodCountPo update = new TaMethodCountPo();

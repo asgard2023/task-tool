@@ -21,7 +21,7 @@ public interface ITaMethodCountBiz extends IBaseService<TaMethodCountPo> {
 
     public TaMethodCountPo getDataByIdByProperties(Integer id, String properties);
 
-    public TaMethodCountPo getMethodCountByTimeType(String timeType, Integer timeValue, Integer dataMethodId, Integer timeSeconds);
+    public TaMethodCountPo getMethodCountByTimeType(String timeType, Integer timeValue, Integer dataMethodId, Integer timeSeconds, Date date);
 
     /**
      * 任务运行次数统计记录 保存

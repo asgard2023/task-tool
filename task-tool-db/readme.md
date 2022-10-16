@@ -14,4 +14,7 @@
     * H 小时，每小时保存运行次数数据，即：每小时保存一条数据。
     * D 天，每天保存运行次数数据，即：每天保存一条数据。
     * M 月，每月保存运行次数数据，即：每月保存一条数据。
-* 也可以自定义格式yyyyMMddHHMMss组成的表达式，最终要转成Integer，所以格式不能超过Integer最大值
+* 也可以自定义格式yyyyMMddHHMMss组成的表达式:
+    * 最终要转成Integer，所以格式不能超过Integer最大值
+    * 系统根据methodCode,timeType,timeValue,timeSeconds来统计数量，未找到就生成新数据。
+    * 定义的格式需要确保两个timeSeconds间隔范围内值中唯一的
