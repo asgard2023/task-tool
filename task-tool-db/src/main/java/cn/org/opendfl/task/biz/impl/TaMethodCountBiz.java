@@ -1,9 +1,13 @@
 package cn.org.opendfl.task.biz.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.task.biz.ITaMethodCountBiz;
 import cn.org.opendfl.task.mapper.TaMethodCountMapper;
+import cn.org.opendfl.task.mapper.TaMethodCountMyMapper;
 import cn.org.opendfl.task.po.TaMethodCountPo;
+import cn.org.opendfl.tasktool.task.TaskCountVo;
+import cn.org.opendfl.tasktool.utils.InetAddressUtils;
 import com.github.pagehelper.PageHelper;
 import org.ccs.opendfl.base.BaseService;
 import org.ccs.opendfl.base.BeanUtils;
@@ -23,7 +27,7 @@ import java.util.Map;
 /**
  * @Version V1.0
  * 任务运行次数统计记录 业务实现
- * @author: chenjh
+ * @author chenjh
  * @Date: 2022年10月15日 下午8:15:58
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -32,6 +36,9 @@ import java.util.Map;
 public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements ITaMethodCountBiz {
     @Resource
     private TaMethodCountMapper mapper;
+
+    @Resource
+    private TaMethodCountMyMapper myMapper;
 
     static Logger logger = LoggerFactory.getLogger(TaMethodCountBiz.class);
 
@@ -63,6 +70,30 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id", id);
         return this.mapper.selectOneByExample(example);
+    }
+
+    public TaMethodCountPo getDataByIdByProperties(Integer id, String properties) {
+        if (id == null || id == 0) {
+            return null;
+        }
+        Example example = new Example(TaMethodCountPo.class);
+        if (CharSequenceUtil.isNotBlank(properties)) {
+            example.selectProperties(properties.split(","));
+        }
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id", id);
+        return this.mapper.selectOneByExample(example);
+    }
+
+    public TaMethodCountPo getMethodCountByTimeType(String timeType, Integer timeValue, Integer dataMethodId, Integer timeSeconds) {
+        TaMethodCountPo search = new TaMethodCountPo();
+        search.load(timeType, timeValue, dataMethodId, timeSeconds);
+        search.setIfDel(0);
+        List<TaMethodCountPo> list = this.findBy(search);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -138,5 +169,57 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
 //        po.setRemark(remark);
         po.setModifyTime(new Date());
         return this.updateByPrimaryKeySelective(po);
+    }
+
+    public Integer autoSave(String timeType, Integer timeValue, Integer dataMethodId, int timeSeconds, Date date) {
+        TaMethodCountPo exist = this.getMethodCountByTimeType(timeType, timeValue, dataMethodId, timeSeconds);
+        if (exist == null) {
+            TaMethodCountPo entity = new TaMethodCountPo();
+            entity.load(timeType, timeValue, dataMethodId, timeSeconds);
+            entity.setIfDel(0);
+            entity.setStatus(1);
+            entity.setRunCount(0L);
+            entity.setErrorCount(0);
+            entity.setFirstTime(date);
+            entity.setCreateTime(date);
+            entity.setMaxRunTime(0);
+            myMapper.insertUseGeneratedKeys(entity);
+            return entity.getId();
+        }
+        return exist.getId();
+    }
+
+    public int updateTaskRunCount(Integer id, TaskCountVo taskCountVo, Date date) {
+        int runCount=taskCountVo.getRunCounter().get();
+        if(runCount==0){
+            return 0;
+        }
+        TaMethodCountPo update = new TaMethodCountPo();
+        update.setId(id);
+        update.loadRun(taskCountVo, InetAddressUtils.getLocalHostIp());
+        logger.debug("-----updateTaskRunCount--type={} runCount={}/{}/{}", taskCountVo.getCountType(), runCount, update.getRunCount(), taskCountVo.getRunCounter().get());
+        return this.mapper.updateTaskRunCount(id, update);
+    }
+
+    public int updateTaskErrorInfo(Integer id, TaskCountVo taskCountVo, Date date) {
+        int errorCount=taskCountVo.getErrorCounter().get();
+        if(errorCount==0){
+            return 0;
+        }
+        TaMethodCountPo update = new TaMethodCountPo();
+        update.loadErrorNewly(taskCountVo, InetAddressUtils.getLocalHostIp());
+        update.setModifyTime(date);
+        return this.mapper.updateTaskErrorInfo(id, update);
+    }
+
+    public int updateTaskMaxRunTime(Integer id, TaskCountVo taskCountVo, Date date) {
+        TaMethodCountPo update = new TaMethodCountPo();
+        update.loadMax(taskCountVo, InetAddressUtils.getLocalHostIp());
+        update.setModifyTime(date);
+        Example example = new Example(TaMethodCountPo.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id", id);
+        criteria.andLessThanOrEqualTo("maxRunTime", update.getMaxRunTime());
+        return this.mapper.updateByExampleSelective(update, example);
     }
 }

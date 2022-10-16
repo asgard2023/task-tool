@@ -2,6 +2,7 @@ package cn.org.opendfl.task.mapper;
 
 import cn.org.opendfl.task.po.TaDataMethodPo;
 import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
 /**
  * @Version V1.0
@@ -11,6 +12,6 @@ import tk.mybatis.mapper.common.Mapper;
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
  */
-public interface TaDataMethodMapper extends Mapper<TaDataMethodPo> {
+public interface TaDataMethodMyMapper extends MySqlMapper<TaDataMethodPo> {
 
 }

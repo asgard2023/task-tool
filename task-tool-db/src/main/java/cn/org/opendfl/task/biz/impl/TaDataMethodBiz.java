@@ -1,9 +1,12 @@
 package cn.org.opendfl.task.biz.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.task.biz.ITaDataMethodBiz;
 import cn.org.opendfl.task.mapper.TaDataMethodMapper;
+import cn.org.opendfl.task.mapper.TaDataMethodMyMapper;
 import cn.org.opendfl.task.po.TaDataMethodPo;
+import cn.org.opendfl.tasktool.task.TaskCountVo;
 import com.github.pagehelper.PageHelper;
 import org.ccs.opendfl.base.BaseService;
 import org.ccs.opendfl.base.BeanUtils;
@@ -23,7 +26,7 @@ import java.util.Map;
 /**
  * @Version V1.0
  * ta_data_method 业务实现
- * @author: chenjh
+ * @author chenjh
  * @Date: 2022年10月15日 下午8:16:35
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -32,6 +35,9 @@ import java.util.Map;
 public class TaDataMethodBiz extends BaseService<TaDataMethodPo> implements ITaDataMethodBiz {
     @Resource
     private TaDataMethodMapper mapper;
+
+    @Resource
+    private TaDataMethodMyMapper myMapper;
 
     static Logger logger = LoggerFactory.getLogger(TaDataMethodBiz.class);
 
@@ -140,5 +146,37 @@ public class TaDataMethodBiz extends BaseService<TaDataMethodPo> implements ITaD
         po.setRemark(remark);
         po.setModifyTime(new Date());
         return this.updateByPrimaryKeySelective(po);
+    }
+
+    public TaDataMethodPo findTaDataMethodByCode(String code) {
+        TaDataMethodPo search = new TaDataMethodPo();
+        search.setCode(code);
+        search.setIfDel(0);
+        List<TaDataMethodPo> list = this.findBy(search);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    public Integer autoSave(String methodCode, TaskCountVo taskCountVo) {
+        TaDataMethodPo exist = this.findTaDataMethodByCode(methodCode);
+        if (exist == null) {
+            TaDataMethodPo entity = new TaDataMethodPo();
+            entity.setIfDel(0);
+            entity.setStatus(1);
+            entity.setCode(methodCode);
+            entity.setDataIdArgCount(taskCountVo.getTaskCompute().getDataIdArgCount());
+            entity.setCategory(taskCountVo.getTaskCompute().getCategory());
+            Integer ifShowProcessing = 0;
+            if (taskCountVo.getTaskCompute().isShowProcessing()) {
+                ifShowProcessing = 1;
+            }
+            entity.setShowProcessing(ifShowProcessing);
+            entity.setCreateTime(new Date());
+            this.myMapper.insertUseGeneratedKeys(entity);
+            return entity.getId();
+        }
+        return exist.getId();
     }
 }

@@ -7,7 +7,7 @@ task-tool:
   security-key: tasktooltest
   #统计时间类型
   counterTimeTypes:
-    - code: M
+    - code: MI
       time-seconds: 60
       name: 'Minute'
     - code: H

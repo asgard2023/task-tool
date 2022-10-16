@@ -52,25 +52,27 @@ public class TaskComputeAspect {
         HttpServletRequest request = getRequest();
 
         long curTime = System.currentTimeMillis();
-        String key = getMethodKey(joinPoint, taskCompute);
+        Date curDate = new Date(curTime);
+        String classMethod = getMethodKey(joinPoint, taskCompute);
 
-        String source = "";
+        String source = "internal";
         if (request != null) {
             source = request.getRequestURI();
         }
         Object result = null;
         String dataId = getDataId(joinPoint, taskCompute);
+
         try {
             if (taskCompute.showProcessing()) {
-                TaskToolUtils.startTask(taskCompute, key, source, dataId, curTime);
+                TaskToolUtils.startTask(taskCompute, classMethod, source, dataId, curDate);
             }
             //	执行目标方法
             result = joinPoint.proceed();
 
-            TaskToolUtils.finished(taskCompute, key, source, dataId, curTime);
+            TaskToolUtils.finished(taskCompute, classMethod, source, dataId, curDate);
         } catch (Throwable e) {
             //	异常通知
-            TaskToolUtils.error(key, dataId, e.getMessage(), curTime);
+            TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate);
             throw e;
         }
 

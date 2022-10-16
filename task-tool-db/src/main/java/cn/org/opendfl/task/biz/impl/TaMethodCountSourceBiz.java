@@ -1,8 +1,10 @@
 package cn.org.opendfl.task.biz.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.task.biz.ITaMethodCountSourceBiz;
 import cn.org.opendfl.task.mapper.TaMethodCountSourceMapper;
+import cn.org.opendfl.task.mapper.TaMethodCountSourceMyMapper;
 import cn.org.opendfl.task.po.TaMethodCountSourcePo;
 import com.github.pagehelper.PageHelper;
 import org.ccs.opendfl.base.BaseService;
@@ -21,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * ta_method_count_source 业务实现
- * @author: chenjh
  * @Date: 2022年10月15日 下午9:41:27
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -32,6 +34,9 @@ import java.util.Map;
 public class TaMethodCountSourceBiz extends BaseService<TaMethodCountSourcePo> implements ITaMethodCountSourceBiz {
     @Resource
     private TaMethodCountSourceMapper mapper;
+
+    @Resource
+    private TaMethodCountSourceMyMapper myMapper;
 
     static Logger logger = LoggerFactory.getLogger(TaMethodCountSourceBiz.class);
 
@@ -63,6 +68,18 @@ public class TaMethodCountSourceBiz extends BaseService<TaMethodCountSourcePo> i
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id", id);
         return this.mapper.selectOneByExample(example);
+    }
+
+    public TaMethodCountSourcePo getDataBySource(Integer methodCountId, String source) {
+        TaMethodCountSourcePo search = new TaMethodCountSourcePo();
+        search.setMethodCountId(methodCountId);
+        search.setSource(source);
+        search.setIfDel(0);
+        List<TaMethodCountSourcePo> list = this.findBy(search);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -137,5 +154,24 @@ public class TaMethodCountSourceBiz extends BaseService<TaMethodCountSourcePo> i
 //        po.setRemark(remark);
         po.setModifyTime(new Date());
         return this.updateByPrimaryKeySelective(po);
+    }
+
+    public Integer updateTaskRunCountSource(Integer id, Integer runCount) {
+        return this.mapper.updateTaskRunCountSource(id, runCount);
+    }
+
+    public Integer autoSave(Integer methodCountId, String source) {
+        TaMethodCountSourcePo exist = this.getDataBySource(methodCountId, source);
+        if (exist == null) {
+            TaMethodCountSourcePo entity = new TaMethodCountSourcePo();
+            entity.setMethodCountId(methodCountId);
+            entity.setSource(source);
+            entity.setRunCount(0);
+            entity.setIfDel(0);
+            entity.setCreateTime(new Date());
+            myMapper.insertUseGeneratedKeys(entity);
+            return entity.getId();
+        }
+        return exist.getId();
     }
 }

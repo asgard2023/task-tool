@@ -1,5 +1,6 @@
 package cn.org.opendfl.task.po;
 
+import cn.org.opendfl.tasktool.task.TaskCountVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -16,7 +17,7 @@ import java.util.Date;
 /**
  * @Version V1.0
  * 任务运行次数统计记录 实体
- * @author: chenjh
+ * @author chenjh
  * @Date: 2022年10月15日 下午8:15:58
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -25,6 +26,44 @@ import java.util.Date;
 @Table(name = "ta_method_count")
 @JsonInclude(Include.ALWAYS)
 public class TaMethodCountPo implements Serializable {
+    public TaMethodCountPo() {
+
+    }
+
+    public void load(String timeType, Integer timeValue, Integer dataMethodId, Integer timeSeconds) {
+        this.setTimeType(timeType);
+        this.setTimeValue(timeValue);
+        this.setDataMethodId(dataMethodId);
+        this.setTimeSeconds(timeSeconds);
+    }
+
+    public void loadRun(TaskCountVo taskCountVo, String serverName) {
+        int runCount = taskCountVo.getRunCounter().get();
+        taskCountVo.getRunCounter().getAndAdd(-runCount);
+        Long runTime = taskCountVo.getRunTime();
+        this.setRunCount(runCount + 0L);
+        this.setRunTime(runTime.intValue());
+        this.setRunTimeDate(new Date());
+        this.setRunServer(serverName);
+    }
+
+    public void loadMax(TaskCountVo taskCountVo, String serverName) {
+        Long runTimeMax = taskCountVo.getRunTimeMax();
+        this.setMaxRunTime(runTimeMax.intValue());
+        this.setMaxRunTimeDate(new Date(taskCountVo.getRunTimeMaxTime()));
+        this.setMaxRunTimeDataId(taskCountVo.getRunTimeMaxDataId());
+        this.setMaxRunServer(serverName);
+    }
+
+    public void loadErrorNewly(TaskCountVo taskCountVo, String serverName) {
+        this.setErrorNewlyInfo(taskCountVo.getErrorNewlyInfo());
+        int errorCount = taskCountVo.getErrorCounter().get();
+        taskCountVo.getErrorCounter().getAndAdd(-errorCount);
+        this.setErrorCount(errorCount);
+        this.setErrorNewlyTime(new Date(taskCountVo.getErrorNewlyTime()));
+        this.setErrorNewlyDataId(taskCountVo.getErrorNewlyDataId());
+        this.setErrorNewlyServer(serverName);
+    }
 
     /**
      * id
@@ -42,6 +81,9 @@ public class TaMethodCountPo implements Serializable {
      */
     @Column(name = "time_value")
     private Integer timeValue;
+
+    @Column(name = "time_seconds")
+    private Integer timeSeconds;
     /**
      * 时间类型
      */
@@ -65,6 +107,15 @@ public class TaMethodCountPo implements Serializable {
      */
     @Column(name = "run_time")
     private Integer runTime;
+
+    @Column(name = "run_time_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date runTimeDate;
+
+    @Column(name = "run_server")
+    @Length(message = "runServer超出最大长度64限制", max = 64)
+    private String runServer;
     /**
      * 错误次数
      */

@@ -44,10 +44,10 @@ $('#query_name').keydown(listenerName);
 var url;
 
 function onAdd() {
-    $('#dlg').dialog('open').dialog('setTitle', 'New DflRole');
+    $('#dlg').dialog('open').dialog('setTitle', 'New TaMethodCount');
     $('#fm').form('clear');
-    $('#dflRole_status').combobox('select', '1');
-    //$("#dflRole_remark").val('test');
+    $('#taMethodCount_status').combobox('select', '1');
+    //$("#taMethodCount_remark").val('test');
 }
 
 function getRowData(entityName, row) {
@@ -64,10 +64,10 @@ function getRowData(entityName, row) {
 function onEdit() {
     var row = $('#dg').datagrid('getSelected');
     if (row) {
-        var entityName = 'dflRole';
+        var entityName = 'taMethodCount';
         $('#fm').form('clear');
         var obj = getRowData(entityName, row);
-        $('#dlg').dialog('open').dialog('setTitle', 'Edit DflRole');
+        $('#dlg').dialog('open').dialog('setTitle', 'Edit TaMethodCount');
         $('#fm').form('load', obj);
     }
 

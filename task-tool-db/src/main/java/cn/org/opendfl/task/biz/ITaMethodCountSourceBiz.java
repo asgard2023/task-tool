@@ -4,9 +4,9 @@ import cn.org.opendfl.task.po.TaMethodCountSourcePo;
 import org.ccs.opendfl.base.IBaseService;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * ta_method_count_source 业务接口
- * @author: chenjh
  * @Date: 2022年10月15日 下午9:41:27
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -15,6 +15,8 @@ public interface ITaMethodCountSourceBiz extends IBaseService<TaMethodCountSourc
     public TaMethodCountSourcePo getDataById(Integer id);
 
     public TaMethodCountSourcePo getDataById(Integer id, String ignoreFields);
+
+    public TaMethodCountSourcePo getDataBySource(Integer methodCountId, String source);
 
     /**
      * ta_method_count_source 保存
@@ -47,4 +49,8 @@ public interface ITaMethodCountSourceBiz extends IBaseService<TaMethodCountSourc
      * @date 2022年10月15日 下午9:41:27
      */
     Integer deleteTaMethodCountSource(Integer id, Integer operUser, String remark);
+
+    public Integer updateTaskRunCountSource(Integer id, Integer runCount);
+
+    public Integer autoSave(Integer methodCountId, String source);
 }

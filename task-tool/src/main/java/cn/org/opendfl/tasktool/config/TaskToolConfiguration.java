@@ -27,9 +27,9 @@ public class TaskToolConfiguration {
     /**
      * 任务统计类型配置
      */
-    private List<TaskCountTypeVo> counterTimeTypes = Arrays.asList(new TaskCountTypeVo("H", 3600, "Hour", true)
-            , new TaskCountTypeVo("D", 86400, "Day", true)
-            , new TaskCountTypeVo("T", -1, "total", true));
+    private List<TaskCountTypeVo> counterTimeTypes = Arrays.asList(new TaskCountTypeVo("H", 3600, "Hour","yyyyMMddHH", true)
+            , new TaskCountTypeVo("D", 86400, "Day","yyyyMMdd", true)
+            , new TaskCountTypeVo("T", -1, "total", "T", true));
 
     /**
      * 基本执行时间(单位ms)

@@ -16,7 +16,7 @@ import java.util.Date;
 /**
  * @Version V1.0
  * ta_data_method 实体
- * @author: chenjh
+ * @author chenjh
  * @Date: 2022年10月15日 下午8:16:35
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
