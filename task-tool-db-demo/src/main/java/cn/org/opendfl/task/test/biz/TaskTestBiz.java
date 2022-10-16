@@ -38,7 +38,7 @@ public class TaskTestBiz implements ITaskTestBiz {
      * @return
      */
     @TaskCompute
-    public int randomNum() {
+    public int randomNum(String source) {
         int rnd = random.nextInt(100);
         try {
             Thread.sleep((rnd % 3 + 1) * 1000L);

@@ -59,7 +59,18 @@ public class TaskComputeAspect {
 
         String source = "internal";
         if (request != null) {
+            //优先取uri
             source = request.getRequestURI();
+        }
+        else{
+            //获取最后一个参数作为source
+            Object[] args = joinPoint.getArgs();
+            if(args != null && args.length > 0){
+                Object obj=args[args.length-1];
+                if(obj instanceof String){
+                    source = (String)obj;
+                }
+            }
         }
         Object result = null;
         String dataId = getDataId(joinPoint, taskCompute);

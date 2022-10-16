@@ -29,7 +29,7 @@ public class TaskTestScheduler {
         int v = counter.incrementAndGet();
 
         //走接口调用,@TaskCompute有效
-        int rnd = this.taskTestBiz.randomNum();
+        int rnd = this.taskTestBiz.randomNum(this.getClass().getSimpleName()+".testSchedulesJob");
 
         //走本地调用，@TaskCompute不起作用
         this.testSchedules();

@@ -10,5 +10,10 @@ public interface ITaskTestBiz {
 
     public String helloError(String name, int sleepSecond);
 
-    public int randomNum();
+    /**
+     * 最后一个参数用于表示来源
+     * @param source
+     * @return
+     */
+    public int randomNum(String source);
 }

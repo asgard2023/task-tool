@@ -27,6 +27,6 @@ public class TaskTestController {
 
     @RequestMapping(value = "randomNum", method = {RequestMethod.POST, RequestMethod.GET})
     public int randomNum() {
-        return taskTestBiz.randomNum();
+        return taskTestBiz.randomNum(null);
     }
 }
