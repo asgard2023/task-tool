@@ -1,4 +1,4 @@
-package cn.org.opendfl.task;
+package org.ccs.opendfldemo;
 
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
@@ -14,16 +14,16 @@ import tk.mybatis.spring.annotation.MapperScan;
 /**
  * @author chenjh
  */
-@SpringBootApplication(scanBasePackages = {"cn.org.opendfl.task","cn.org.opendfl.test","cn.org.opendfl.tasktool"})
+@SpringBootApplication(scanBasePackages = {"cn.org.opendfl.task", "cn.org.opendfl.test", "cn.org.opendfl.tasktool"})
 @EnableConfigurationProperties
 @EnableSwagger2
 @EnableKnife4j
 @EnableScheduling
 @MapperScan(basePackages = "cn.org.opendfl.task")
-public class TaskApplication {
-    public static final Logger logger = LoggerFactory.getLogger(TaskApplication.class);
+public class TaskDbDemoApplication {
+    public static final Logger logger = LoggerFactory.getLogger(TaskDbDemoApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(TaskApplication.class, args);
+        SpringApplication.run(TaskDbDemoApplication.class, args);
     }
 }

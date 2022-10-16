@@ -9,18 +9,31 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cn.org.opendfl</groupId>
-    <artifactId>task-tool-db</artifactId>
+    <artifactId>task-tool-db-demo</artifactId>
     <version>1</version>
-    <name>task-tool-db</name>
-    <packaging>jar</packaging>
-    <description>task-tool support save to db</description>
+    <name>task-tool-db-demo</name>
+    <description>task-tool-db-demo</description>
+
     <properties>
-        <java.version>1.8</java.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>cn.org.opendfl</groupId>
+            <artifactId>opendfl-base</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/lib/opendfl-base-1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>cn.org.opendfl</groupId>
             <artifactId>task-tool</artifactId>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.org.opendfl</groupId>
+            <artifactId>task-tool-db</artifactId>
             <version>1</version>
         </dependency>
         <dependency>
@@ -90,33 +103,19 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.org.opendfl</groupId>
-            <artifactId>opendfl-base</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/opendfl-base-1.jar</systemPath>
-        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

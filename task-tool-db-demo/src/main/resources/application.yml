@@ -1,0 +1,102 @@
+task-tool:
+  #版本号
+  version: 1
+  #单位ms
+  run-time-base: 10
+  #安全key
+  security-key: tasktooltest
+  #统计时间类型
+  counterTimeTypes:
+    - code: MI
+      time-seconds: 60
+      name: 'Minute'
+      save-db: true
+    - code: H
+      time-seconds: 3600
+      name: 'Hour'
+      save-db: true
+    - code: D
+      time-seconds: 86400
+      name: 'Day'
+      save-db: true
+    - code: T
+      time-seconds: -1
+      name: 'Total'
+      save-db: true
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://192.168.1.254:3306/task_tool?allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: task
+    password: jh@123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    filters: stat,wall
+    initial-size: 3
+    min-idle: 1
+    max-active: 20
+    test-on-borrow: false
+    test-on-return: false
+    test-while-idle: true
+    validation-query: select 'x'
+    max-wait: 6000
+    pool-prepared-statements: true
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 60000
+    web-stat-filter:
+      enabled: true
+      url-pattern: "/*"
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: cn.org.opendfl.task
+  mapper-locations: classpath:mappers/*/*.xml
+
+# TkMapper
+mapper:
+  identity: MYSQL
+  mappers: tk.mybatis.mapper.common.BaseMapper
+  not-empty: true
+  enum-as-simple-type: true
+
+
+
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    info:
+      enabled: true
+
+knife4j:
+  enable: true
+  #生产上需设置该值为true,即屏蔽swagger的doc文档访问
+  production: false
+  basic:
+    #是否开启密码
+    enable: false
+    username: chenjh
+    password: 123456
+
+logging:
+  level:
+    root: INFO
+    cn:
+      org:
+        opendfl: DEBUG
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(-){faint} %clr([%14.14t]){faint} %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) %clr(:){faint} %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+
