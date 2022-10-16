@@ -7,7 +7,11 @@ $('#reset-btn').click(function () {
 
 $(function () {
     var beforeDay = 7;
-    initStartEndTime(beforeDay)
+    initStartEndTime(beforeDay);
+    var methodCountId=app.getQueryString('methodCountId');
+    if(methodCountId){
+        $('#query_methodCountId').val(methodCountId);
+    }
     doSearch();
 });
 

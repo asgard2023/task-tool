@@ -38,17 +38,15 @@ public class TaskToolUtils {
 
     private static final Map<String, TaskCountVo> taskCounterMap = new ConcurrentHashMap<>(20);
 
-    public static void startTask(TaskCompute taskCompute, String classMethod, String source, String dataId, Date curDate) {
-
+    public static void startTask(TaskCompute taskCompute, String classMethod, String source, String dataId, Date curDate, Map<String, String> typeCountCodeMap) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            startTask(taskCompute, countTypeVo, classMethod, source, dataId, curDate);
+            startTask(taskCompute, countTypeVo, classMethod, source, dataId, curDate, typeCountCodeMap);
         }
     }
 
-    public static TaskCountVo startTask(TaskCompute taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, String source, String dataId, Date curDate) {
-        Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), null);
-        final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
+    public static TaskCountVo startTask(TaskCompute taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, String source, String dataId, Date curDate, Map<String, String> typeCountCodeMap) {
+        final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
         long startTime = curDate.getTime();
         TaskCountVo taskCountVo = taskCounterMap.computeIfAbsent(countCode, k -> {
             TaskCountVo vo = new TaskCountVo();
@@ -75,23 +73,23 @@ public class TaskToolUtils {
         return taskCountVo;
     }
 
-    public static void finished(TaskCompute taskCompute, String classMethod, String source, String dataId, Date curDate) {
+
+    public static void finished(TaskCompute taskCompute, String classMethod, String source, String dataId, Date curDate, Map<String, String> typeCountCodeMap) {
         long startTime = curDate.getTime();
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         long runTime = System.currentTimeMillis() - startTime;
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            finished(taskCompute, countTypeVo, classMethod, source, dataId, curDate, runTime);
+            finished(taskCompute, countTypeVo, classMethod, source, dataId, curDate, runTime, typeCountCodeMap);
         }
         //通知异步线程进行保存
         TaskCountSaveThreadTask.saveTaskCount();
     }
 
-    public static void finished(TaskCompute taskCompute, TaskCountTypeVo countTypeVo, String classMethod, String source, String dataId, final Date curDate, final long runTime) {
-        Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), null);
-        final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
+    public static void finished(TaskCompute taskCompute, TaskCountTypeVo countTypeVo, String classMethod, String source, String dataId, final Date curDate, final long runTime, Map<String, String> typeCountCodeMap) {
+        final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         if (taskCountVo == null) {
-            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, source, dataId, curDate);
+            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, source, dataId, curDate, typeCountCodeMap);
         }
         taskCountVo.setRunTime(runTime);
         if (runTime > taskToolConfiguration.getRunTimeBase()) {
@@ -106,16 +104,15 @@ public class TaskToolUtils {
         }
     }
 
-    public static void error(final String classMethod, final String dataId, final String errorInfo, Date curDate) {
+    public static void error(final String classMethod, final String dataId, final String errorInfo, Date curDate, Map<String, String> typeCountCodeMap) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            error(countTypeVo, classMethod, dataId, errorInfo, curDate);
+            error(countTypeVo, classMethod, dataId, errorInfo, curDate, typeCountCodeMap);
         }
     }
 
-    public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate) {
-        Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), null);
-        final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
+    public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate, Map<String, String> typeCountCodeMap) {
+        final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         taskCountVo.setErrorNewlyTime(curDate.getTime());
         taskCountVo.setErrorNewlyInfo(errorInfo);
@@ -138,6 +135,24 @@ public class TaskToolUtils {
      */
     public static String getMethodCountKey(TaskCountTypeVo countTypeVo, String classMethod, Integer timeValue) {
         return classMethod + ":" + countTypeVo.getCode() + ":" + timeValue + ":" + countTypeVo.getTimeSeconds();
+    }
+
+    /**
+     * 用于生成当前时间缓存对应的唯一key
+     * 用typeCountCodeMap做缓存，以减少生生次数
+     *
+     * @param countTypeVo
+     * @param classMethod
+     * @param curDate
+     * @param typeCountCodeMap
+     * @return
+     */
+    private static String getCountCodeCache(TaskCountTypeVo countTypeVo, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
+        final String countCode = typeCountCodeMap.computeIfAbsent(countTypeVo.getCode(), k -> {
+            Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), null);
+            return getMethodCountKey(countTypeVo, classMethod, timeValue);
+        });
+        return countCode;
     }
 
 

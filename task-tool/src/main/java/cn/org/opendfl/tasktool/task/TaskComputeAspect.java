@@ -11,6 +11,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author chenjh
@@ -61,20 +63,22 @@ public class TaskComputeAspect {
         }
         Object result = null;
         String dataId = getDataId(joinPoint, taskCompute);
+        Map<String, String> typeCountCodeMap = new HashMap<>();
 
         try {
             if (taskCompute.showProcessing()) {
-                TaskToolUtils.startTask(taskCompute, classMethod, source, dataId, curDate);
+                TaskToolUtils.startTask(taskCompute, classMethod, source, dataId, curDate, typeCountCodeMap);
             }
             //	执行目标方法
             result = joinPoint.proceed();
 
-            TaskToolUtils.finished(taskCompute, classMethod, source, dataId, curDate);
+            TaskToolUtils.finished(taskCompute, classMethod, source, dataId, curDate, typeCountCodeMap);
         } catch (Throwable e) {
             //	异常通知
-            TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate);
+            TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate, typeCountCodeMap);
             throw e;
         }
+        typeCountCodeMap.clear();
 
         // 返回结果
         return result;

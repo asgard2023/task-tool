@@ -30,6 +30,9 @@ public class TaskCountSaveThreadTask {
 
     private static TaskCountSaveThreadTask taskCountSaveThreadTask = null;
     private static volatile Long saveTime = 0L;
+    /**
+     * 30秒保存一次
+     */
     private static final int SAVE_INTERVAL = 30000;
 
     /**

@@ -10,15 +10,19 @@ task-tool:
     - code: MI
       time-seconds: 60
       name: 'Minute'
+      save-db: true
     - code: H
       time-seconds: 3600
       name: 'Hour'
+      save-db: true
     - code: D
       time-seconds: 86400
       name: 'Day'
+      save-db: true
     - code: T
       time-seconds: -1
       name: 'Total'
+      save-db: true
 
 spring:
   datasource:

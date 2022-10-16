@@ -1,6 +1,8 @@
 package cn.org.opendfl.task.controller;
 
+import cn.org.opendfl.task.biz.ITaDataMethodBiz;
 import cn.org.opendfl.task.biz.ITaMethodCountBiz;
+import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.task.po.TaMethodCountPo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * 任务运行次数统计记录 Controller
- * @author chenjh
  * @Date: 2022年10月15日 下午8:15:58
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -36,6 +40,9 @@ public class TaMethodCountController extends BaseController {
 
     @Autowired
     private ITaMethodCountBiz taMethodCountBiz;
+
+    @Autowired
+    private ITaDataMethodBiz taDataMethodBiz;
 
     /**
      * 任务运行次数统计记录列表查询
@@ -57,6 +64,16 @@ public class TaMethodCountController extends BaseController {
             pageInfo.setPageSize(getPageSize());
         }
         pageInfo = taMethodCountBiz.findPageBy(entity, pageInfo, this.createAllParams(request));
+        List<Integer> dataMethodIdList = pageInfo.getList().stream().map(TaMethodCountPo::getDataMethodId).distinct().collect(Collectors.toList());
+        List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
+        pageInfo.getList().stream().forEach(t -> {
+            for (TaDataMethodPo taDataMethodPo : dataMethodPos) {
+                if (taDataMethodPo.getId().intValue() == t.getDataMethodId().intValue()) {
+                    t.setDataMethod(taDataMethodPo);
+                    break;
+                }
+            }
+        });
         return pageInfo;
     }
 

@@ -162,3 +162,21 @@ function onDestroy() {
         });
     }
 }
+
+function sourceCount(){
+    var row = $('#dg').datagrid('getSelected');
+    if (!row) {
+        if (row.canModify == 0) {
+            $.messager.show({
+                title: 'Warn',
+                msg: '请选中行'
+            });
+            return;
+        }
+    }
+    var url='taMethodCountSourceDetail.html?methodCountId='+row.id;
+    //window.open('taMethodCountSource.html?methodCountId='+row.id);
+    var title=row.dataMethod.code+'-'+row.timeType+'-'+row.timeValue;
+    $('#dlgSource').dialog('open').dialog('setTitle', title);
+    $('#iframeSource').attr('src', url);
+}
