@@ -148,11 +148,10 @@ public class TaskToolUtils {
      * @return
      */
     private static String getCountCodeCache(TaskCountTypeVo countTypeVo, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
-        final String countCode = typeCountCodeMap.computeIfAbsent(countTypeVo.getCode(), k -> {
+        return typeCountCodeMap.computeIfAbsent(countTypeVo.getCode(), k -> {
             Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), null);
             return getMethodCountKey(countTypeVo, classMethod, timeValue);
         });
-        return countCode;
     }
 
 
@@ -165,6 +164,9 @@ public class TaskToolUtils {
             TaskCountVo taskCountVo = entry.getValue().copy();
             taskCountVo.setLatestTimes(DateUtil.format(new Date(taskCountVo.getLatestTime()), "yyyy-MM-dd HH:mm:ss"));
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
+            if(!countTypeOp.isPresent()){
+                continue;
+            }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
             int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS;
             boolean isExpired = countTypeVo.getTimeSeconds() != -1 && curTime - taskCountVo.getFirstTime() > periodTime;
@@ -193,6 +195,9 @@ public class TaskToolUtils {
         for (Map.Entry<String, TaskCountVo> entry : entrySetSet) {
             TaskCountVo taskCountVo = entry.getValue();
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
+            if(!countTypeOp.isPresent()){
+                continue;
+            }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
             int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS * 2;
             boolean isExpired = countTypeVo.getTimeSeconds() != -1 && curTime - taskCountVo.getFirstTime() > periodTime;
