@@ -14,7 +14,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 /**
  * @author chenjh
  */
-@SpringBootApplication(scanBasePackages = {"cn.org.opendfl.task","cn.org.opendfl.test","cn.org.opendfl.tasktool"})
+@SpringBootApplication(scanBasePackages = {"cn.org.opendfl.task","cn.org.opendfl.tasktool"})
 @EnableConfigurationProperties
 @EnableSwagger2
 @EnableKnife4j

@@ -1,7 +1,7 @@
-package cn.org.opendfl.test.controller;
+package cn.org.opendfl.task.test.controller;
 
 
-import cn.org.opendfl.test.biz.ITaskTestBiz;
+import cn.org.opendfl.task.test.biz.ITaskTestBiz;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;

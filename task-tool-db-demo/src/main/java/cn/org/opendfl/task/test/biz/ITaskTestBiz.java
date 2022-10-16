@@ -1,4 +1,4 @@
-package cn.org.opendfl.test.biz;
+package cn.org.opendfl.task.test.biz;
 
 /**
  * 接口测试

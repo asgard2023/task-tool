@@ -1,7 +1,7 @@
-package cn.org.opendfl.test.scheduler;
+package cn.org.opendfl.task.test.scheduler;
 
 import cn.org.opendfl.tasktool.task.TaskCompute;
-import cn.org.opendfl.test.biz.ITaskTestBiz;
+import cn.org.opendfl.task.test.biz.ITaskTestBiz;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
