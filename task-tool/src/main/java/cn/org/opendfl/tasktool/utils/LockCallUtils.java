@@ -18,16 +18,27 @@ public class LockCallUtils {
     private static final SegmentLock<String> segmentLock = new SegmentLock<>();
 
     /**
+     * 超过3秒，就显示告警日志
+     */
+    private static final int LOG_WARN_RUN_TIME = 3000;
+
+    /**
      * @param methodName   方法名，用于知道是哪个方法调用了此接口
      * @param key          锁的key
      * @param lockCallback 回调接口
      * @return
      */
     public static Object lockCall(String methodName, String key, LockCallback lockCallback) {
+        long time = System.currentTimeMillis();
         ReentrantLock lock = segmentLock.get(key);
         lock.lock();
         try {
-            return lockCallback.callback(key);
+            Object object = lockCallback.callback(key);
+            long runTime = System.currentTimeMillis() - time;
+            if (runTime > LOG_WARN_RUN_TIME) {
+                log.warn("----lockCall--methodName={} key={} runTime={}", methodName, key, runTime);
+            }
+            return object;
         } catch (Exception e) {
             log.error("----lockCall--methodName={} key={}", methodName, key);
             return null;
