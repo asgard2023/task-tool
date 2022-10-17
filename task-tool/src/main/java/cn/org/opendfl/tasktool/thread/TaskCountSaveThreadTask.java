@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.thread;
 
+import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class TaskCountSaveThreadTask {
     /**
      * 30秒保存一次
      */
-    private static final int SAVE_INTERVAL = 30000;
+    public static final int SAVE_INTERVAL = 30 * DateTimeConstant.SECOND_MILLIS;
 
     /**
      * 通知异步线程进行保存，每30秒一次

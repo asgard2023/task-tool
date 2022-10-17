@@ -205,6 +205,7 @@ public class TaskToolUtils {
                 expireKeys.add(entry.getKey());
                 continue;
             }
+
             if (countTypeVo.isSaveDb() && taskCountSaveBiz != null) {
                 taskCountSaveBiz.saveTaskCount(countTypeVo, entry.getValue());
             }
@@ -213,7 +214,6 @@ public class TaskToolUtils {
         //清理过期的key
         int expireCount = expireKeys.size();
         if (expireCount > 0) {
-            log.debug("----saveTaskCounts--expireKeys={}", expireCount);
             for (String key : expireKeys) {
                 taskCounterMap.remove(key);
             }
@@ -224,7 +224,7 @@ public class TaskToolUtils {
         long runTime = System.currentTimeMillis() - curTime;
         int logTime = 2000;
         if (runTime > logTime) {
-            log.info("----saveTaskCounts--runTime={}", runTime);
+            log.info("----saveTaskCounts--runTime={} expireKeys={}", runTime, expireKeys.size());
         }
     }
 }

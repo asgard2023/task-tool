@@ -28,16 +28,21 @@ public class TaskTestScheduler {
     public void testSchedulesJob() {
         int v = counter.incrementAndGet();
 
-        //用于通知TaskComputeAspect接口调用来源
-        String currentMethodName=this.getClass().getSimpleName()+".testSchedulesJob";
-        //走接口调用,@TaskCompute有效
-        int rnd = this.taskTestBiz.randomNum(currentMethodName);
+        try {
+            //用于通知TaskComputeAspect接口调用来源
+            String currentMethodName=this.getClass().getSimpleName()+".testSchedulesJob";
+            //走接口调用,@TaskCompute有效
+            int rnd = this.taskTestBiz.randomNum(currentMethodName);
 
-        //走本地调用，@TaskCompute不起作用
-        this.testSchedules();
+            //走本地调用，@TaskCompute不起作用
+            this.testSchedules();
 
-        if (v % 100 == 0 || v < 3) {
-            log.debug("-----testSchedulesJob--count={} rnd={}", v, rnd);
+            if (v % 10 == 0 || v < 3) {
+                log.debug("-----testSchedulesJob--count={} rnd={}", v, rnd);
+            }
+        } catch (Exception e) {
+            log.error("-----testSchedulesJob--count={}", v, e.getMessage());
+//            throw new RuntimeException(e);
         }
     }
 

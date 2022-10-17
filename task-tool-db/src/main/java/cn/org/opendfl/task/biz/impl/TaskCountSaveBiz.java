@@ -10,6 +10,8 @@ import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import cn.org.opendfl.tasktool.thread.ITaskCountSaveBiz;
 import cn.org.opendfl.tasktool.thread.TaskCountSaveThreadTask;
+import cn.org.opendfl.tasktool.utils.LockCallUtils;
+import cn.org.opendfl.tasktool.utils.LockCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,7 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
      */
     @PostConstruct
     public void initTaskCountSave() {
+        log.info("-----initTaskCountSave--impl.biz="+this.getClass().getSimpleName());
         TaskCountSaveThreadTask.setTaskCountSaveBiz(this);
     }
 
@@ -78,9 +81,12 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         final String methodCode = taskCountVo.getKey();
         Integer dataMethodId = codeIdMap.get(methodCode);
         if (dataMethodId == null) {
-            synchronized (methodCode.intern()) {
-                dataMethodId = codeIdMap.computeIfAbsent(methodCode, k -> taDataMethodBiz.autoSave(methodCode, taskCountVo));
-            }
+            dataMethodId = codeIdMap.computeIfAbsent(methodCode, k ->(Integer) LockCallUtils.lockCall("saveTaskCount", methodCode, new LockCallback() {
+                @Override
+                public Object callback(String lockKey) {
+                    return  taDataMethodBiz.autoSave(methodCode, taskCountVo);
+                }
+            }));
         }
 
         Date firstTime = new Date(taskCountVo.getFirstTime());
@@ -89,9 +95,12 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         Integer methodCountId = countIdMap.get(countCode);
         final Integer dataMethodIdFinal = dataMethodId;
         if (methodCountId == null) {
-            synchronized (countCode.intern()) {
-                methodCountId = countIdMap.computeIfAbsent(countCode, k -> taMethodCountBiz.autoSave(countType.getCode(), timeValue, dataMethodIdFinal, countType.getTimeSeconds(), firstTime));
-            }
+            methodCountId = countIdMap.computeIfAbsent(countCode, k -> (Integer) LockCallUtils.lockCall("saveTaskCount", countCode, new LockCallback() {
+                @Override
+                public Object callback(String lockKey) {
+                    return taMethodCountBiz.autoSave(countType.getCode(), timeValue, dataMethodIdFinal, countType.getTimeSeconds(), firstTime);
+                }
+            }));
         }
         //更新运行次数
         int v = this.taMethodCountBiz.updateTaskRunCount(methodCountId, taskCountVo, firstTime);
@@ -115,9 +124,12 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
             String source = entity.getKey();
             Integer sourceId = sourceIdMap.get(source);
             if (sourceId == null) {
-                synchronized (source.intern()) {
-                    sourceId = sourceIdMap.computeIfAbsent(source, k -> this.taMethodCountSourceBiz.autoSave(methodCountId, source));
-                }
+                sourceId = sourceIdMap.computeIfAbsent(source, k -> (Integer) LockCallUtils.lockCall("saveTaskCountSource", source, new LockCallback() {
+                    @Override
+                    public Object callback(String lockKey) {
+                        return taMethodCountSourceBiz.autoSave(methodCountId, source);
+                    }
+                }));
             }
             int runCount = entity.getValue().get();
             entity.getValue().getAndAdd(-runCount);
