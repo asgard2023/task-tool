@@ -14,6 +14,24 @@
     <name>task-tool-db</name>
     <packaging>jar</packaging>
     <description>task-tool support save to db</description>
+
+    <!--scm信息-->
+    <scm>
+        <url>http://task-tool-demo.opendfl.org.cn/index.html</url>
+        <connection>scm:git@github.com:asgard2023/task-tool.git</connection>
+        <developerConnection>scm:git@github.com:asgard2023/task-tool.git</developerConnection>
+    </scm>
+
+    <!--发布者信息-->
+    <developers>
+        <developer>
+            <name>chenjh</name>
+            <email>asgard2023@outlook.com</email>
+            <organization>http://task-tool-demo.opendfl.org.cn/index.html</organization>
+            <organizationUrl>http://task-tool-demo.opendfl.org.cn/index.html</organizationUrl>
+        </developer>
+    </developers>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>

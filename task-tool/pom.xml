@@ -9,11 +9,18 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <groupId>cn.org.opendfl</groupId>
+    <artifactId>task-tool</artifactId>
+    <version>1</version>
+    <name>task-tool</name>
+    <packaging>jar</packaging>
+    <description>task-tool spring interface calls statistics tool</description>
+
     <!--scm信息-->
     <scm>
-        <url>http://console.mysql.opendfl.org.cn/index.html</url>
-        <connection>scm:git:https://github.com/asgard2023/opendfl.git</connection>
-        <developerConnection>scm:git:https://github.com/asgard2023/opendfl.git</developerConnection>
+        <url>http://task-tool-demo.opendfl.org.cn/index.html</url>
+        <connection>scm:git@github.com:asgard2023/task-tool.git</connection>
+        <developerConnection>scm:git@github.com:asgard2023/task-tool.git</developerConnection>
     </scm>
 
     <!--发布者信息-->
@@ -21,17 +28,11 @@
         <developer>
             <name>chenjh</name>
             <email>asgard2023@outlook.com</email>
-            <organization>http://console.mysql.opendfl.org.cn/index.html</organization>
-            <organizationUrl>http://console.mysql.opendfl.org.cn/index.html</organizationUrl>
+            <organization>http://task-tool-demo.opendfl.org.cn/index.html</organization>
+            <organizationUrl>http://task-tool-demo.opendfl.org.cn/index.html</organizationUrl>
         </developer>
     </developers>
 
-    <groupId>cn.org.opendfl</groupId>
-    <artifactId>task-tool</artifactId>
-    <version>1</version>
-    <name>task-tool</name>
-    <packaging>jar</packaging>
-    <description>task-tool spring interface calls statistics tool</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
