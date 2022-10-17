@@ -112,8 +112,6 @@
             <groupId>cn.org.opendfl</groupId>
             <artifactId>opendfl-base</artifactId>
             <version>1</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/resources/lib/opendfl-base-1.jar</systemPath>
         </dependency>
     </dependencies>
 
