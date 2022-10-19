@@ -3,6 +3,7 @@
 服务内统计接口方法的执行次数，时间，最近错误，最大执行时长等看每个需要监控的方法的执行情况，以便于快速发现性能问题。
 
 ## 目的
+
 在系统开发完后，接口的使用情况，是不知道的，没办法直观的知道情况。
 通过这个工具来统计，调用次数，异常次数，异常发生时间，异常信息，最大执行时长等，最大执行时长发生成的时间等，来方便查看接口的运行情况。
 
@@ -32,13 +33,25 @@ http://task-tool-demo.opendfl.org.cn/index.html
 <dependency>
     <groupId>cn.org.opendfl</groupId>
     <artifactId>task-tool</artifactId>
-    <version>1</version>
+    <version>1.1</version>
+</dependency>
+```
+
+如果需要定时自动保存到数据库可引入下面这个
+
+```xml
+
+<dependency>
+    <groupId>cn.org.opendfl</groupId>
+    <artifactId>task-tool-db</artifactId>
+    <version>1.1</version>
 </dependency>
 ```
 
 * 2,在要统计方法上加上@TaskCompute注解
 
 ```java
+
 @Service
 public class TaskTestBiz implements ITaskTestBiz {
     @TaskCompute
