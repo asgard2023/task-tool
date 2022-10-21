@@ -97,7 +97,9 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         criteria.andEqualTo("ifDel", 0);
 
         //用于查两个间隔期内数据唯一
-        criteria.andGreaterThanOrEqualTo("createTime", DateUtils.addSeconds(date, -timeSeconds * 2));
+        if(timeSeconds > 0) {
+            criteria.andGreaterThanOrEqualTo("createTime", DateUtils.addSeconds(date, -timeSeconds * 2));
+        }
         List<TaMethodCountPo> list = this.mapper.selectByExample(example);
         if (CollUtil.isNotEmpty(list)) {
             return list.get(0);
