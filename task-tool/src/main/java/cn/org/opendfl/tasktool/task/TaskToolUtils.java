@@ -164,7 +164,7 @@ public class TaskToolUtils {
             TaskCountVo taskCountVo = entry.getValue().copy();
             taskCountVo.setLatestTimes(DateUtil.format(new Date(taskCountVo.getLatestTime()), "yyyy-MM-dd HH:mm:ss"));
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
-            if(!countTypeOp.isPresent()){
+            if (!countTypeOp.isPresent()) {
                 continue;
             }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
@@ -187,15 +187,16 @@ public class TaskToolUtils {
         return list;
     }
 
-    public static void saveTaskCounts(ITaskCountSaveBiz taskCountSaveBiz) {
+    public static TaskSaveInfoVo saveTaskCounts(ITaskCountSaveBiz taskCountSaveBiz) {
         long curTime = System.currentTimeMillis();
         final List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         Set<Map.Entry<String, TaskCountVo>> entrySetSet = taskCounterMap.entrySet();
         List<String> expireKeys = new ArrayList<>();
+        int count = 0;
         for (Map.Entry<String, TaskCountVo> entry : entrySetSet) {
             TaskCountVo taskCountVo = entry.getValue();
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
-            if(!countTypeOp.isPresent()){
+            if (!countTypeOp.isPresent()) {
                 continue;
             }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
@@ -206,8 +207,9 @@ public class TaskToolUtils {
                 continue;
             }
 
-            if (countTypeVo.isSaveDb() && taskCountSaveBiz != null) {
-                taskCountSaveBiz.saveTaskCount(countTypeVo, entry.getValue());
+            if (countTypeVo.isSaveDb() && taskCountSaveBiz != null && taskCountVo.getRunCounter().get() > 0) {
+                count++;
+                taskCountSaveBiz.saveTaskCount(countTypeVo, taskCountVo);
             }
         }
 
@@ -226,5 +228,10 @@ public class TaskToolUtils {
         if (runTime > logTime) {
             log.info("----saveTaskCounts--runTime={} expireKeys={}", runTime, expireKeys.size());
         }
+
+        TaskSaveInfoVo saveInfoVo = new TaskSaveInfoVo();
+        saveInfoVo.setSaveCount(count);
+        saveInfoVo.setExpireCount(expireCount);
+        return saveInfoVo;
     }
 }
