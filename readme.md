@@ -67,10 +67,19 @@ public class TaskTestBiz implements ITaskTestBiz {
 }
 ```
 
-* 3,接口有调用后查看结果
+* 3,配置
+  * springboot支持任务统计，加scanBasePackages={"cn.org.opendfl.tasktool"}
+    ```java
+    @SpringBootApplication(scanBasePackages = {"cn.org.opendfl.tasktool"})
+    ```
+  * springboot支持保存到数据库，加scanBasePackages = {"cn.org.opendfl.task", "cn.org.opendfl.tasktool"}
+    ```java
+    @SpringBootApplication(scanBasePackages = {"cn.org.opendfl.task", "cn.org.opendfl.tasktool")
+
+* 4,接口有调用后查看结果加scanBasePackages=cn.org.opendfl.tasktool,
 
 http://localhost:8080/taskInfo/runInfo?key=tasktooltest
 
-* 4,查看配置信息
+* 5,查看配置信息
 
 http://localhost:8080/taskInfo/config?key=tasktooltest
