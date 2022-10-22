@@ -21,7 +21,7 @@ public class TaskCountSaveThreadTask {
 
     }
 
-    private static TaskCountSaveThreadTask instance;
+    private static TaskCountSaveThreadTask instance = new TaskCountSaveThreadTask();
 
     private static ITaskCountSaveBiz taskCountSaveBiz;
 
@@ -53,10 +53,9 @@ public class TaskCountSaveThreadTask {
     }
 
     public static TaskCountSaveThreadTask getInstance() {
-        if (instance == null) {
+        if (instance.cacheThread==null) {
             synchronized (TaskCountSaveThreadTask.class) {
-                if (instance == null) {
-                    instance = new TaskCountSaveThreadTask();
+                if (instance.cacheThread == null) {
                     instance.init();
                 }
             }
@@ -79,16 +78,17 @@ public class TaskCountSaveThreadTask {
 
     public void notifyRun() {
         Thread.State state = cacheThread.getState();
-        int count = aCounter.incrementAndGet();
+        int count = 0;
         try {
             if (state == Thread.State.WAITING || state == Thread.State.TIMED_WAITING) {
+                count = aCounter.incrementAndGet();
                 this.taskCountSaveThread.notifyRun();
             }
         } catch (Exception e) {
             logger.error("-----notifyRun--count={} error={}", count, e.getMessage(), e);
         }
         //前30次每次都日志，后面则每20次输出一次日志
-        if (count < 30 || count % 20 == 0) {
+        if (count>0 && (count < 30 || count % 20 == 0)) {
             logger.debug("----notifyRun--count={} state={}/{}", count, state, cacheThread.getState());
         }
     }
