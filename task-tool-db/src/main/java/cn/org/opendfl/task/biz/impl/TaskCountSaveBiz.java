@@ -45,7 +45,7 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
      */
     @PostConstruct
     public void initTaskCountSave() {
-        log.info("-----initTaskCountSave--impl.biz="+this.getClass().getSimpleName());
+        log.info("-----initTaskCountSave--impl.biz=" + this.getClass().getSimpleName());
         TaskCountSaveThreadTask.setTaskCountSaveBiz(this);
     }
 
@@ -57,6 +57,12 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
 
     private static final Map<Integer, Long> maxRunTimeMap = new ConcurrentHashMap<>();
 
+    /**
+     * 清理过期的缓存key
+     *
+     * @param expiredKeys
+     * @return 清理的个数
+     */
     public int cleanExpirekey(List<String> expiredKeys) {
         int removeCount = 0;
         for (String key : expiredKeys) {
@@ -76,15 +82,21 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         return removeCount;
     }
 
+    /**
+     * 单个接口调用次数据保存
+     * @param countType 时间类型，exp:H,D,M等
+     * @param taskCountVo 接口任务统计对象
+     * @return
+     */
     @Override
     public int saveTaskCount(TaskCountTypeVo countType, TaskCountVo taskCountVo) {
         final String methodCode = taskCountVo.getKey();
         Integer dataMethodId = codeIdMap.get(methodCode);
         if (dataMethodId == null) {
-            dataMethodId = codeIdMap.computeIfAbsent(methodCode, k ->(Integer) LockCallUtils.lockCall("saveTaskCount", methodCode, new LockCallback() {
+            dataMethodId = codeIdMap.computeIfAbsent(methodCode, k -> (Integer) LockCallUtils.lockCall("saveTaskCount", methodCode, new LockCallback() {
                 @Override
                 public Object callback(String lockKey) {
-                    return  taDataMethodBiz.autoSave(methodCode, taskCountVo);
+                    return taDataMethodBiz.autoSave(methodCode, taskCountVo);
                 }
             }));
         }
@@ -105,10 +117,13 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         //更新运行次数
         int v = this.taMethodCountBiz.updateTaskRunCount(methodCountId, taskCountVo, firstTime);
 
+        //更新最新错误信息，如果不是最新，则不更新
         saveTaskCountNewlyError(taskCountVo, firstTime, methodCountId);
 
+        //保存最大运行时间，如果不是最大运行时间，则不更新，并同步本地的最大运行时间
         saveTaskCountMaxRunTime(taskCountVo, firstTime, methodCountId);
 
+        //保存接口调用来源次数
         this.saveTaskCountSource(taskCountVo, methodCountId);
 
         return v;
@@ -116,6 +131,13 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
 
     private static final Map<Integer, Map<String, Integer>> methodCountSourceIdMap = new ConcurrentHashMap<>();
 
+    /**
+     * 保存接口调用来源次数
+     *
+     * @param taskCountVo
+     * @param methodCountId
+     * @return 更新数据量
+     */
     private int saveTaskCountSource(final TaskCountVo taskCountVo, final Integer methodCountId) {
         Set<Map.Entry<String, AtomicInteger>> sourceCountSet = taskCountVo.getSourceCounterMap().entrySet();
         Map<String, Integer> sourceIdMap = methodCountSourceIdMap.computeIfAbsent(methodCountId, k -> new ConcurrentHashMap<>());
@@ -141,10 +163,10 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
     /**
      * 更新最新错误信息，如果不是最新，则不更新
      *
-     * @param taskCountVo
-     * @param firstTime
-     * @param methodCountId
-     * @return
+     * @param taskCountVo   接口任务统计对象
+     * @param firstTime     首次执行时间
+     * @param methodCountId 接口方法调用ID
+     * @return 更新数据量
      */
     private int saveTaskCountNewlyError(TaskCountVo taskCountVo, Date firstTime, Integer methodCountId) {
         int v = 0;
@@ -167,10 +189,10 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
     /**
      * 保存最大运行时间，如果不是最大运行时间，则不更新，并同步本地的最大运行时间
      *
-     * @param taskCountVo
-     * @param firstTime
-     * @param methodCountId
-     * @return
+     * @param taskCountVo   任务统计对象
+     * @param firstTime     首次执行时间
+     * @param methodCountId 接口方法调用ID
+     * @return 更新数据量
      */
     private int saveTaskCountMaxRunTime(TaskCountVo taskCountVo, Date firstTime, Integer methodCountId) {
         int v = 0;

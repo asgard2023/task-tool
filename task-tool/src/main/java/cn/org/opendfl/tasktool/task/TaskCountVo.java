@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 任务统计vo
+ * 接口任务统计vo
  *
  * @author chenjh
  */

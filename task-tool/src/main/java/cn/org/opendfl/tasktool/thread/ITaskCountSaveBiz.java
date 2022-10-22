@@ -14,5 +14,11 @@ public interface  ITaskCountSaveBiz {
 
     int saveTaskCount(TaskCountTypeVo countType, TaskCountVo taskCountVo);
 
+    /**
+     * 清理过期的缓存key
+     *
+     * @param expiredKeys
+     * @return 清理的个数
+     */
     int cleanExpirekey(List<String> expiredKeys);
 }
