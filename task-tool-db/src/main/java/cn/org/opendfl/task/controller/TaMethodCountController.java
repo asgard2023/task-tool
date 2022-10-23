@@ -107,10 +107,13 @@ public class TaMethodCountController extends BaseController {
             endimeDate=DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss");
         }
 
-        TaDataMethodPo dataMethodPo = taDataMethodBiz.findTaDataMethodByCode(dataMethodCode);
+
         Integer dataMethodId = null;
-        if (dataMethodPo != null) {
-            dataMethodId = dataMethodPo.getId();
+        if(StringUtils.isNotBlank(dataMethodCode)) {
+            TaDataMethodPo dataMethodPo = taDataMethodBiz.findTaDataMethodByCode(dataMethodCode);
+            if (dataMethodPo != null) {
+                dataMethodId = dataMethodPo.getId();
+            }
         }
         this.pageSortBy(pageInfo);
         pageInfo.setList(taMethodCountBiz.getMethodCountStatistic(dataMethodId, timeType, startTimeDate, endimeDate));
