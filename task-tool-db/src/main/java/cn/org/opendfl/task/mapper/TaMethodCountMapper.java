@@ -30,7 +30,7 @@ public interface TaMethodCountMapper extends Mapper<TaMethodCountPo> {
     int updateTaskErrorInfo(@Param("id") Integer id, @Param("dataCount") TaMethodCountPo dataCount);
 
     @Select("select data_method_id dataMethodId, time_type timeType, count(*) rowCount, min(time_value) timeValueMin, max(time_value) timeValueMax, sum(run_count) runCountTotal" +
-            ", max(run_time) maxRunTime, min(create_time) minDate, max(modify_time) maxDate , sum(error_count) errorCountTotal" +
+            ", max(run_time) maxRunTime, min(create_time) minDate, max(run_time_date) maxDate , sum(error_count) errorCountTotal" +
             ", min(error_newly_time) minErrorDate, max(error_newly_time) maxErrorDate " +
             " from ta_method_count where if_del=0" +
             " and (data_method_id=#{dataMethodId} or #{dataMethodId} is null)" +
