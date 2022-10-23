@@ -93,11 +93,11 @@
                                 return row.dataMethod.code;
                             }">数据方法
                 </th>
-                <th align="center" field="timeValueMin" width="50" sortable="true">最小时间值</th>
-                <th align="center" field="timeValueMax" width="50" sortable="true">最大时间值</th>
                 <th align="center" field="timeType" width="50" sortable="true">时间类型</th>
                 <th align="center" field="runCountTotal" width="50" sortable="true">总运行次数</th>
                 <th align="center" field="maxRunTime" width="50" sortable="true">最长运行时间(ms)</th>
+                <th align="center" field="timeValueMin" width="50" sortable="true">最小时间值</th>
+                <th align="center" field="timeValueMax" width="50" sortable="true">最大时间值</th>
                 <th align="center" field="minDate" width="50" sortable="true" formatter="timestampFormatDateTime">最小时间</th>
                 <th align="center" field="maxDate" width="50" sortable="true" formatter="timestampFormatDateTime">最大时间</th>
                 <th align="center" field="errorCountTotal" width="50" sortable="true">总错误次数</th>
@@ -117,78 +117,50 @@
             <label>数据方法id:</label>
             <input name="dataMethodId" class="easyui-validatebox">
         </div>
-        <div class="fitem">
-            <label>时间值:</label>
-            <input name="timeValue" class="easyui-validatebox">
-        </div>
+
         <div class="fitem">
             <label>时间类型:</label>
             <input name="timeType" class="easyui-validatebox">
         </div>
         <div class="fitem">
             <label>运行次数:</label>
-            <input name="runCount" class="easyui-validatebox">
+            <input name="runCountTotal" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>首次运行时间:</label>
-            <input name="firstTime" class="easyui-datetimebox">
+            <label>最长运行时间(ms):</label>
+            <input name="maxRunTime" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>最小时间值:</label>
+            <input name="timeValueMin" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>最大时间值:</label>
+            <input name="timeValueMax" class="easyui-datetimebox">
         </div>
         <div class="fitem">
             <label>最新运行时间(ms):</label>
             <input name="runTime" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>错误次数:</label>
-            <input name="errorCount" class="easyui-validatebox">
+            <label>最小时间:</label>
+            <input name="minDate" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>最新错误信息:</label>
-            <input name="errorNewlyInfo" class="easyui-validatebox">
+            <label>最大时间:</label>
+            <input name="maxDate" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>最新错误dataId:</label>
-            <input name="errorNewlyDataId" class="easyui-validatebox">
+            <label>错误总欠数:</label>
+            <input name="errorCountTotal" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>最新错误时间:</label>
-            <input name="errorNewlyTime" class="easyui-datetimebox">
+            <label>最小错误时间:</label>
+            <input name="minErrorDate" class="easyui-datetimebox">
         </div>
         <div class="fitem">
-            <label>最新错误对应的服务器名:</label>
-            <input name="errorNewlyServer" class="easyui-validatebox">
-        </div>
-        <div class="fitem">
-            <label>最大执行时间(ms):</label>
-            <input name="maxRunTime" class="easyui-validatebox">
-        </div>
-        <div class="fitem">
-            <label>最大执行时间发生时间:</label>
-            <input name="maxRunTimeDate" class="easyui-datetimebox">
-        </div>
-        <div class="fitem">
-            <label>最大执行时间对应dataId:</label>
-            <input name="maxRunTimeDataId" class="easyui-validatebox">
-        </div>
-        <div class="fitem">
-            <label>最大执行时间对应的服务器名:</label>
-            <input name="maxRunServer" class="easyui-validatebox">
-        </div>
-        <input type="hidden" name="ifDel">
-        <div class="fitem">
-            <label>是否有效:</label>
-            <input class="easyui-combobox" name="status" id="taMethodCount_status" data-options="panelHeight:'auto',
-                                valueField: 'id',
-                                textField: 'name',
-                                //multiple:true, //多选增加此项
-                                data: dict_status"/>
-        </div>
-        <div class="fitem">
-            <label>创建时间:</label>
-            <input name="createTime" class="easyui-datetimebox">
-        </div>
-        <div class="fitem">
-            <label>修改时间:</label>
-            <input name="modifyTime" class="easyui-datetimebox">
+            <label>最大错误时间:</label>
+            <input name="maxErrorDate" class="easyui-validatebox">
         </div>
     </form>
     <div id="dlg-buttons">
