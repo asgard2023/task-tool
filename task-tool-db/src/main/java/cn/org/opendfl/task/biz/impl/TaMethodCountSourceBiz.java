@@ -173,7 +173,8 @@ public class TaMethodCountSourceBiz extends BaseService<TaMethodCountSourcePo> i
     }
 
     public Integer updateTaskRunCountSource(Integer id, Integer runCount) {
-        return this.mapper.updateTaskRunCountSource(id, runCount);
+        Date modifiedTime = new Date();
+        return this.mapper.updateTaskRunCountSource(id, runCount, modifiedTime);
     }
 
     public Integer autoSave(Integer methodCountId, String source) {

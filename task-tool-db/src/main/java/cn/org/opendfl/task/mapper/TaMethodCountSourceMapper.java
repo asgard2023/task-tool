@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.Date;
+
 /**
  * @author chenjh
  * @Version V1.0
@@ -14,7 +16,7 @@ import tk.mybatis.mapper.common.Mapper;
  * @Copyright: 2022 opendfl Inc. All rights reserved.
  */
 public interface TaMethodCountSourceMapper extends Mapper<TaMethodCountSourcePo> {
-    @Update("update ta_method_count_source set run_count=run_count+#{runCount}" +
+    @Update("update ta_method_count_source set run_count=run_count+#{runCount},modify_time=#{modifyTime}" +
             " where id=#{id} and if_del=0")
-    int updateTaskRunCountSource(@Param("id") Integer id, @Param("runCount") Integer runCount);
+    int updateTaskRunCountSource(@Param("id") Integer id, @Param("runCount") Integer runCount, @Param("modifyTime") Date modifyTime);
 }
