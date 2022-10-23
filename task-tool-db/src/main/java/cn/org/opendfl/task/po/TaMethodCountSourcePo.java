@@ -10,14 +10,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * ta_method_count_source 实体
- * @author chenjh
  * @Date: 2022年10月15日 下午9:41:27
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -38,6 +39,8 @@ public class TaMethodCountSourcePo implements Serializable {
      */
     @Column(name = "method_count_id")
     private Integer methodCountId;
+    @Transient
+    private TaMethodCountPo methodCount;
     /**
      * source
      */

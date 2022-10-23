@@ -23,9 +23,7 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.StringUtil;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author chenjh
@@ -65,14 +63,26 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         if (id == null || id == 0) {
             return null;
         }
+        List<TaMethodCountPo> list = getDataByIds(Arrays.asList(id), ignoreFields);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+
+    public List<TaMethodCountPo> getDataByIds(List<Integer> ids, String ignoreFields) {
+        if (CollUtil.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
         Example example = new Example(TaMethodCountPo.class);
         if (CharSequenceUtil.isNotBlank(ignoreFields)) {
             String props = BeanUtils.getAllProperties(TaMethodCountPo.class, ignoreFields);
             example.selectProperties(props.split(","));
         }
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id", id);
-        return this.mapper.selectOneByExample(example);
+        criteria.andIn("id", ids);
+        return this.mapper.selectByExample(example);
     }
 
     public TaMethodCountPo getDataByIdByProperties(Integer id, String properties) {

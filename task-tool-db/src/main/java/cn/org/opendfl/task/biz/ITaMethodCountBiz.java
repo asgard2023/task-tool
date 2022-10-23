@@ -5,11 +5,12 @@ import cn.org.opendfl.tasktool.task.TaskCountVo;
 import org.ccs.opendfl.base.IBaseService;
 
 import java.util.Date;
+import java.util.List;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * 任务运行次数统计记录 业务接口
- * @author chenjh
  * @Date: 2022年10月15日 下午8:15:58
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -18,6 +19,8 @@ public interface ITaMethodCountBiz extends IBaseService<TaMethodCountPo> {
     public TaMethodCountPo getDataById(Integer id);
 
     public TaMethodCountPo getDataById(Integer id, String ignoreFields);
+
+    public List<TaMethodCountPo> getDataByIds(List<Integer> ids, String ignoreFields);
 
     public TaMethodCountPo getDataByIdByProperties(Integer id, String properties);
 

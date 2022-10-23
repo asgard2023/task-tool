@@ -91,6 +91,15 @@
             <tr>
                 <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
                 <th align="center" field="methodCountId" width="50" sortable="true">method_count_id</th>
+                <th align="center" field="dataMethodCode" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                                return row.methodCount.dataMethod.code;
+                            }">数据方法</th>
+                <th align="center" field="timeType" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                                return row.methodCount.timeType;
+                            }">时间类型</th>
+                <th align="center" field="timeValue" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                                return row.methodCount.timeValue;
+                            }">时间值</th>
                 <th align="center" field="source" width="50" sortable="true">source</th>
                 <th align="center" field="runCount" width="50" sortable="true">run_count</th>
                 <th align="center" field="ifDel" width="50" sortable="true" hidden="true">if_del</th>

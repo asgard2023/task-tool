@@ -75,6 +75,7 @@ public class TaskTestBiz implements ITaskTestBiz {
   * springboot支持保存到数据库，加scanBasePackages = {"cn.org.opendfl.task", "cn.org.opendfl.tasktool"}
     ```java
     @SpringBootApplication(scanBasePackages = {"cn.org.opendfl.task", "cn.org.opendfl.tasktool")
+    @MapperScan(basePackages = "cn.org.opendfl.task")
 
 * 4,接口有调用后查看结果加scanBasePackages=cn.org.opendfl.tasktool,
 

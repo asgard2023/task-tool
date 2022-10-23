@@ -1,6 +1,10 @@
 package cn.org.opendfl.task.controller;
 
+import cn.org.opendfl.task.biz.ITaDataMethodBiz;
+import cn.org.opendfl.task.biz.ITaMethodCountBiz;
 import cn.org.opendfl.task.biz.ITaMethodCountSourceBiz;
+import cn.org.opendfl.task.po.TaDataMethodPo;
+import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.task.po.TaMethodCountSourcePo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,11 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
+ * @author chenjh
  * @Version V1.0
  * ta_method_count_source Controller
- * @author chenjh
  * @Date: 2022年10月15日 下午9:41:27
  * @Company: opendfl
  * @Copyright: 2022 opendfl Inc. All rights reserved.
@@ -36,6 +42,11 @@ public class TaMethodCountSourceController extends BaseController {
 
     @Autowired
     private ITaMethodCountSourceBiz taMethodCountSourceBiz;
+    @Autowired
+    private ITaMethodCountBiz taMethodCountBiz;
+
+    @Autowired
+    private ITaDataMethodBiz taDataMethodBiz;
 
     /**
      * ta_method_count_source列表查询
@@ -57,7 +68,36 @@ public class TaMethodCountSourceController extends BaseController {
             pageInfo.setPageSize(getPageSize());
         }
         pageInfo = taMethodCountSourceBiz.findPageBy(entity, pageInfo, this.createAllParams(request));
+
+        showDataIdInfo(pageInfo);
+
         return pageInfo;
+    }
+
+    private void showDataIdInfo(MyPageInfo<TaMethodCountSourcePo> pageInfo) {
+        List<TaMethodCountSourcePo> list = pageInfo.getList();
+        List<Integer> methodCountIdList = list.stream().map(TaMethodCountSourcePo::getMethodCountId).collect(Collectors.toList());
+        List<TaMethodCountPo> methodCountPos = this.taMethodCountBiz.getDataByIds(methodCountIdList, "createTime,modifyTime");
+
+        List<Integer> methodIdList = methodCountPos.stream().map(TaMethodCountPo::getDataMethodId).collect(Collectors.toList());
+        List<TaDataMethodPo> methodList = taDataMethodBiz.getDataByIds(methodIdList, "createTime,modifyTime");
+        for (TaMethodCountPo methodCountPo : methodCountPos) {
+            for (TaDataMethodPo methodPo : methodList) {
+                if (methodCountPo.getDataMethodId().intValue() == methodPo.getId().intValue()) {
+                    methodCountPo.setDataMethod(methodPo);
+                    break;
+                }
+            }
+        }
+
+        for (TaMethodCountSourcePo countSourcePo : list) {
+            for (TaMethodCountPo methodCountPo : methodCountPos) {
+                if (countSourcePo.getMethodCountId().intValue() == methodCountPo.getId().intValue()) {
+                    countSourcePo.setMethodCount(methodCountPo);
+                    break;
+                }
+            }
+        }
     }
 
     @ApiOperation(value = "ta_method_count_source列表(easyui)", notes = "ta_method_count_source列表翻页查询，用于兼容easyui的rows方式")
