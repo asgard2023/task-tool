@@ -4,6 +4,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.AppInfoVo;
+import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,6 +104,19 @@ public class TaskInfoController {
         appInfoVo.setRunTimeBase(taskToolConfiguration.getRunTimeBase());
         return appInfoVo;
 
+    }
+
+    /**
+     * 时间格式对应的timeValue测试
+     *
+     * @param timeType H,D等
+     * @param format   yyyMMddHHmmss的组合
+     * @return
+     */
+    @RequestMapping(value = "timeValue", method = {RequestMethod.POST, RequestMethod.GET})
+    public Object getTimeValue(@RequestParam(value = "timeType", required = false) String timeType
+            , @RequestParam(value = "format", required = false) String format) {
+        return DateTimeConstant.getDateInt(new Date(), timeType, format);
     }
 
 

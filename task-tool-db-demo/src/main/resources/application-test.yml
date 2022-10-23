@@ -6,6 +6,7 @@ task-tool:
   #安全key
   security-key: tasktooltest
   #统计时间类型
+  #快速验timeType的接口：http://localhost:8080/taskInfo/timeValue?timeType=H&format=yyyMMdd
   counterTimeTypes:
     - code: MI
       time-seconds: 60
