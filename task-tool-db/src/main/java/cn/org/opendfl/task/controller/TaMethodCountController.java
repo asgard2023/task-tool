@@ -116,7 +116,7 @@ public class TaMethodCountController extends BaseController {
             }
         }
         this.pageSortBy(pageInfo);
-        pageInfo.setList(taMethodCountBiz.getMethodCountStatistic(dataMethodId, timeType, startTimeDate, endimeDate));
+        pageInfo=taMethodCountBiz.getMethodCountStatistic(dataMethodId, timeType, startTimeDate, endimeDate, pageInfo);
         List<Integer> dataMethodIdList = pageInfo.getList().stream().map(MethodCountStatisticVo::getDataMethodId).distinct().collect(Collectors.toList());
         List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
         pageInfo.getList().stream().forEach(t -> {
@@ -127,9 +127,7 @@ public class TaMethodCountController extends BaseController {
                 }
             }
         });
-        pageInfo.setTotal(pageInfo.getList().size());
-        Long total = pageInfo.getTotal();
-        pageInfo.setPageSize(total.intValue());
+//        pageInfo.setTotal(10000);
         return new PageVO(pageInfo);
     }
 

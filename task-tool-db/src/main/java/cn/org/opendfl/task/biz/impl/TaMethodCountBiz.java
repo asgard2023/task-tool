@@ -251,10 +251,23 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         return this.mapper.updateByExampleSelective(update, example);
     }
 
-    public List<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime) {
+    public MyPageInfo<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime, MyPageInfo<MethodCountStatisticVo> pageInfo) {
         if (endTime == null) {
             endTime = new Date();
         }
-        return mapper.getMethodCountStatistic(dataMethodId, timeType, startTime, endTime);
+
+        String orderBy = null;
+        if (StringUtils.isNotBlank(pageInfo.getOrderBy())) {
+            orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
+        }
+        boolean isCountTotal = pageInfo.isCountTotal();
+        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        List<MethodCountStatisticVo> list= mapper.getMethodCountStatistic(dataMethodId, timeType, startTime, endTime);
+        pageInfo = new MyPageInfo(list);
+        pageInfo.setCountTotal(isCountTotal);
+        if (!pageInfo.isCountTotal()) {
+            pageInfo.setPages(100);
+        }
+        return pageInfo;
     }
 }

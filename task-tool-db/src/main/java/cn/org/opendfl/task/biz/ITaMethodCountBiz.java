@@ -4,6 +4,7 @@ import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import org.ccs.opendfl.base.IBaseService;
+import org.ccs.opendfl.base.MyPageInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -67,5 +68,5 @@ public interface ITaMethodCountBiz extends IBaseService<TaMethodCountPo> {
 
     public int updateTaskMaxRunTime(Integer id, TaskCountVo taskCountVo, Date date);
 
-    public List<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime);
+    public MyPageInfo<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime, MyPageInfo<MethodCountStatisticVo> pageInfo);
 }
