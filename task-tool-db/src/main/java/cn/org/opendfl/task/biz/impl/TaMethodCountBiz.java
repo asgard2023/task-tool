@@ -7,6 +7,7 @@ import cn.org.opendfl.task.mapper.TaMethodCountMapper;
 import cn.org.opendfl.task.mapper.TaMethodCountMyMapper;
 import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.task.po.TaMethodCountPo;
+import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.utils.InetAddressUtils;
 import com.github.pagehelper.PageHelper;
@@ -109,7 +110,7 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         criteria.andEqualTo("ifDel", 0);
 
         //用于查两个间隔期内数据唯一
-        if(timeSeconds > 0) {
+        if (timeSeconds > 0) {
             criteria.andGreaterThanOrEqualTo("createTime", DateUtils.addSeconds(date, -timeSeconds * 2));
         }
         List<TaMethodCountPo> list = this.mapper.selectByExample(example);
@@ -146,8 +147,8 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         this.addEqualByKey(criteria, "timeValue", otherParams);
         this.addEqualByKey(criteria, "timeType", otherParams);
         TaDataMethodPo dataMethod = entity.getDataMethod();
-        if(dataMethod!=null && StringUtils.isNotBlank(dataMethod.getCode())){
-            criteria.andCondition(" data_method_id in (select id from ta_data_method where if_del=0 and code like '"+dataMethod.getCode()+"%')");
+        if (dataMethod != null && StringUtils.isNotBlank(dataMethod.getCode())) {
+            criteria.andCondition(" data_method_id in (select id from ta_data_method where if_del=0 and code like '" + dataMethod.getCode() + "%')");
         }
     }
 
@@ -248,5 +249,12 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         criteria.andEqualTo("id", id);
         criteria.andLessThanOrEqualTo("maxRunTime", update.getMaxRunTime());
         return this.mapper.updateByExampleSelective(update, example);
+    }
+
+    public List<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime) {
+        if (endTime == null) {
+            endTime = new Date();
+        }
+        return mapper.getMethodCountStatistic(dataMethodId, timeType, startTime, endTime);
     }
 }

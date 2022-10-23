@@ -34,6 +34,8 @@ public interface ITaDataMethodBiz extends IBaseService<TaDataMethodPo> {
     public TaDataMethodPo getDataById(Integer id, String ignoreFields);
     public List<TaDataMethodPo> getDataByIds(List<Integer> ids, String ignoreFields);
 
+    public TaDataMethodPo findTaDataMethodByCode(String code);
+
     /**
      * ta_data_method 保存
      *

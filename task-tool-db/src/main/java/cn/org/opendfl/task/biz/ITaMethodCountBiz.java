@@ -1,6 +1,7 @@
 package cn.org.opendfl.task.biz;
 
 import cn.org.opendfl.task.po.TaMethodCountPo;
+import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import org.ccs.opendfl.base.IBaseService;
 
@@ -65,4 +66,6 @@ public interface ITaMethodCountBiz extends IBaseService<TaMethodCountPo> {
     public int updateTaskErrorInfo(Integer id, TaskCountVo taskCountVo, Date date);
 
     public int updateTaskMaxRunTime(Integer id, TaskCountVo taskCountVo, Date date);
+
+    public List<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime);
 }
