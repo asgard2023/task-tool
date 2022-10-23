@@ -7,6 +7,7 @@ import cn.org.opendfl.task.mapper.TaMethodCountSourceMapper;
 import cn.org.opendfl.task.mapper.TaMethodCountSourceMyMapper;
 import cn.org.opendfl.task.po.TaMethodCountSourcePo;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.ccs.opendfl.base.BaseService;
 import org.ccs.opendfl.base.BeanUtils;
 import org.ccs.opendfl.base.MyPageInfo;
@@ -107,6 +108,21 @@ public class TaMethodCountSourceBiz extends BaseService<TaMethodCountSourcePo> i
         this.addEqualByKey(criteria, "id", otherParams);
         this.addEqualByKey(criteria, "methodCountId", otherParams);
         this.addEqualByKey(criteria, "source", otherParams);
+        String timeType = (String) otherParams.get("timeType");
+        String dataMethodId = (String) otherParams.get("dataMethodId");
+        String sql = "";
+        if (StringUtils.isNotBlank(timeType)) {
+            sql = " time_type='" + timeType + "'";
+        }
+        if (StringUtils.isNotEmpty(dataMethodId)) {
+            if (StringUtils.isNotBlank(sql)) {
+                sql += " and ";
+            }
+            sql += " data_method_id='" + dataMethodId + "'";
+        }
+        if (StringUtils.isNotBlank(sql)) {
+            criteria.andCondition(" method_count_id in (select id from ta_method_count where if_del=0 and " + sql + ")");
+        }
     }
 
     @Override

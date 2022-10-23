@@ -84,9 +84,9 @@ function sourceCount(){
             return;
         }
     }
-    var url='taMethodCountSourceDetail.html?methodCountId='+row.id;
+    var url='taMethodCountSourceDetail.html?dataMethodId='+row.dataMethodId+'&timeType='+row.timeType;
     //window.open('taMethodCountSource.html?methodCountId='+row.id);
-    var title=row.dataMethod.code+'-'+row.timeType+'-'+row.timeValue;
+    var title=row.dataMethod.code+'-'+row.timeType;
     $('#dlgSource').dialog('open').dialog('setTitle', title);
     $('#iframeSource').attr('src', url);
 }

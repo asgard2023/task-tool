@@ -12,6 +12,14 @@ $(function () {
     if(methodCountId){
         $('#query_methodCountId').val(methodCountId);
     }
+    var dataMethodId=app.getQueryString('dataMethodId');
+    if(dataMethodId){
+        $('#query_dataMethodId').val(dataMethodId);
+    }
+    var timeType=app.getQueryString('timeType');
+    if(timeType){
+        $('#query_timeType').val(timeType);
+    }
     doSearch();
 });
 

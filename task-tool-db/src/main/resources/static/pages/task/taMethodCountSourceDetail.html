@@ -59,8 +59,12 @@
         <form id="search-form" class="form-inline" style="float:left">
             <div class="form">
                 <div class="input-group">
+                    <input type="text" id="query_dataMethodId" name="dataMethodId" placeholder="dataMethodId"
+                           data-options="prompt:'dataMethodId'" style="width: 100px" class="easyui-validatebox">
+                    <input type="text" id="query_timeType" name="timeType" placeholder="timeType"
+                           data-options="prompt:'timeType'" style="width: 100px" class="easyui-validatebox">
                     <input type="text" id="query_methodCountId" name="methodCountId" placeholder="method_count_id"
-                           data-options="prompt:'method_count_id'" class="easyui-validatebox">
+                           data-options="prompt:'method_count_id'" style="width: 100px" class="easyui-validatebox">
                     <input type="text" id="query_source" name="source" placeholder="source"
                            data-options="prompt:'source'" class="easyui-validatebox">
                     <a class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="search-btn">查询</a>
@@ -86,9 +90,18 @@
             <thead>
             <tr>
                 <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
-                <th align="center" field="methodCountId" width="50" sortable="true">method_count_id</th>
+                <th align="center" field="methodCountId" width="30" sortable="true">method_count_id</th>
+                <th align="center" field="dataMethodCode" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                                return row.methodCount.dataMethod.code;
+                            }">接口方法</th>
+                <th align="center" field="timeType" width="30" sortable="false" data-options="formatter: function(value,row,index){
+                                return row.methodCount.timeType;
+                            }">时间类型</th>
+                <th align="center" field="timeValue" width="40" sortable="false" data-options="formatter: function(value,row,index){
+                                return row.methodCount.timeValue;
+                            }">时间值</th>
                 <th align="center" field="source" width="50" sortable="true">source</th>
-                <th align="center" field="runCount" width="50" sortable="true">run_count</th>
+                <th align="center" field="runCount" width="30" sortable="true">run_count</th>
                 <th align="center" field="ifDel" width="50" sortable="true" hidden="true">if_del</th>
                 <th align="center" field="createTime" width="50" sortable="true">create_time</th>
                 <th align="center" field="modifyTime" width="50" sortable="true">modify_time</th>
