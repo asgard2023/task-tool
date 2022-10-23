@@ -59,16 +59,19 @@
         <form id="search-form" class="form-inline" style="float:left">
             <div class="form">
                 <div class="input-group">
+                    <input name="startTime" id="query_startTime" data-options="prompt:'开始时间'"
+                           class="easyui-datetimebox" style="width:160px" formatter="Common.DateFormatter">
+                    <input name="endTime" id="query_endTime" data-options="prompt:'结束时间'" class="easyui-datetimebox"
+                           style="width:160px" formatter="Common.DateFormatter">
                     <input type="text" id="query_dataMethodId" name="dataMethodId" placeholder="dataMethodId"
-                           data-options="prompt:'dataMethodId'" style="width: 100px" class="easyui-validatebox">
+                           data-options="prompt:'dataMethodId'" style="width: 60px" class="easyui-validatebox">
                     <input type="text" id="query_timeType" name="timeType" placeholder="timeType"
-                           data-options="prompt:'timeType'" style="width: 100px" class="easyui-validatebox">
+                           data-options="prompt:'timeType'" style="width: 60px" class="easyui-validatebox">
                     <input type="text" id="query_methodCountId" name="methodCountId" placeholder="method_count_id"
-                           data-options="prompt:'method_count_id'" style="width: 100px" class="easyui-validatebox">
+                           data-options="prompt:'method_count_id'" style="width: 60px" class="easyui-validatebox">
                     <input type="text" id="query_source" name="source" placeholder="source"
                            data-options="prompt:'source'" class="easyui-validatebox">
                     <a class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="search-btn">查询</a>
-                    <a class="easyui-linkbutton" data-options="iconCls:'icon-reload'" id="reset-btn">重置</a>
                 </div>
             </div>
         </form>

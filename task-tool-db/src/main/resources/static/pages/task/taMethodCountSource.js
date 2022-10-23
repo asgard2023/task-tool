@@ -20,6 +20,14 @@ $(function () {
     if(timeType){
         $('#query_timeType').val(timeType);
     }
+    var startTime=app.getQueryString('startTime');
+    if(timeType){
+        $('#query_startTime').val(startTime);
+    }
+    var endTime=app.getQueryString('endTime');
+    if(timeType){
+        $('#query_endTime').val(endTime);
+    }
     doSearch();
 });
 

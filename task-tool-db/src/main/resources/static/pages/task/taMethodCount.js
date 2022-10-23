@@ -174,7 +174,7 @@ function sourceCount(){
             return;
         }
     }
-    var url='taMethodCountSourceDetail.html?methodCountId='+row.id;
+    var url='taMethodCountSourceDetail.html?methodCountId='+row.id+'&startTime='+$('#query_startTime').val();
     //window.open('taMethodCountSource.html?methodCountId='+row.id);
     var title=row.dataMethod.code+'-'+row.timeType+'-'+row.timeValue;
     $('#dlgSource').dialog('open').dialog('setTitle', title);
