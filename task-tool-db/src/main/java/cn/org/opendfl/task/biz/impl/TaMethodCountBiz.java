@@ -5,10 +5,12 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.task.biz.ITaMethodCountBiz;
 import cn.org.opendfl.task.mapper.TaMethodCountMapper;
 import cn.org.opendfl.task.mapper.TaMethodCountMyMapper;
+import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.utils.InetAddressUtils;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.ccs.opendfl.base.BaseService;
 import org.ccs.opendfl.base.BeanUtils;
@@ -133,6 +135,10 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         this.addEqualByKey(criteria, "dataMethodId", otherParams);
         this.addEqualByKey(criteria, "timeValue", otherParams);
         this.addEqualByKey(criteria, "timeType", otherParams);
+        TaDataMethodPo dataMethod = entity.getDataMethod();
+        if(dataMethod!=null && StringUtils.isNotBlank(dataMethod.getCode())){
+            criteria.andCondition(" data_method_id in (select id from ta_data_method where if_del=0 and code like '"+dataMethod.getCode()+"%')");
+        }
     }
 
     @Override

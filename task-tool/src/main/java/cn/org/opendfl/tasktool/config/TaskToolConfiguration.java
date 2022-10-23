@@ -1,6 +1,7 @@
 package cn.org.opendfl.tasktool.config;
 
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
+import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,9 +28,9 @@ public class TaskToolConfiguration {
     /**
      * 任务统计类型配置
      */
-    private List<TaskCountTypeVo> counterTimeTypes = Arrays.asList(new TaskCountTypeVo("H", 3600, "Hour","yyyyMMddHH", true)
-            , new TaskCountTypeVo("D", 86400, "Day","yyyyMMdd", true)
-            , new TaskCountTypeVo("T", -1, "total", "T", true));
+    private List<TaskCountTypeVo> counterTimeTypes = Arrays.asList(new TaskCountTypeVo(DateTimeConstant.countTimeType.HOUR, true)
+            , new TaskCountTypeVo(DateTimeConstant.countTimeType.DAY, true)
+            , new TaskCountTypeVo(DateTimeConstant.countTimeType.TOTAL, true));
 
     /**
      * 基本执行时间(单位ms)

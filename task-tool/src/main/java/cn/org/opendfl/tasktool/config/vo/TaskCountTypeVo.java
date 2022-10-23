@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.config.vo;
 
+import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskCountTypeVo {
+    public TaskCountTypeVo(DateTimeConstant.countTimeType countTimeType, boolean saveDb) {
+        this.code = countTimeType.getTimeType();
+        this.name = countTimeType.getCode();
+        this.timeSeconds = countTimeType.getTimeSeconds();
+        this.dateFormat = countTimeType.getFormat();
+        this.saveDb = saveDb;
+    }
+
     /**
      * 类型编码，如D,M,MI等
      */

@@ -9,18 +9,22 @@ task-tool:
   counterTimeTypes:
     - code: MI
       time-seconds: 60
+      date-format: ddHHmm
       name: 'Minute'
       save-db: true
     - code: H
       time-seconds: 3600
+      date-format: yyMMddHH
       name: 'Hour'
       save-db: true
     - code: D
       time-seconds: 86400
+      date-format: yyMMdd
       name: 'Day'
       save-db: true
     - code: T
       time-seconds: -1
+      date-format: 0
       name: 'Total'
       save-db: true
 

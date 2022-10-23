@@ -149,7 +149,7 @@ public class TaskToolUtils {
      */
     private static String getCountCodeCache(TaskCountTypeVo countTypeVo, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
         return typeCountCodeMap.computeIfAbsent(countTypeVo.getCode(), k -> {
-            Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), null);
+            Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
             return getMethodCountKey(countTypeVo, classMethod, timeValue);
         });
     }
@@ -201,15 +201,20 @@ public class TaskToolUtils {
             }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
             int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS * 2;
-            boolean isExpired = countTypeVo.getTimeSeconds() != -1 && curTime - taskCountVo.getFirstTime() > periodTime;
+            boolean isExpired = countTypeVo.getTimeSeconds() >0 && curTime - taskCountVo.getFirstTime() > periodTime;
             if (isExpired) {
                 expireKeys.add(entry.getKey());
                 continue;
             }
 
-            if (countTypeVo.isSaveDb() && taskCountSaveBiz != null && taskCountVo.getRunCounter().get() > 0) {
+            int runCount = taskCountVo.getRunCounter().get();
+            if (countTypeVo.isSaveDb() && runCount > 0) {
                 count++;
-                taskCountSaveBiz.saveTaskCount(countTypeVo, taskCountVo);
+                if (taskCountSaveBiz == null) {
+                    log.info("----saveTaskCounts--timeType={} code={} runCount={}", countTypeVo.getCode(), entry.getKey(), runCount);
+                } else {
+                    taskCountSaveBiz.saveTaskCount(countTypeVo, taskCountVo);
+                }
             }
         }
 
