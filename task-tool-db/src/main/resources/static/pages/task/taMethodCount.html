@@ -64,7 +64,7 @@
                     <input name="endTime" id="query_endTime" data-options="prompt:'结束时间'" class="easyui-datetimebox"
                            style="width:160px" formatter="Common.DateFormatter">
                     <input type="text" id="query_dataMethod" name="dataMethod.code" placeholder="相当于like ${code}%"
-                           data-options="prompt:'数据方法id'" class="easyui-validatebox">
+                           data-options="prompt:'接口方法id'" class="easyui-validatebox">
                     <input type="text" id="query_timeValue" name="timeValue" placeholder="时间值"
                            data-options="prompt:'时间值'" class="easyui-validatebox">
                     <input type="text" id="query_timeType" name="timeType" placeholder="时间类型"
@@ -93,10 +93,10 @@
             <thead>
             <tr>
                 <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
-                <th align="center" field="dataMethodId" width="50" sortable="true" hidden="true">数据方法id</th>
+                <th align="center" field="dataMethodId" width="50" sortable="true" hidden="true">接口方法id</th>
                 <th align="center" field="dataMethodCode" width="50" sortable="false" data-options="formatter: function(value,row,index){
                                 return row.dataMethod.code;
-                            }">数据方法</th>
+                            }">接口方法</th>
                 <th align="center" field="timeValue" width="50" sortable="true">时间值</th>
                 <th align="center" field="timeType" width="50" sortable="true">时间类型</th>
                 <th align="center" field="runCount" width="50" sortable="true">运行次数</th>
@@ -130,7 +130,7 @@
     <form id="fm" method="post" novalidate>
         <input type="hidden" name="id">
         <div class="fitem">
-            <label>数据方法id:</label>
+            <label>接口方法id:</label>
             <input name="dataMethodId" class="easyui-validatebox">
         </div>
         <div class="fitem">
