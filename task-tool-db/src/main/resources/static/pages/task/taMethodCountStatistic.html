@@ -94,15 +94,24 @@
                             }">数据方法
                 </th>
                 <th align="center" field="timeType" width="50" sortable="true">时间类型</th>
+                <th align="center" field="rowCount" width="50" sortable="true">rowCount</th>
                 <th align="center" field="runCountTotal" width="50" sortable="true">总运行次数</th>
                 <th align="center" field="maxRunTime" width="50" sortable="true">最长运行时间(ms)</th>
                 <th align="center" field="timeValueMin" width="50" sortable="true">最小时间值</th>
                 <th align="center" field="timeValueMax" width="50" sortable="true">最大时间值</th>
-                <th align="center" field="minDate" width="50" sortable="true" formatter="timestampFormatDateTime">最小时间</th>
-                <th align="center" field="maxDate" width="50" sortable="true" formatter="timestampFormatDateTime">最大时间</th>
+                <th align="center" field="minDate" width="50" sortable="true" formatter="timestampFormatDateTime">
+                    最小时间
+                </th>
+                <th align="center" field="maxDate" width="50" sortable="true" formatter="timestampFormatDateTime">
+                    最大时间
+                </th>
                 <th align="center" field="errorCountTotal" width="50" sortable="true">总错误次数</th>
-                <th align="center" field="minErrorDate" width="50" sortable="true" formatter="timestampFormatDateTime">最小错误时间</th>
-                <th align="center" field="maxErrorDate" width="50" sortable="true" formatter="timestampFormatDateTime">最大错误时间</th>
+                <th align="center" field="minErrorDate" width="50" sortable="true" formatter="timestampFormatDateTime">
+                    最小错误时间
+                </th>
+                <th align="center" field="maxErrorDate" width="50" sortable="true" formatter="timestampFormatDateTime">
+                    最大错误时间
+                </th>
             </tr>
             </thead>
         </table>
@@ -121,6 +130,10 @@
         <div class="fitem">
             <label>时间类型:</label>
             <input name="timeType" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>rowCount:</label>
+            <input name="rowCount" class="easyui-validatebox">
         </div>
         <div class="fitem">
             <label>运行次数:</label>
