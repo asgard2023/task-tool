@@ -27,6 +27,18 @@ task-tool:
       date-format: 0
       name: 'Total'
       save-db: true
+  controller-config:
+    #是否启用web接口统计，默认true
+    enable: true
+    #uri接口白名单，可忽略计算处理
+    uriWhitelist: none
+    # 用于获取用户ID
+    userIdField: userId
+    # 用于获取数据ID
+    dataIdField: dataId
+    # 支持包名配置，*表示全部，多个则包名以package开头算匹配
+    packages:
+      - '*'
 
 spring:
   datasource:

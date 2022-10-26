@@ -97,7 +97,12 @@
                 <th align="center" field="taskCompute.showProcessing" width="100" hidden="true" formatter="taskComputeShowProcessing" >showProcessing</th>
                 <th align="center" field="taskCompute.dataIdArgCount" width="100" hidden="true" formatter="taskComputeDataIdArgCount">dataIdArgCount</th>
                 <th align="center" field="taskCompute.category" width="100" hidden="true" formatter="taskComputeCategory">category</th>
-
+                <th align="center" field="taskCompute.pkg" width="100" hidden="true" data-options="formatter: function(value,row,index){
+                                return row.taskCompute.pkg;
+                            }">pkg</th>
+                <th align="center" field="taskCompute.type" width="100" hidden="true" data-options="formatter: function(value,row,index){
+                                return row.taskCompute.type;
+                            }">type</th>
                 <th align="center" field="runCounter" width="50" sortable="true">执行次数</th>
                 <th align="center" field="runTime" width="50" sortable="true">最近执行时长</th>
                 <th align="center" field="runTimeMax" width="50" sortable="true">最大执行时长</th>

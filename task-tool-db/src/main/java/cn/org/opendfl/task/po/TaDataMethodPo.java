@@ -50,6 +50,14 @@ public class TaDataMethodPo implements Serializable {
     @Column(name = "category")
     @Length(message = "category超出最大长度64限制", max = 64)
     private String category;
+
+    @Column(name = "type")
+    @Length(message = "type超出最大长度64限制", max = 32)
+    private String type;
+
+    @Column(name = "pkg")
+    @Length(message = "pkg超出最大长度64限制", max = 128)
+    private String pkg;
     /**
      * 是否显示正在进行中的任务
      */

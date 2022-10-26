@@ -61,14 +61,13 @@ public class TaskComputeAspect {
         if (request != null) {
             //优先取uri
             source = request.getRequestURI();
-        }
-        else{
+        } else {
             //获取最后一个参数作为source
             Object[] args = joinPoint.getArgs();
-            if(args != null && args.length > 0){
-                Object obj=args[args.length-1];
-                if(obj instanceof String){
-                    source = (String)obj;
+            if (args != null && args.length > 0) {
+                Object obj = args[args.length - 1];
+                if (obj instanceof String) {
+                    source = (String) obj;
                 }
             }
         }
@@ -77,13 +76,20 @@ public class TaskComputeAspect {
         Map<String, String> typeCountCodeMap = new HashMap<>();
 
         try {
+            TaskComputeVo taskComputeVo = new TaskComputeVo(taskCompute);
+            Object target = joinPoint.getTarget();
+
+            //初始化包名，来源，数据ID
+            taskComputeVo.setPkg(target.getClass().getPackage().getName());
+            taskComputeVo.setDataId(dataId);
+            taskComputeVo.setSource(source);
             if (taskCompute.showProcessing()) {
-                TaskToolUtils.startTask(taskCompute, classMethod, source, dataId, curDate, typeCountCodeMap);
+                TaskToolUtils.startTask(taskComputeVo, classMethod, curDate, typeCountCodeMap);
             }
             //	执行目标方法
             result = joinPoint.proceed();
 
-            TaskToolUtils.finished(taskCompute, classMethod, source, dataId, curDate, typeCountCodeMap);
+            TaskToolUtils.finished(taskComputeVo, classMethod, curDate, typeCountCodeMap);
         } catch (Throwable e) {
             //	异常通知
             TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate, typeCountCodeMap);

@@ -6,8 +6,8 @@ $('#reset-btn').click(function () {
 });
 
 $(function () {
-    var beforeDay = 7;
-    initStartEndTime(beforeDay)
+   // var beforeDay = 7;
+   //  initStartEndTime(beforeDay)
     doSearch();
 });
 

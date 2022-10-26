@@ -33,3 +33,4 @@ task-tool:
       time-seconds: -1
       name: 'Total'
       save-db: true
+#  controller-compute: true

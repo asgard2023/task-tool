@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.config;
 
+import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import lombok.Data;
@@ -44,4 +45,6 @@ public class TaskToolConfiguration {
      * 是否保存服务器名
      */
     private boolean isSaveServerName;
+
+    private ControllerConfigVo controllerConfig = new ControllerConfigVo();
 }

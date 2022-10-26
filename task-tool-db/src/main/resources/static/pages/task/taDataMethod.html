@@ -98,7 +98,9 @@
                 <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
                 <th align="center" field="code" width="50" sortable="true">方法名</th>
                 <th align="center" field="name" width="50" sortable="true">名称</th>
-                <th align="center" field="category" width="50" sortable="true">分类：仅分类，没基他作用</th>
+                <th align="center" field="type" width="50" sortable="true">类别</th>
+                <th align="center" field="pkg" width="50" sortable="true">包名</th>
+                <th align="center" field="category" width="50" sortable="true">分类：仅分类，没其他作用</th>
                 <th align="center" field="showProcessing" width="50" sortable="true">是否显示正在进行中的任务</th>
                 <th align="center" field="dataIdArgCount" width="50" sortable="true">dataId参数序号</th>
                 <th align="center" field="ifDel" width="50" sortable="true" hidden="true">是否删除</th>
@@ -132,7 +134,15 @@
             <input name="name" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>分类：仅分类，没基他作用:</label>
+            <label>类别:</label>
+            <input name="type" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>包名:</label>
+            <input name="pkg" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>分类：仅分类，没其他作用:</label>
             <input name="category" class="easyui-validatebox">
         </div>
         <div class="fitem">

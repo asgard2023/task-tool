@@ -14,6 +14,7 @@ public class TaskComputeVo {
         this.category = taskCompute.category();
         this.dataIdArgCount = taskCompute.dataIdArgCount();
         this.showProcessing = taskCompute.showProcessing();
+        this.type = "taskCompute";
     }
 
     /**
@@ -35,4 +36,22 @@ public class TaskComputeVo {
      * 用于显示正在执行的数据
      */
     private boolean showProcessing;
+
+
+    /**
+     * 包名
+     */
+    private String pkg;
+    /**
+     * 类型
+     */
+    private String type;
+    /**
+     * 来源
+     */
+    private String source;
+    /**
+     * 数据dataId，优先dataId，没有取userId，再没有取用户IP
+     */
+    private String dataId;
 }

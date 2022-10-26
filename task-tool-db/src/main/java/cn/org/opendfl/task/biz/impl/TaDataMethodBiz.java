@@ -6,6 +6,7 @@ import cn.org.opendfl.task.biz.ITaDataMethodBiz;
 import cn.org.opendfl.task.mapper.TaDataMethodMapper;
 import cn.org.opendfl.task.mapper.TaDataMethodMyMapper;
 import cn.org.opendfl.task.po.TaDataMethodPo;
+import cn.org.opendfl.tasktool.task.TaskComputeVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import com.github.pagehelper.PageHelper;
 import org.ccs.opendfl.base.BaseService;
@@ -171,14 +172,17 @@ public class TaDataMethodBiz extends BaseService<TaDataMethodPo> implements ITaD
     public Integer autoSave(String methodCode, TaskCountVo taskCountVo) {
         TaDataMethodPo exist = this.findTaDataMethodByCode(methodCode);
         if (exist == null) {
+            TaskComputeVo taskComputeVo = taskCountVo.getTaskCompute();
             TaDataMethodPo entity = new TaDataMethodPo();
             entity.setIfDel(0);
             entity.setStatus(1);
             entity.setCode(methodCode);
-            entity.setDataIdArgCount(taskCountVo.getTaskCompute().getDataIdArgCount());
+            entity.setPkg(taskComputeVo.getPkg());
+            entity.setType(taskComputeVo.getType());
+            entity.setDataIdArgCount(taskComputeVo.getDataIdArgCount());
             entity.setCategory(taskCountVo.getTaskCompute().getCategory());
             Integer ifShowProcessing = 0;
-            if (taskCountVo.getTaskCompute().isShowProcessing()) {
+            if (taskComputeVo.isShowProcessing()) {
                 ifShowProcessing = 1;
             }
             entity.setShowProcessing(ifShowProcessing);
