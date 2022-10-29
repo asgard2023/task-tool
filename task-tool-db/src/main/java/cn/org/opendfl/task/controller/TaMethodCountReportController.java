@@ -88,7 +88,7 @@ public class TaMethodCountReportController extends BaseController {
                 }
             }
         });
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     @ApiOperation(value = "统计接口调用次数最多的接口")
@@ -111,7 +111,7 @@ public class TaMethodCountReportController extends BaseController {
         this.pageSortBy(pageInfo);
         pageInfo = taMethodCountReportBiz.reportMaxRunCount(timeType, startTimeDate, endimeDate, pageInfo);
         showDataMethodInfo(pageInfo);
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     @ApiOperation(value = "统计接口异常次数最多的接口")
@@ -134,7 +134,7 @@ public class TaMethodCountReportController extends BaseController {
         this.pageSortBy(pageInfo);
         pageInfo = taMethodCountReportBiz.reportMaxErrorCount(timeType, startTimeDate, endimeDate, pageInfo);
         showDataMethodInfo(pageInfo);
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     @ApiOperation(value = "统计接口执行时长最大的接口")
@@ -157,7 +157,7 @@ public class TaMethodCountReportController extends BaseController {
         this.pageSortBy(pageInfo);
         pageInfo = taMethodCountReportBiz.reportMaxRunTime(timeType, startTimeDate, endimeDate, pageInfo);
         showDataRunTimeMethodInfo(pageInfo);
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     @ApiOperation(value = "统计接口平均最大执行时长的接口")
@@ -180,7 +180,7 @@ public class TaMethodCountReportController extends BaseController {
         this.pageSortBy(pageInfo);
         pageInfo = taMethodCountReportBiz.reportMaxRunTime(timeType, startTimeDate, endimeDate, pageInfo);
         showDataRunTimeMethodInfo(pageInfo);
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     @ApiOperation(value = "近期调用次数曲线图")
@@ -214,7 +214,7 @@ public class TaMethodCountReportController extends BaseController {
         this.pageSortBy(pageInfo);
         pageInfo = taMethodCountReportBiz.reportTimeValueRunCount(timeType, startTimeDate, endimeDate, pageInfo);
         showDataMethodCountInfo(pageInfo);
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     private void showDataMethodInfo(MyPageInfo<MethodCountVo> pageInfo) {
