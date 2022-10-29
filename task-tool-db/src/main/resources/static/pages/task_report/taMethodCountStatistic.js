@@ -6,13 +6,21 @@ $('#reset-btn').click(function () {
 });
 
 $(function () {
+    //单位下拉框
+    $("#query_timeType").combobox({
+        editable: false,
+        url: "/taskInfo/config?type=timeTypes&authKey=" + securityKey,//url
+        valueField: "code", //相当于 option 中的 value 发送到后台的
+        textField: "name"	//option中间的内容 显示给用户看的
+    });
+
     var beforeDay = 7;
     initStartEndTime(beforeDay)
     doSearch();
 });
 
 function doSearch() {
-    var url = "/task/taMethodCount/methodCountStatistic";
+    var url = "/task/taMethodCountReport/methodCountStatistic";
     var jsonParam = $('#search-form').serializeJson();
     $('#dg').datagrid({headers: app.headers, url: url, queryParams: jsonParam})
 }
@@ -73,7 +81,7 @@ function onEdit() {
 
 }
 
-function sourceCount(){
+function sourceCount() {
     var row = $('#dg').datagrid('getSelected');
     if (!row) {
         if (row.canModify == 0) {
@@ -84,9 +92,9 @@ function sourceCount(){
             return;
         }
     }
-    var url='taMethodCountSourceDetail.html?dataMethodId='+row.dataMethodId+'&timeType='+row.timeType+'&startTime='+$('#query_startTime').val();
+    var url = 'taMethodCountSourceDetail.html?dataMethodId=' + row.dataMethodId + '&timeType=' + row.timeType + '&startTime=' + $('#query_startTime').val();
     //window.open('taMethodCountSource.html?methodCountId='+row.id);
-    var title=row.dataMethod.code+'-'+row.timeType;
+    var title = row.dataMethod.code + '-' + row.timeType;
     $('#dlgSource').dialog('open').dialog('setTitle', title);
     $('#iframeSource').attr('src', url);
 }

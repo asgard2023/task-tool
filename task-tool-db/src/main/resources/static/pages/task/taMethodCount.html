@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../../js/easyui/Common.js"></script>
     <script type="text/javascript" src="../../js/easyui/comm.dict.js"></script>
     <script type="text/javascript" src="../../js/easyui/DateUtils.js"></script>
+    <script type="text/javascript" src="../common.task.js"></script>
     <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/bootstrap/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/icon.css">
 
@@ -67,8 +68,9 @@
                            data-options="prompt:'接口方法id'" class="easyui-validatebox">
                     <input type="text" id="query_timeValue" name="timeValue" placeholder="时间值"
                            data-options="prompt:'时间值'" class="easyui-validatebox">
-                    <input type="text" id="query_timeType" name="timeType" placeholder="时间类型"
-                           data-options="prompt:'时间类型'" class="easyui-validatebox">
+                    <select id="query_timeType" name="timeType" class="easyui-combobox" style="width:150px;" data-options="prompt:'时间类型'">
+                    </select>
+
                     <a class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="search-btn">查询</a>
                     <a class="easyui-linkbutton" data-options="iconCls:'icon-reload'" id="reset-btn">重置</a>
                 </div>

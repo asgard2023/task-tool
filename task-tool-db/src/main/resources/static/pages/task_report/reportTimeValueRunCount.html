@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>ECharts</title>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/easyui.comm.valid.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../assets/echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="../../js/easyui/Common.js"></script>
+    <script type="text/javascript" src="../common.task.js"></script>
+    <script type="text/javascript" src="tool.echart.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/icon.css">
+</head>
+<body>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div style="padding: 10px;">
+        <form action="" id="searchForm" class="form-inline">
+            <div class="input-group">
+                <label>近周期数</label>
+                <input type="text" id="query_timeValueCount" name="timeValueCount" value="7"
+                       placeholder="近几个周期，比如3天，3小时等"
+                       data-options="prompt:'近几个周期，比如3天，3小时等'" class="easyui-validatebox">
+                <select id="query_timeType" name="timeType" class="easyui-combobox" style="width:150px;"
+                        data-options="prompt:'时间类型'">
+                </select>
+                <button type="button" id="btnSearch" class="btn btn-sm btn-primary"> 搜索</button>
+            </div>
+        </form>
+    </div>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div id="main" style="width: 100%;height:500px;"></div>
+</div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    function reportTimeValueRunCount(jsonParam) {
+        var url = '/task/taMethodCountReport/reportTimeValueRunCount';
+        $.ajax({
+            type: 'post',
+            data: jsonParam,
+            headers: app.headers,
+            dataType: 'json',
+            url: url,
+            success: function (data, textStatus, jqXHR) {
+                console.log(data);
+                echartLineShow(data, '调用次数曲线图-近' + jsonParam.timeValueCount + jsonParam.timeType)
+            },
+            error(d, e) {
+                $.messager.show({    // show error message
+                    title: 'Error',
+                    msg: d.responseJSON.errorMsg
+                });
+            }
+        });
+    }
+
+    function jsonListToValueArrays(datas, fieldStr) {
+        var d;
+        var arrays = [];
+        var arraysSub;
+        var fields = fieldStr.split(',');
+
+        //arrays.unshift(fields);
+        for (var i = 0; i < datas.length; i++) {
+            d = datas[i];
+            arraysSub = [];
+            for (var j = 0; j < fields.length; j++) {
+                arraysSub.push(d[fields[j]]);
+            }
+            arrays.push(arraysSub);
+        }
+        console.log(arrays);
+        return arrays;
+    }
+
+    function jsonListToValueArrayField(datas, typeField, field, value) {
+        var d;
+        var arrays = [];
+        var v;
+        for (var i = 0; i < datas.length; i++) {
+            d = datas[i];
+            if (d[typeField] == value) {
+                v = d[field];
+            }
+            arrays.push(v);
+        }
+        // console.log('typeField='+typeField+' field='+field+' value='+value+' arrays='+arrays);
+        return arrays;
+    }
+
+    /**
+     * 按类型及时间转成基本曲线图的series对象
+     * @param datas
+     * @param dataTypes
+     * @param timeValues
+     */
+    function jsonListToValueArrayLine(datas, dataTypes, timeValues) {
+        var list = [];
+        var d;
+        var timeValue;
+        for (var i = 0; i < dataTypes.length; i++) {
+            var dataType = dataTypes[i];
+            var serie = [];
+            for (var k = 0; k < timeValues.length; k++) {
+                timeValue = timeValues[k];
+                var value = 0;
+                for (var j = 0; j < datas.length; j++) {
+                    d = datas[j];
+                    if (d['methodCode'] == dataType && d['timeValue'] + '' == timeValue) {
+                        value = d['runCount'];
+                        break
+                    }
+                }
+                serie.push(value);
+            }
+
+            var obj = {
+                name: dataType, type: 'line'
+                , data: serie
+            };
+            list.push(obj);
+        }
+        return list;
+    }
+
+    function echartLineShow(data, title) {
+        var datas = data.rows;
+        var dataTypes = getDataTypes(datas, 'methodCode')
+        var timeValues = getDataTypes(datas, 'timeValue');
+        //排序
+        timeValues = timeValues.sort(function (a, b) {
+            return a - b;
+        })
+        var series = jsonListToValueArrayLine(datas, dataTypes, timeValues);
+
+
+        // console.log(dataTypes);
+        // console.log(timeValues);
+        // console.log(series);
+        var option = {
+            title: {
+                text: title
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: dataTypes
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: timeValues
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: series
+        };
+
+        option && myChart.setOption(option);
+    }
+
+    $(function () {
+        //单位下拉框
+        $("#query_timeType").combobox({
+            editable: false,
+            url: "/taskInfo/config?type=timeTypes&authKey=" + securityKey,//url
+            valueField: "code", //相当于 option 中的 value 发送到后台的
+            textField: "name"	//option中间的内容 显示给用户看的
+        });
+        $("#query_timeType").combobox('setValue', 'H')
+
+        doSearch();
+    });
+
+    function doSearch() {
+        var jsonParam = $('#searchForm').serializeJson();
+        var timeType = jsonParam.timeType;
+        if (!timeType) {
+            timeType = 'H';
+        }
+        jsonParam.timeType = timeType;
+        jsonParam.page = 1;
+        jsonParam.pageSize = 500;
+        reportTimeValueRunCount(jsonParam);
+    }
+
+    $('#btnSearch').click(function () {
+        doSearch();
+    });
+</script>
+</body>
+</html>

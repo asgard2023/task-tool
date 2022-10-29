@@ -10,7 +10,7 @@ public class MethodCountStatisticVo {
     private int dataMethodId;
     private TaDataMethodPo dataMethod;
     private String timeType;
-    private String rowCount;
+    private Integer rowCount;
     private Integer timeValueMin;
     private Integer timeValueMax;
     private Integer runCountTotal;

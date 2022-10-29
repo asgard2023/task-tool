@@ -1,14 +1,11 @@
 package cn.org.opendfl.task.controller;
 
-import cn.hutool.core.date.DateUtil;
 import cn.org.opendfl.task.biz.ITaDataMethodBiz;
 import cn.org.opendfl.task.biz.ITaMethodCountBiz;
 import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.task.po.TaMethodCountPo;
-import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.ccs.opendfl.base.BaseController;
 import org.ccs.opendfl.base.MyPageInfo;
 import org.ccs.opendfl.base.PageVO;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,47 +83,6 @@ public class TaMethodCountController extends BaseController {
         logger.debug("-------findByPage-------");
         this.pageSortBy(pageInfo);
         pageInfo = queryPage(request, entity, pageInfo);
-        return new PageVO(pageInfo);
-    }
-
-    @ApiOperation(value = "任务运行次数统计", notes = "任务运行次数统计记录列表翻页查询，用于兼容easyui的rows方式")
-    @RequestMapping(value = "/methodCountStatistic", method = {RequestMethod.POST, RequestMethod.GET})
-    public PageVO<MethodCountStatisticVo> methodCountStatistic(HttpServletRequest request
-            , @RequestParam(value = "dataMethodCode", required = false) String dataMethodCode
-            , @RequestParam(value = "timeType", required = false) String timeType
-            , @RequestParam(value = "startTime", required = false) String startTime
-            , @RequestParam(value = "endTime", required = false) String endTime, MyPageInfo<MethodCountStatisticVo> pageInfo) {
-        logger.debug("-------methodCountStatistic-------");
-        Date startTimeDate = null;
-        if(StringUtils.isNotBlank(startTime)) {
-            startTimeDate=DateUtil.parse(startTime, "yyyy-MM-dd HH:mm:ss");
-        }
-        Date endimeDate = null;
-        if(StringUtils.isNotBlank(endTime)) {
-            endimeDate=DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss");
-        }
-
-
-        Integer dataMethodId = null;
-        if(StringUtils.isNotBlank(dataMethodCode)) {
-            TaDataMethodPo dataMethodPo = taDataMethodBiz.findTaDataMethodByCode(dataMethodCode);
-            if (dataMethodPo != null) {
-                dataMethodId = dataMethodPo.getId();
-            }
-        }
-        this.pageSortBy(pageInfo);
-        pageInfo=taMethodCountBiz.getMethodCountStatistic(dataMethodId, timeType, startTimeDate, endimeDate, pageInfo);
-        List<Integer> dataMethodIdList = pageInfo.getList().stream().map(MethodCountStatisticVo::getDataMethodId).distinct().collect(Collectors.toList());
-        List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
-        pageInfo.getList().stream().forEach(t -> {
-            for (TaDataMethodPo taDataMethodPo : dataMethodPos) {
-                if (taDataMethodPo.getId().intValue() == t.getDataMethodId()) {
-                    t.setDataMethod(taDataMethodPo);
-                    break;
-                }
-            }
-        });
-//        pageInfo.setTotal(10000);
         return new PageVO(pageInfo);
     }
 

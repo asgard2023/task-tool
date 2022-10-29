@@ -80,6 +80,8 @@ public class TaMethodCountPo implements Serializable {
 
     @Transient
     private TaDataMethodPo dataMethod;
+    @Transient
+    private String methodCode;
     /**
      * 时间值
      */

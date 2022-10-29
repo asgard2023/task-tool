@@ -144,6 +144,31 @@ var Common = {
         format || (format = "yyyy-MM-dd hh:mm:ss");
         return format.replace(/([a-z])(\1)*/ig,function(m){return cfg[m];});
     } ,
+    dateParser: function (s){
+        var date = new Date(s);
+        var year = date.getFullYear().toString();
+        var month = (date.getMonth() + 1);
+        var day = date.getDate().toString();
+        var hour = date.getHours().toString();
+        var minutes = date.getMinutes().toString();
+        var seconds = date.getSeconds().toString();
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
+    },
 
     //EasyUI用DataGrid用日期格式化
     TimeFormatter: function (value, rec, index) {

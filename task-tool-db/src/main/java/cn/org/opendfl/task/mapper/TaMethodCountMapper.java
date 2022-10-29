@@ -2,6 +2,9 @@ package cn.org.opendfl.task.mapper;
 
 import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.task.vo.MethodCountStatisticVo;
+import cn.org.opendfl.task.vo.MethodCountVo;
+import cn.org.opendfl.task.vo.MethodRunTimeVo;
+import cn.org.opendfl.task.vo.MethodTimeValueCountVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -39,4 +42,42 @@ public interface TaMethodCountMapper extends Mapper<TaMethodCountPo> {
             " and create_time<#{endTime}" +
             " GROUP BY data_method_id, time_type")
     List<MethodCountStatisticVo> getMethodCountStatistic(@Param("dataMethodId") Integer dataMethodId, @Param("timeType") String timeType, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    @Select("select data_method_id dataMethodId, sum(run_count) runCountTotal, count(*) rowCount from ta_method_count" +
+            " where time_type=#{timeType}" +
+            " and create_time>=#{startTime}" +
+            " and create_time<#{endTime}" +
+            " GROUP BY data_method_id" +
+            " order by runCountTotal desc")
+    public List<MethodCountVo> reportMaxRunCount(@Param("timeType") String timeType, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    @Select("select data_method_id dataMethodId, sum(error_count) runCountTotal, count(*) rowCount from ta_method_count" +
+            " where time_type=#{timeType}" +
+            " and error_newly_time>=#{startTime}" +
+            " and error_newly_time<#{endTime}" +
+            " GROUP BY data_method_id" +
+            " order by runCountTotal desc")
+    public List<MethodCountVo> reportMaxErrorCount(@Param("timeType") String timeType, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+
+    @Select("select data_method_id dataMethodId, max(max_run_time) maxRunTime from ta_method_count" +
+            " where time_type=#{timeType}" +
+            " and create_time>=#{startTime}" +
+            " and create_time<#{endTime}" +
+            " GROUP BY data_method_id" +
+            " order by maxRunTime desc")
+    public List<MethodRunTimeVo> reportMaxRunTime(@Param("timeType") String timeType, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+  @Select("select data_method_id dataMethodId, avg(max_run_time) maxRunTime from ta_method_count" +
+            " where time_type=#{timeType}" +
+            " and create_time>=#{startTime}" +
+            " and create_time<#{endTime}" +
+            " GROUP BY data_method_id" +
+            " order by maxRunTime desc")
+    public List<MethodRunTimeVo> reportAvgMaxRunTime(@Param("timeType") String timeType, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    @Select("select data_method_id dataMethodId, time_value timeValue, run_count runCount, max_run_time maxRunTime, error_count errorCount, 1 rowCount from ta_method_count" +
+            " where time_type=#{timeType}" +
+            " and create_time>=#{startTime}" +
+            " and create_time<#{endTime} order by data_method_id, time_value, run_count desc")
+    public List<MethodTimeValueCountVo> reportTimeValueRunCount(@Param("timeType") String timeType, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

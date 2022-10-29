@@ -6,6 +6,14 @@ $('#reset-btn').click(function () {
 });
 
 $(function () {
+    //单位下拉框
+    $("#query_timeType").combobox ({
+        editable : false,
+        url : "/taskInfo/config?type=timeTypes&authKey="+securityKey,//url
+        valueField : "code", //相当于 option 中的 value 发送到后台的
+        textField : "name"	//option中间的内容 显示给用户看的
+    });
+
     var beforeDay = 7;
     initStartEndTime(beforeDay)
     doSearch();

@@ -8,6 +8,8 @@ import cn.org.opendfl.task.mapper.TaMethodCountMyMapper;
 import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.task.vo.MethodCountStatisticVo;
+import cn.org.opendfl.task.vo.MethodCountVo;
+import cn.org.opendfl.task.vo.MethodRunTimeVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.utils.InetAddressUtils;
 import com.github.pagehelper.PageHelper;
@@ -249,25 +251,5 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         criteria.andEqualTo("id", id);
         criteria.andLessThanOrEqualTo("maxRunTime", update.getMaxRunTime());
         return this.mapper.updateByExampleSelective(update, example);
-    }
-
-    public MyPageInfo<MethodCountStatisticVo> getMethodCountStatistic(Integer dataMethodId, String timeType, Date startTime, Date endTime, MyPageInfo<MethodCountStatisticVo> pageInfo) {
-        if (endTime == null) {
-            endTime = new Date();
-        }
-
-        String orderBy = null;
-        if (StringUtils.isNotBlank(pageInfo.getOrderBy())) {
-            orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
-        }
-        boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
-        List<MethodCountStatisticVo> list= mapper.getMethodCountStatistic(dataMethodId, timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
-        pageInfo.setCountTotal(isCountTotal);
-        if (!pageInfo.isCountTotal()) {
-            pageInfo.setPages(100);
-        }
-        return pageInfo;
     }
 }
