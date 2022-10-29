@@ -207,7 +207,14 @@ public class TaMethodCountReportController extends BaseController {
             }
             TaskCountTypeVo countType = opType.get();
             Date now = new Date();
-            startTimeDate= DateUtils.addSeconds(now, -countType.getTimeSeconds()*timeValueCount);
+            int timeSeconds=countType.getTimeSeconds();
+            if(timeSeconds>0) {
+                startTimeDate = DateUtils.addSeconds(now, -countType.getTimeSeconds() * timeValueCount);
+            }
+            else{
+                //total模式下的每个接口每个时间类型记录只有一条，那把开始时间多往前算10年
+                startTimeDate = DateUtils.addYears(now, -10);
+            }
         }
 
 
