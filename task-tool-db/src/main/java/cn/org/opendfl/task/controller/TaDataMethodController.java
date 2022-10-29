@@ -66,7 +66,7 @@ public class TaDataMethodController extends BaseController {
         logger.debug("-------findByPage-------");
         this.pageSortBy(pageInfo);
         pageInfo = queryPage(request, entity, pageInfo);
-        return new PageVO(pageInfo);
+        return new PageVO<>(pageInfo);
     }
 
     /**
