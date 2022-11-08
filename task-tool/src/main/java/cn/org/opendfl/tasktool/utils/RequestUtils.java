@@ -7,6 +7,9 @@ import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 import javax.servlet.http.HttpServletRequest;
 
 public class RequestUtils {
+    private RequestUtils(){
+
+    }
     public static final String EXCEPTION_MSG_KEY = "expMsgKey";
 
     /**
