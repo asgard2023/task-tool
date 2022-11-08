@@ -34,7 +34,7 @@ task-tool:
     uriWhitelist: none
     # 用于获取用户ID
     userIdField: userId
-    # 用于获取数据ID
+    # 用于获取数据ID(异常数据dataId：优先取dataId，取不到取userId，再取不到取用户IP)
     dataIdField: dataId
     # 支持包名配置，*表示全部，多个则包名以package开头算匹配
     packages:

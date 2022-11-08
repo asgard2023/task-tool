@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 @Configuration
 @Slf4j
 public class ControllerlInterceptor extends WebMvcConfigurationSupport {
-    @Resource(name = "controllerHandler")
+    @Resource(name = "taskControllerHandler")
     private HandlerInterceptor controllerHandler;
 
 

@@ -18,9 +18,8 @@ import javax.annotation.Resource;
 @Configuration
 @Slf4j
 public class TaskDbDemoInterceptor extends WebMvcConfigurationSupport {
-    @Resource(name = "controllerHandler")
+    @Resource(name = "taskControllerHandler")
     private HandlerInterceptor controllerHandler;
-
 
     @Resource
     private TaskToolConfiguration taskToolConfiguration;

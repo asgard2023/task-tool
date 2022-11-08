@@ -2,9 +2,9 @@ package cn.org.opendfl.tasktool.task;
 
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
+import cn.org.opendfl.tasktool.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,9 +24,9 @@ import java.util.Map;
  * @author chenjh
  */
 @Service
-public class ControllerHandler implements HandlerInterceptor {
+public class TaskControllerHandler implements HandlerInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(ControllerHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskControllerHandler.class);
 
     private final ThreadLocal<TaskControllerVo> taskComputeVo = new ThreadLocal<>();
 
@@ -50,23 +50,7 @@ public class ControllerHandler implements HandlerInterceptor {
     }
 
 
-    /**
-     * 数据dataId，优先dataId，没有取userId，再没有取用户IP
-     *
-     * @param request
-     * @return
-     */
-    private String getDataId(HttpServletRequest request) {
-        ControllerConfigVo controllerConfigVo = taskToolConfiguration.getControllerConfig();
-        String dataId = request.getParameter(controllerConfigVo.getDataIdField());
-        if (dataId == null) {
-            dataId = request.getParameter(controllerConfigVo.getUserIdField());
-        }
-        if (dataId == null) {
-            dataId = ServletUtil.getClientIP(request);
-        }
-        return dataId;
-    }
+
 
     private void preTaskCompute(HttpServletRequest request, final String uri, HandlerMethod handlerMethod) {
         long curTime = System.currentTimeMillis();
@@ -80,7 +64,7 @@ public class ControllerHandler implements HandlerInterceptor {
             computeVo.setShowProcessing(true);
             computeVo.setCategory(null);
 
-            String dataId = getDataId(request);
+            String dataId = RequestUtils.getDataId(taskToolConfiguration, request);
             computeVo.setType("controller");
             computeVo.setPkg(packageName);
             computeVo.setDataId(dataId);
@@ -106,10 +90,15 @@ public class ControllerHandler implements HandlerInterceptor {
         Date curDate = new Date(taskControllerVo.getStartTime());
         String dataId = taskControllerVo.getTaskCompute().getDataId();
         Map<String, String> typeCountCodeMap = taskControllerVo.getTypeCountCodeMap();
-        if (ex == null) {
+        String errMsg=ex!=null?ex.getMessage():null;
+        if(errMsg == null){
+            //用于异常被@ExceptionHandler吃掉的处理
+            errMsg=(String)request.getAttribute(RequestUtils.EXCEPTION_MSG_KEY);
+        }
+        if (errMsg == null) {
             TaskToolUtils.finished(taskControllerVo.getTaskCompute(), classMethod, curDate, typeCountCodeMap);
         } else {
-            TaskToolUtils.error(classMethod, dataId, ex.getMessage(), curDate, typeCountCodeMap);
+            TaskToolUtils.error(classMethod, dataId, errMsg, curDate, typeCountCodeMap);
         }
         taskComputeVo.remove();
     }
