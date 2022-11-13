@@ -24,17 +24,17 @@
         <dependency>
             <groupId>cn.org.opendfl</groupId>
             <artifactId>opendfl-base</artifactId>
-            <version>1</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>cn.org.opendfl</groupId>
             <artifactId>task-tool</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>cn.org.opendfl</groupId>
             <artifactId>task-tool-db</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>

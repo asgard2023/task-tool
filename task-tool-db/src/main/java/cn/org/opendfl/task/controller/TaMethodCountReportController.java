@@ -1,6 +1,10 @@
 package cn.org.opendfl.task.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.org.opendfl.base.BaseController;
+import cn.org.opendfl.base.MyPageInfo;
+import cn.org.opendfl.base.PageVO;
+import cn.org.opendfl.exception.FailedException;
 import cn.org.opendfl.task.biz.ITaDataMethodBiz;
 import cn.org.opendfl.task.biz.ITaMethodCountReportBiz;
 import cn.org.opendfl.task.po.TaDataMethodPo;
@@ -14,10 +18,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.ccs.opendfl.base.BaseController;
-import org.ccs.opendfl.base.MyPageInfo;
-import org.ccs.opendfl.base.PageVO;
-import org.ccs.opendfl.exception.FailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,18 +200,17 @@ public class TaMethodCountReportController extends BaseController {
             endimeDate = DateUtil.parse(endTime, "yyyy-MM-dd HH:mm:ss");
         }
 
-        if(timeValueCount>0){
-            Optional<TaskCountTypeVo> opType=this.taskToolConfiguration.getCounterTimeTypes().stream().filter(t->t.getCode().equals(timeType)).findFirst();
-            if(!opType.isPresent()){
-                throw new FailedException("timeType:"+timeType+" 无效");
+        if (timeValueCount > 0) {
+            Optional<TaskCountTypeVo> opType = this.taskToolConfiguration.getCounterTimeTypes().stream().filter(t -> t.getCode().equals(timeType)).findFirst();
+            if (!opType.isPresent()) {
+                throw new FailedException("timeType:" + timeType + " 无效");
             }
             TaskCountTypeVo countType = opType.get();
             Date now = new Date();
-            int timeSeconds=countType.getTimeSeconds();
-            if(timeSeconds>0) {
+            int timeSeconds = countType.getTimeSeconds();
+            if (timeSeconds > 0) {
                 startTimeDate = DateUtils.addSeconds(now, -countType.getTimeSeconds() * timeValueCount);
-            }
-            else{
+            } else {
                 //total模式下的每个接口每个时间类型记录只有一条，那把开始时间多往前算10年
                 startTimeDate = DateUtils.addYears(now, -10);
             }

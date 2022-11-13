@@ -1,8 +1,8 @@
 package cn.org.opendfl.task.biz;
 
+import cn.org.opendfl.base.IBaseService;
 import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
-import org.ccs.opendfl.base.IBaseService;
 
 import java.util.List;
 
@@ -32,6 +32,7 @@ public interface ITaDataMethodBiz extends IBaseService<TaDataMethodPo> {
      * @return 据对象
      */
     public TaDataMethodPo getDataById(Integer id, String ignoreFields);
+
     public List<TaDataMethodPo> getDataByIds(List<Integer> ids, String ignoreFields);
 
     public TaDataMethodPo findTaDataMethodByCode(String code);

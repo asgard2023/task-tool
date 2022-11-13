@@ -1,11 +1,10 @@
 package cn.org.opendfl.task.biz;
 
-import cn.org.opendfl.task.po.TaMethodCountPo;
+import cn.org.opendfl.base.MyPageInfo;
 import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import cn.org.opendfl.task.vo.MethodCountVo;
 import cn.org.opendfl.task.vo.MethodRunTimeVo;
 import cn.org.opendfl.task.vo.MethodTimeValueCountVo;
-import org.ccs.opendfl.base.MyPageInfo;
 
 import java.util.Date;
 
@@ -48,6 +47,7 @@ public interface ITaMethodCountReportBiz {
      * @return
      */
     public MyPageInfo<MethodRunTimeVo> reportMaxRunTime(String timeType, Date startTime, Date endTime, MyPageInfo<MethodRunTimeVo> pageInfo);
+
     public MyPageInfo<MethodRunTimeVo> reportAvgMaxRunTime(String timeType, Date startTime, Date endTime, MyPageInfo<MethodRunTimeVo> pageInfo);
 
 

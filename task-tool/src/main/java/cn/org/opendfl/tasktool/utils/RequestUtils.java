@@ -6,6 +6,10 @@ import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * servletRequest参数处理
+ * @author chenjh
+ */
 public class RequestUtils {
     private RequestUtils(){
 
