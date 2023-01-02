@@ -101,7 +101,7 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
             }));
         }
 
-        Date firstTime = new Date(taskCountVo.getFirstTime());
+        Date firstTime = new Date(taskCountVo.getFirst().getTs());
         Integer timeValue = DateTimeConstant.getDateInt(firstTime, countType.getCode(), null);
         final String countCode = TaskToolUtils.getMethodCountKey(countType, methodCode, timeValue);
         Integer methodCountId = countIdMap.get(countCode);
@@ -170,17 +170,19 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
      */
     private int saveTaskCountNewlyError(TaskCountVo taskCountVo, Date firstTime, Integer methodCountId) {
         int v = 0;
+        if(taskCountVo.getError()==null){
+            return 0;
+        }
         //如果有新错误，则更新错误次数，错误信息
         Long errorTimeExist = errorTimeMap.get(methodCountId);
-        if (errorTimeExist == null || errorTimeExist < taskCountVo.getErrorNewlyTime()) {
-            errorTimeMap.put(methodCountId, taskCountVo.getErrorNewlyTime());
-            if (taskCountVo.getErrorNewlyTime() > 0) {
-                v = this.taMethodCountBiz.updateTaskErrorInfo(methodCountId, taskCountVo, firstTime);
-                //更新失败，取数据库的最新错误时间
-                if (v < 1) {
-                    TaMethodCountPo exist = this.taMethodCountBiz.getDataByIdByProperties(methodCountId, "id,errorNewlyTime");
-                    errorTimeMap.put(methodCountId, exist.getErrorNewlyTime().getTime());
-                }
+        Long errorTs=taskCountVo.getError().getTs();
+        if (errorTimeExist == null || errorTimeExist < errorTs) {
+            errorTimeMap.put(methodCountId, errorTs);
+            v = this.taMethodCountBiz.updateTaskErrorInfo(methodCountId, taskCountVo, firstTime);
+            //更新失败，取数据库的最新错误时间
+            if (v < 1) {
+                TaMethodCountPo exist = this.taMethodCountBiz.getDataByIdByProperties(methodCountId, "id,errorNewlyTime");
+                errorTimeMap.put(methodCountId, exist.getErrorNewlyTime().getTime());
             }
         }
         return v;
@@ -198,8 +200,8 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         int v = 0;
         //如果运行时间超过最大值，则更新最大运行时间
         Long maxRunTimeExist = maxRunTimeMap.get(methodCountId);
-        if (maxRunTimeExist == null || maxRunTimeExist < taskCountVo.getRunTimeMax()) {
-            maxRunTimeMap.put(methodCountId, taskCountVo.getRunTimeMax());
+        if (maxRunTimeExist == null || maxRunTimeExist < taskCountVo.getMax().getRunTime()) {
+            maxRunTimeMap.put(methodCountId, taskCountVo.getMax().getRunTime());
             v = this.taMethodCountBiz.updateTaskMaxRunTime(methodCountId, taskCountVo, firstTime);
             //更新失败，取数据库的最大执行时间
             if (v < 1) {

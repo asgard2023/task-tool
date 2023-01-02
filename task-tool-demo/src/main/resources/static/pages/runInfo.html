@@ -92,33 +92,54 @@
                rownumbers="true" fitColumns="true" singleSelect="true" style="display:none;">
             <thead>
             <tr>
-                <th align="center" field="key" width="50" sortable="true">key</th>
-                <th align="center" field="countType" width="50" sortable="true">时间类型</th>
+                <th align="center" field="key" width="50" sortable="true" rowspan="2">key</th>
+                <th align="center" field="countType" width="50" sortable="true" rowspan="2">时间类型</th>
+                <th colspan="6">taskCompute</th>
+                <th colspan="3">首次</th>
+                <th colspan="3">最新</th>
+                <th colspan="3">最大</th>
+                <th colspan="4">错误</th>
+            </tr>
+            <tr>
                 <th align="center" field="taskCompute.showProcessing" width="100" hidden="true" formatter="taskComputeShowProcessing" >showProcessing</th>
                 <th align="center" field="taskCompute.dataIdArgCount" width="100" hidden="true" formatter="taskComputeDataIdArgCount">dataIdArgCount</th>
                 <th align="center" field="taskCompute.category" width="100" hidden="true" formatter="taskComputeCategory">category</th>
-
+                <th align="center" field="taskCompute.pkg" width="100" hidden="true" data-options="formatter: function(value,row,index){
+                                return row.taskCompute.pkg;
+                            }">pkg</th>
+                <th align="center" field="taskCompute.type" width="100" sortable="true" data-options="formatter: function(value,row,index){
+                                return row.taskCompute.type;
+                            }">type</th>
                 <th align="center" field="runCounter" width="50" sortable="true">执行次数</th>
-                <th align="center" field="runTime" width="50" sortable="true">最近执行时长</th>
-                <th align="center" field="runTimeMax" width="50" sortable="true">最大执行时长</th>
-                <th align="center" field="runTimeMaxTime" width="50" sortable="true"
-                    formatter="timestampFormatDateTime">最大执行时长的时间
+                <th align="center" field="first.ts" width="50" sortable="true" hidden="true" formatter="firstTs">
+                    首次时间
                 </th>
-                <th align="center" field="runTimeMaxDataId" width="50" >最大执行时长dataId</th>
+                <th align="center" field="first.runTime" width="50" sortable="true"  hidden="true" formatter="firstRunTime">
+                    首次时长
+                </th>
+                <th align="center" field="first.dataId" width="50" sortable="true" hidden="true" formatter="firstDataId">
+                    首次dataId
+                </th>
+                <th align="center" field="newly.ts" width="50" sortable="true" formatter="newlyTs">
+                    最新时间
+                </th>
+                <th align="center" field="newly.runTime" width="50" sortable="true" formatter="newlyRunTime">最新时长</th>
+                <th align="center" field="newly.dataId" width="50" sortable="true" hidden="true" formatter="newlyDataId">最新dataId</th>
+                <th align="center" field="max.ts" width="50" sortable="true"
+                    formatter="maxTs">最大时长的时间
+                </th>
+                <th align="center" field="max.runTime" width="50" sortable="true" formatter="maxRunTime">最大时长</th>
+                <th align="center" field="max.dataId" width="50" hidden="true" formatter="maxDataId">最大时长dataId</th>
 
-                <th align="center" field="errorNewlyTime" width="100" hidden="true" sortable="true"
-                    formatter="timestampFormatDateTime">错误时间
+                <th align="center" field="error.ts" width="100" hidden="true" sortable="true"
+                    formatter="errorTs">错误时间
                 </th>
-                <th align="center" field="errorNewlyDataId" width="100" hidden="true">错误dataId</th>
-                <th align="center" field="errorNewlyInfo" width="100" hidden="true">错误信息</th>
-                <th align="center" field="errorCounter" width="100" hidden="true">错误次数</th>
+                <th align="center" field="error.dataId" width="100" hidden="true" formatter="errorDataId">错误dataId</th>
+                <th align="center" field="error.remark" width="100" hidden="true" formatter="errorRemark">错误信息</th>
+                <th align="center" field="errorCounter" width="100" sortable="true">错误次数</th>
 
-                <th align="center" field="firstTime" width="50" sortable="true" formatter="timestampFormatDateTime">
-                    创建时间
-                </th>
-                <th align="center" field="latestTime" width="50" sortable="true" formatter="timestampFormatDateTime">
-                    修改时间
-                </th>
+
+
             </tr>
             </thead>
         </table>

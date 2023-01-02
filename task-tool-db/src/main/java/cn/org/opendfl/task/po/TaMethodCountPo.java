@@ -41,7 +41,7 @@ public class TaMethodCountPo implements Serializable {
     public void loadRun(TaskCountVo taskCountVo, String serverName) {
         int runCount = taskCountVo.getRunCounter().get();
         taskCountVo.getRunCounter().getAndAdd(-runCount);
-        Long runTime = taskCountVo.getRunTime();
+        Long runTime = taskCountVo.getNewly().getRunTime();
         this.setRunCount(runCount + 0L);
         this.setRunTime(runTime.intValue());
         this.setRunTimeDate(new Date());
@@ -49,20 +49,20 @@ public class TaMethodCountPo implements Serializable {
     }
 
     public void loadMax(TaskCountVo taskCountVo, String serverName) {
-        Long runTimeMax = taskCountVo.getRunTimeMax();
+        Long runTimeMax = taskCountVo.getMax().getRunTime();;
         this.setMaxRunTime(runTimeMax.intValue());
-        this.setMaxRunTimeDate(new Date(taskCountVo.getRunTimeMaxTime()));
-        this.setMaxRunTimeDataId(taskCountVo.getRunTimeMaxDataId());
+        this.setMaxRunTimeDate(new Date(taskCountVo.getMax().getTs()));
+        this.setMaxRunTimeDataId(taskCountVo.getMax().getDataId());
         this.setMaxRunServer(serverName);
     }
 
     public void loadErrorNewly(TaskCountVo taskCountVo, String serverName) {
-        this.setErrorNewlyInfo(taskCountVo.getErrorNewlyInfo());
+        this.setErrorNewlyInfo(taskCountVo.getError().getRemark());
         int errorCount = taskCountVo.getErrorCounter().get();
         taskCountVo.getErrorCounter().getAndAdd(-errorCount);
         this.setErrorCount(errorCount);
-        this.setErrorNewlyTime(new Date(taskCountVo.getErrorNewlyTime()));
-        this.setErrorNewlyDataId(taskCountVo.getErrorNewlyDataId());
+        this.setErrorNewlyTime(new Date(taskCountVo.getError().getTs()));
+        this.setErrorNewlyDataId(taskCountVo.getError().getDataId());
         this.setErrorNewlyServer(serverName);
     }
 

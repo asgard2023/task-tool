@@ -47,27 +47,29 @@ public class TaskToolUtils {
 
     public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
         final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
+        String dataId = taskCompute.getDataId();
+        final TaskInfoVo taskInfoVo=new TaskInfoVo();
+        taskInfoVo.setTs(curDate.getTime());
+        taskInfoVo.setDataId(dataId);
         long startTime = curDate.getTime();
         TaskCountVo taskCountVo = taskCounterMap.computeIfAbsent(countCode, k -> {
             TaskCountVo vo = new TaskCountVo();
             vo.setCountType(countTypeVo.getCode());
             vo.setTaskCompute(taskCompute);
             vo.setKey(classMethod);
-            vo.setFirstTime(startTime);
+            vo.setFirst(taskInfoVo);
+            vo.setMax(taskInfoVo);
             vo.setProcessingData(new ConcurrentHashMap<>(20));
             vo.setRunCounter(new AtomicInteger());
             vo.setErrorCounter(new AtomicInteger());
             vo.setSourceCounterMap(new ConcurrentHashMap<>(10));
             return vo;
         });
-
+        taskCountVo.setNewly(taskInfoVo);
         String source = taskCompute.getSource();
-        String dataId = taskCompute.getDataId();
         AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
         sourceCounter.incrementAndGet();
 
-        taskCountVo.setDataId(dataId);
-        taskCountVo.setLatestTime(startTime);
         taskCountVo.getRunCounter().incrementAndGet();
         if (dataId != null) {
             taskCountVo.getProcessingData().put(dataId, startTime);
@@ -93,13 +95,11 @@ public class TaskToolUtils {
         if (taskCountVo == null) {
             taskCountVo = startTask(taskCompute, countTypeVo, classMethod, curDate, typeCountCodeMap);
         }
-        taskCountVo.setRunTime(runTime);
+        taskCountVo.getNewly().setRunTime(runTime);
         String dataId = taskCompute.getDataId();
         if (runTime > taskToolConfiguration.getRunTimeBase()) {
-            if (runTime > taskCountVo.getRunTimeMax()) {
-                taskCountVo.setRunTimeMax(runTime);
-                taskCountVo.setRunTimeMaxDataId(dataId);
-                taskCountVo.setRunTimeMaxTime(curDate.getTime());
+            if (runTime > taskCountVo.getMax().getRunTime()) {
+                taskCountVo.setMax(taskCountVo.getNewly());
             }
         }
         if (dataId != null) {
@@ -117,11 +117,9 @@ public class TaskToolUtils {
     public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate, Map<String, String> typeCountCodeMap) {
         final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
-        taskCountVo.setErrorNewlyTime(curDate.getTime());
-        taskCountVo.setErrorNewlyInfo(errorInfo);
-        if (dataId != null) {
-            taskCountVo.setErrorNewlyDataId(dataId);
-        }
+        taskCountVo.setError(taskCountVo.getNewly());
+        taskCountVo.getError().setTs(curDate.getTime());
+        taskCountVo.getError().setRemark(errorInfo);
         taskCountVo.getErrorCounter().incrementAndGet();
         if (dataId != null) {
             taskCountVo.getProcessingData().remove(dataId);
@@ -165,14 +163,13 @@ public class TaskToolUtils {
         Set<Map.Entry<String, TaskCountVo>> entrySetSet = taskCounterMap.entrySet();
         for (Map.Entry<String, TaskCountVo> entry : entrySetSet) {
             TaskCountVo taskCountVo = entry.getValue().copy();
-            taskCountVo.setLatestTimes(DateUtil.format(new Date(taskCountVo.getLatestTime()), "yyyy-MM-dd HH:mm:ss"));
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
             if (!countTypeOp.isPresent()) {
                 continue;
             }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
             int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS;
-            boolean isExpired = countTypeVo.getTimeSeconds() != -1 && curTime - taskCountVo.getFirstTime() > periodTime;
+            boolean isExpired = countTypeVo.getTimeSeconds() != -1 && curTime - taskCountVo.getFirst().getTs() > periodTime;
             if (isExpired) {
                 continue;
             }
@@ -204,7 +201,7 @@ public class TaskToolUtils {
             }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
             int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS * 2;
-            boolean isExpired = countTypeVo.getTimeSeconds() > 0 && curTime - taskCountVo.getFirstTime() > periodTime;
+            boolean isExpired = countTypeVo.getTimeSeconds() > 0 && curTime - taskCountVo.getFirst().getTs() > periodTime;
             if (isExpired) {
                 expireKeys.add(entry.getKey());
                 continue;

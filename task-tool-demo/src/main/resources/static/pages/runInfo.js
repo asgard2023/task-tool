@@ -181,3 +181,63 @@ function taskComputeDataIdArgCount(v, row, index){
 function taskComputeCategory(v, row, index){
     return row.taskCompute.category;
 }
+
+function getTimeFormat(ts){
+    var date = new Date(ts);
+    return DateUtils.formatDate(date, 'yyyy-MM-dd hh:mm:ss');
+}
+function firstTs(v, row, index){
+    return getTimeFormat(row.first.ts);
+}
+function firstRunTime(v, row, index){
+    return row.first.runTime;
+}
+function firstDataId(v, row, index){
+    return row.first.dataId;
+}
+
+function newlyTs(v, row, index){
+    return getTimeFormat(row.newly.ts);
+}
+function newlyRunTime(v, row, index){
+    return row.newly.runTime;
+}
+function newlyDataId(v, row, index){
+    return row.newly.dataId;
+}
+
+function maxTs(v, row, index){
+    return getTimeFormat(row.max.ts);
+}
+function maxRunTime(v, row, index){
+    return row.max.runTime;
+}
+function maxDataId(v, row, index){
+    return row.max.dataId;
+}
+
+function errorTs(v, row, index){
+    if(!row.error){
+        return '';
+    }
+    return getTimeFormat(row.error.ts);
+}
+function errorRunTime(v, row, index){
+    if(!row.error){
+        return '';
+    }
+    return row.error.runTime;
+}
+function errorDataId(v, row, index){
+    if(!row.error){
+        return '';
+    }
+    return row.error.dataId;
+}
+function errorRemark(v, row, index){
+    if(!row.error){
+        return '';
+    }
+    return row.error.remark;
+}
+
