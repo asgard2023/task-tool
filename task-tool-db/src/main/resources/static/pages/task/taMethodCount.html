@@ -94,26 +94,41 @@
                rownumbers="true" fitColumns="true" singleSelect="true" style="display:none;">
             <thead>
             <tr>
-                <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
-                <th align="center" field="dataMethodId" width="50" sortable="true" hidden="true">接口方法id</th>
-                <th align="center" field="dataMethodCode" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                <th align="center" field="id" width="50" sortable="true" hidden="true" rowspan="2">id</th>
+                <th align="center" field="dataMethodId" width="50" sortable="true" hidden="true"  rowspan="2">接口方法id</th>
+                <th align="center" field="dataMethodCode" width="50" sortable="false" rowspan="2" data-options="formatter: function(value,row,index){
                                 return row.dataMethod.code;
                             }">接口方法</th>
-                <th align="center" field="timeValue" width="50" sortable="true">时间值</th>
-                <th align="center" field="timeType" width="50" sortable="true">时间类型</th>
-                <th align="center" field="runCount" width="50" sortable="true">运行次数</th>
-                <th align="center" field="runTime" width="50" sortable="true">运行时间(ms)</th>
-                <th align="center" field="runServer" width="50" sortable="true" hidden="true">服务器名</th>
+                <th align="center" field="timeValue" width="50" sortable="true"  rowspan="2">时间值</th>
+                <th align="center" field="timeType" width="50" sortable="true"  rowspan="2">时间类型</th>
+                <th align="center" field="runCount" width="50" sortable="true"  rowspan="2">运行次数</th>
+                <th align="center" field="first" width="50" sortable="true"  colspan="2">首次</th>
+                <th align="center" field="newly" width="50" sortable="true"  colspan="3">最新</th>
+                <th align="center" field="max" width="50" sortable="true"  colspan="5">最大</th>
+                <th align="center" field="error" width="50" sortable="true"  colspan="10"></th>
+            </tr>
+            <tr>
                 <th align="center" field="firstTime" width="50" sortable="true">首次运行时间</th>
-                <th align="center" field="errorCount" width="50" sortable="true">错误次数</th>
-                <th align="center" field="errorNewlyInfo" width="50" sortable="true">最新错误信息</th>
-                <th align="center" field="errorNewlyDataId" width="50" sortable="true" hidden="true">最新错误dataId</th>
-                <th align="center" field="errorNewlyTime" width="50" sortable="true">最新错误时间</th>
-                <th align="center" field="errorNewlyServer" width="50" sortable="true" hidden="true">最新错误对应的服务器名</th>
+                <th align="center" field="firstUid" width="50" sortable="true">首次运行UserId</th>
+
+                <th align="center" field="runTime" width="50" sortable="true">最新时间(ms)</th>
+                <th align="center" field="runUid" width="50" sortable="true">最新UserId</th>
+                <th align="center" field="runServer" width="50" sortable="true" >最新服务器名</th>
+
                 <th align="center" field="maxRunTime" width="50" sortable="true">最大执行时间(ms)</th>
-                <th align="center" field="maxRunTimeDate" width="50" sortable="true">最大执行时间发生时间</th>
-                <th align="center" field="maxRunTimeDataId" width="50" sortable="true" hidden="true">最大执行时间对应dataId</th>
-                <th align="center" field="maxRunServer" width="50" sortable="true" hidden="true">最大执行时间对应的服务器名</th>
+                <th align="center" field="maxRunTimeDate" width="50" sortable="true">最大发生时间</th>
+                <th align="center" field="maxRunTimeDataId" width="50" sortable="true" hidden="true">最大dataId</th>
+                <th align="center" field="maxRunTimeUserId" width="50" sortable="true" hidden="true">最大UserId</th>
+                <th align="center" field="maxRunServer" width="50" sortable="true" hidden="true">最大服务器名</th>
+
+
+                <th align="center" field="errorCount" width="50" sortable="true">错误次数</th>
+                <th align="center" field="errorNewlyInfo" width="50" sortable="true">错误信息</th>
+                <th align="center" field="errorNewlyDataId" width="50" sortable="true" hidden="true">错误dataId</th>
+                <th align="center" field="errorNewlyUid" width="50" sortable="true" hidden="true">错误UserId</th>
+                <th align="center" field="errorNewlyTime" width="50" sortable="true">错误时间</th>
+                <th align="center" field="errorNewlyServer" width="50" sortable="true" hidden="true">错误对应的服务器名</th>
+
                 <th align="center" field="ifDel" width="50" sortable="true" hidden="true">是否删除</th>
                 <th align="center" field="status" width="50" sortable="true" data-options="formatter: function(value,row,index){
                                 return formatterCombobox(dict_status, value, false);

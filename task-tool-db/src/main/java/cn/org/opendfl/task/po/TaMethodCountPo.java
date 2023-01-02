@@ -46,6 +46,7 @@ public class TaMethodCountPo implements Serializable {
         this.setRunTime(runTime.intValue());
         this.setRunTimeDate(new Date());
         this.setRunServer(serverName);
+        this.setRunUid(taskCountVo.getNewly().getUid());
     }
 
     public void loadMax(TaskCountVo taskCountVo, String serverName) {
@@ -54,6 +55,7 @@ public class TaMethodCountPo implements Serializable {
         this.setMaxRunTimeDate(new Date(taskCountVo.getMax().getTs()));
         this.setMaxRunTimeDataId(taskCountVo.getMax().getDataId());
         this.setMaxRunServer(serverName);
+        this.setMaxRunTimeUid(taskCountVo.getMax().getUid());
     }
 
     public void loadErrorNewly(TaskCountVo taskCountVo, String serverName) {
@@ -64,6 +66,7 @@ public class TaMethodCountPo implements Serializable {
         this.setErrorNewlyTime(new Date(taskCountVo.getError().getTs()));
         this.setErrorNewlyDataId(taskCountVo.getError().getDataId());
         this.setErrorNewlyServer(serverName);
+        this.setErrorNewlyUid(taskCountVo.getError().getUid());
     }
 
     /**
@@ -108,6 +111,8 @@ public class TaMethodCountPo implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date firstTime;
+    @Column(name = "first_uid")
+    private String firstUid;
     /**
      * 最新运行时间(ms)
      */
@@ -122,6 +127,9 @@ public class TaMethodCountPo implements Serializable {
     @Column(name = "run_server")
     @Length(message = "runServer超出最大长度64限制", max = 64)
     private String runServer;
+
+    @Column(name = "run_uid")
+    private String runUid;
     /**
      * 错误次数
      */
@@ -146,6 +154,9 @@ public class TaMethodCountPo implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date errorNewlyTime;
+    @Column(name = "error_newly_uid")
+    private String errorNewlyUid;
+
     /**
      * 最新错误对应的服务器名
      */
@@ -176,6 +187,8 @@ public class TaMethodCountPo implements Serializable {
     @Column(name = "max_run_server")
     @Length(message = "maxRunServer超出最大长度64限制", max = 64)
     private String maxRunServer;
+    @Column(name = "max_run_time_uid")
+    private String maxRunTimeUid;
     /**
      * 是否删除
      */

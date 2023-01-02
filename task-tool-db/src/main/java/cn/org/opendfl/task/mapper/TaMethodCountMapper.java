@@ -22,12 +22,12 @@ import java.util.List;
  * @Copyright: 2022 opendfl Inc. All rights reserved.
  */
 public interface TaMethodCountMapper extends Mapper<TaMethodCountPo> {
-    @Update("update ta_method_count set run_count=run_count+#{dataCount.runCount}, run_time=#{dataCount.runTime}, run_time_date=#{dataCount.runTimeDate}" +
+    @Update("update ta_method_count set run_count=run_count+#{dataCount.runCount}, run_uid=#{dataCount.runUid}, run_time=#{dataCount.runTime}, run_time_date=#{dataCount.runTimeDate}" +
             ", run_server=#{dataCount.runServer}" +
             " where id=#{id} and if_del=0")
     int updateTaskRunCount(@Param("id") Integer id, @Param("dataCount") TaMethodCountPo dataCount);
 
-    @Update("update ta_method_count set error_count=error_count+#{dataCount.errorCount}, error_newly_time=#{dataCount.errorNewlyTime}" +
+    @Update("update ta_method_count set error_count=error_count+#{dataCount.errorCount}, error_newly_uid=#{dataCount.errorNewlyUid}, error_newly_time=#{dataCount.errorNewlyTime}" +
             ", error_newly_info=#{dataCount.errorNewlyInfo}, error_newly_server=#{dataCount.errorNewlyServer}, error_newly_data_id=#{dataCount.errorNewlyDataId}" +
             " where id=#{id} and if_del=0 and (error_newly_time is null or error_newly_time<#{dataCount.errorNewlyTime})")
     int updateTaskErrorInfo(@Param("id") Integer id, @Param("dataCount") TaMethodCountPo dataCount);
