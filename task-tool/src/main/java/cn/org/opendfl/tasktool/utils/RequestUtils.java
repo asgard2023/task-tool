@@ -24,14 +24,16 @@ public class RequestUtils {
      */
     public static String getDataId(TaskToolConfiguration taskToolConfiguration, HttpServletRequest request) {
         ControllerConfigVo controllerConfigVo = taskToolConfiguration.getControllerConfig();
-        String dataId = getRequestValue(request, controllerConfigVo.getDataIdField());
-        if (dataId == null) {
-            dataId = getRequestValue(request, controllerConfigVo.getUserIdField());
+        return getRequestValue(request, controllerConfigVo.getDataIdField());
+    }
+
+    public static String getUserId(TaskToolConfiguration taskToolConfiguration, HttpServletRequest request) {
+        ControllerConfigVo controllerConfigVo = taskToolConfiguration.getControllerConfig();
+        String userId = getRequestValue(request, controllerConfigVo.getUserIdField());
+        if (userId == null) {
+            userId = ServletUtil.getClientIP(request);
         }
-        if (dataId == null) {
-            dataId = ServletUtil.getClientIP(request);
-        }
-        return dataId;
+        return userId;
     }
 
     /**

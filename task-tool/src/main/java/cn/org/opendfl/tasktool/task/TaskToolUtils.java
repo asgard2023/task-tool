@@ -47,10 +47,11 @@ public class TaskToolUtils {
 
     public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
         final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
-        String dataId = taskCompute.getDataId();
+
         final TaskInfoVo taskInfoVo=new TaskInfoVo();
         taskInfoVo.setTs(curDate.getTime());
-        taskInfoVo.setDataId(dataId);
+        taskInfoVo.setDataId(taskCompute.getDataId());
+        taskInfoVo.setUid(taskCompute.getUserId());
         long startTime = curDate.getTime();
         TaskCountVo taskCountVo = taskCounterMap.computeIfAbsent(countCode, k -> {
             TaskCountVo vo = new TaskCountVo();
@@ -69,8 +70,8 @@ public class TaskToolUtils {
         String source = taskCompute.getSource();
         AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
         sourceCounter.incrementAndGet();
-
         taskCountVo.getRunCounter().incrementAndGet();
+        String dataId = taskCompute.getDataId();
         if (dataId != null) {
             taskCountVo.getProcessingData().put(dataId, startTime);
         }

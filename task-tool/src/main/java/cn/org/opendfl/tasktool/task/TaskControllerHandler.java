@@ -64,10 +64,10 @@ public class TaskControllerHandler implements HandlerInterceptor {
             computeVo.setShowProcessing(true);
             computeVo.setCategory(null);
 
-            String dataId = RequestUtils.getDataId(taskToolConfiguration, request);
             computeVo.setType("controller");
             computeVo.setPkg(packageName);
-            computeVo.setDataId(dataId);
+            computeVo.setDataId(RequestUtils.getDataId(taskToolConfiguration, request));
+            computeVo.setUserId(RequestUtils.getUserId(taskToolConfiguration, request));
             computeVo.setSource(uri);
 
             taskController.setTaskCompute(computeVo);

@@ -192,15 +192,22 @@ function firstTs(v, row, index){
 function firstRunTime(v, row, index){
     return row.first.runTime;
 }
+function firstUid(v, row, index){
+    return row.first.uid;
+}
 function firstDataId(v, row, index){
     return row.first.dataId;
 }
+
 
 function newlyTs(v, row, index){
     return getTimeFormat(row.newly.ts);
 }
 function newlyRunTime(v, row, index){
     return row.newly.runTime;
+}
+function newlyUid(v, row, index){
+    return row.newly.uid;
 }
 function newlyDataId(v, row, index){
     return row.newly.dataId;
@@ -211,6 +218,9 @@ function maxTs(v, row, index){
 }
 function maxRunTime(v, row, index){
     return row.max.runTime;
+}
+function maxUid(v, row, index){
+    return row.max.uid;
 }
 function maxDataId(v, row, index){
     return row.max.dataId;
@@ -227,6 +237,12 @@ function errorRunTime(v, row, index){
         return '';
     }
     return row.error.runTime;
+}
+function errorUid(v, row, index){
+    if(!row.error){
+        return '';
+    }
+    return row.error.uid;
 }
 function errorDataId(v, row, index){
     if(!row.error){

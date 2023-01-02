@@ -54,4 +54,5 @@ public class TaskComputeVo {
      * 数据dataId，优先dataId，没有取userId，再没有取用户IP
      */
     private String dataId;
+    private String userId;
 }
