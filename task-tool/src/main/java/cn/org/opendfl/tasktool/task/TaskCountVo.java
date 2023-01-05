@@ -22,6 +22,7 @@ public class TaskCountVo {
         vo.setError(this.error);
         vo.setTaskCompute(this.taskCompute);
         vo.setCountType(this.countType);
+        vo.setTimeValue(this.timeValue);
         vo.setRunCounter(new AtomicInteger(runCounter.get()));
         vo.setErrorCounter(new AtomicInteger(errorCounter.get()));
         vo.setSourceCounterMap(this.sourceCounterMap);
@@ -30,6 +31,7 @@ public class TaskCountVo {
 
     private String key;
     private String countType;
+    private Integer timeValue;
 
     private TaskComputeVo taskCompute;
     /**

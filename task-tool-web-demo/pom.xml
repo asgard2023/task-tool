@@ -9,11 +9,11 @@
         <relativePath/>
     </parent>
     <groupId>cn.org.opendfl</groupId>
-    <artifactId>task-tool-demo</artifactId>
+    <artifactId>task-tool-web-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>task-tool-demo</name>
+    <name>task-tool-web-demo</name>
     <packaging>jar</packaging>
-    <description>springboot mq tool demo</description>
+    <description>springboot mq tool web demo</description>
     <properties>
         <java.version>1.8</java.version>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -22,8 +22,8 @@
     <dependencies>
         <dependency>
             <groupId>cn.org.opendfl</groupId>
-            <artifactId>task-tool</artifactId>
-            <version>1.6</version>
+            <artifactId>task-tool-web</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

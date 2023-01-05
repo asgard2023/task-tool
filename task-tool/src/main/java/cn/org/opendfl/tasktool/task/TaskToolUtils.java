@@ -40,13 +40,15 @@ public class TaskToolUtils {
 
     public static void startTask(TaskComputeVo taskCompute, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
+        Integer timeValue = null;
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            startTask(taskCompute, countTypeVo, classMethod, curDate, typeCountCodeMap);
+            timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
+            startTask(taskCompute, countTypeVo, classMethod, curDate, timeValue, typeCountCodeMap);
         }
     }
 
-    public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
-        final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
+    public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate, Integer timeValue, Map<String, String> typeCountCodeMap) {
+        final String countCode = getCountCodeCache(countTypeVo, classMethod, timeValue, typeCountCodeMap);
 
         final TaskInfoVo taskInfoVo=new TaskInfoVo();
         taskInfoVo.setTs(curDate.getTime());
@@ -56,6 +58,7 @@ public class TaskToolUtils {
         TaskCountVo taskCountVo = taskCounterMap.computeIfAbsent(countCode, k -> {
             TaskCountVo vo = new TaskCountVo();
             vo.setCountType(countTypeVo.getCode());
+            vo.setTimeValue(timeValue);
             vo.setTaskCompute(taskCompute);
             vo.setKey(classMethod);
             vo.setFirst(taskInfoVo);
@@ -91,10 +94,11 @@ public class TaskToolUtils {
     }
 
     public static void finished(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, String classMethod, final Date curDate, final long runTime, Map<String, String> typeCountCodeMap) {
-        final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
+        final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
+        final String countCode = getCountCodeCache(countTypeVo, classMethod, timeValue, typeCountCodeMap);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         if (taskCountVo == null) {
-            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, curDate, typeCountCodeMap);
+            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, curDate, timeValue, typeCountCodeMap);
         }
         taskCountVo.getNewly().setRunTime(runTime);
         String dataId = taskCompute.getDataId();
@@ -116,7 +120,8 @@ public class TaskToolUtils {
     }
 
     public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate, Map<String, String> typeCountCodeMap) {
-        final String countCode = getCountCodeCache(countTypeVo, classMethod, curDate, typeCountCodeMap);
+        final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
+        final String countCode = getCountCodeCache(countTypeVo, classMethod, timeValue, typeCountCodeMap);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         taskCountVo.setError(taskCountVo.getNewly());
         taskCountVo.getError().setTs(curDate.getTime());
@@ -145,13 +150,11 @@ public class TaskToolUtils {
      *
      * @param countTypeVo
      * @param classMethod
-     * @param curDate
      * @param typeCountCodeMap
      * @return
      */
-    private static String getCountCodeCache(TaskCountTypeVo countTypeVo, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
+    private static String getCountCodeCache(TaskCountTypeVo countTypeVo, String classMethod, Integer timeValue, Map<String, String> typeCountCodeMap) {
         return typeCountCodeMap.computeIfAbsent(countTypeVo.getCode(), k -> {
-            Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
             return getMethodCountKey(countTypeVo, classMethod, timeValue);
         });
     }

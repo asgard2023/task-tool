@@ -13,10 +13,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(scanBasePackages = {"cn.org.opendfl.tasktool", "cn.org.opendfl.tasktooldemo"})
 @EnableConfigurationProperties
 @EnableScheduling
-public class TaskToolDemoApplication {
-    public static final Logger logger = LoggerFactory.getLogger(TaskToolDemoApplication.class);
+public class TaskToolWebDemoApplication {
+    public static final Logger logger = LoggerFactory.getLogger(TaskToolWebDemoApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(TaskToolDemoApplication.class, args);
+        SpringApplication.run(TaskToolWebDemoApplication.class, args);
     }
 }

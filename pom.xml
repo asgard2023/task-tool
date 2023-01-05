@@ -12,7 +12,8 @@
         <module>task-tool</module>
         <module>task-tool-db</module>
         <module>task-tool-db-demo</module>
-        <module>task-tool-demo</module>
+        <module>task-tool-web</module>
+        <module>task-tool-web-demo</module>
     </modules>
 
     <parent>
