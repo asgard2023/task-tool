@@ -78,6 +78,25 @@ function onEdit() {
         $('#fm-category').val(row.taskCompute.category);
         $('#fm-dataIdArgCount').val(row.taskCompute.dataIdArgCount);
         $('#fm-showProcessing').val(row.taskCompute.showProcessing);
+
+        $('#fm-max-runTime').val(row.max.runTime);
+        $('#fm-max-ts').val(getTimeFormat(row.max.ts));
+        $('#fm-max-dataId').val(row.max.dataId);
+        $('#fm-max-uid').val(row.max.uid);
+
+        $('#fm-newly-runTime').val(row.newly.runTime);
+        $('#fm-newly-ts').val(getTimeFormat(row.newly.ts));
+        $('#fm-newly-dataId').val(row.newly.dataId);
+        $('#fm-newly-uid').val(row.newly.uid);
+
+
+        if(row.error){
+            $('#fm-error-ts').val(getTimeFormat(row.error.ts));
+            $('#fm-error-dataId').val(row.error.dataId);
+            $('#fm-error-uid').val(row.error.uid);
+            $('#fm-error-remark').val(row.error.remark);
+        }
+        console.log(row.max);
     }
 
 }

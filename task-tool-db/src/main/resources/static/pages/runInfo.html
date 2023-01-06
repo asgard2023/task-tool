@@ -121,8 +121,8 @@
                 <th align="center" field="first.uid" width="50" sortable="true" hidden="true" formatter="firstUid">
                     首次UserId
                 </th> <th align="center" field="first.dataId" width="50" sortable="true" hidden="true" formatter="firstDataId">
-                    首次dataId
-                </th>
+                首次dataId
+            </th>
                 <th align="center" field="newly.ts" width="50" sortable="true" formatter="newlyTs">
                     最新时间
                 </th>
@@ -143,9 +143,6 @@
                 <th align="center" field="error.dataId" width="100" hidden="true" formatter="errorDataId">错误dataId</th>
                 <th align="center" field="error.remark" width="100" hidden="true" formatter="errorRemark">错误信息</th>
                 <th align="center" field="errorCounter" width="100" sortable="true">错误次数</th>
-
-
-
             </tr>
             </thead>
         </table>
@@ -164,6 +161,10 @@
             <input name="countType" class="easyui-validatebox" required="true">
         </div>
         <div class="fitem">
+            <label>timeValue:</label>
+            <input name="timeValue" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
             <label>执行次数:</label>
             <input name="runCounter" class="easyui-validatebox">
         </div>
@@ -173,18 +174,42 @@
         </div>
 
         <fieldset>
-            最长执行时间
+            最新
             <div class="fitem">
-                <label>最大时长:</label>
-                <input name="runTimeMax" class="easyui-validatebox">
+                <label>时长:</label>
+                <input id="fm-newly-runTime" name="newly.runTime" class="easyui-validatebox">
             </div>
             <div class="fitem">
-                <label>最大时长时间:</label>
-                <input name="runTimeMaxTime" class="easyui-validatebox">
+                <label>时间:</label>
+                <input id="fm-newly-ts" name="newly.ts" class="easyui-validatebox">
             </div>
             <div class="fitem">
-                <label>最大时长dataId:</label>
-                <input name="runTimeMaxDataId" class="easyui-validatebox">
+                <label>userId:</label>
+                <input id="fm-newly-uid" name="newly.uid" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>dataId:</label>
+                <input id="fm-newly-dataId" name="newly.dataId" class="easyui-validatebox">
+            </div>
+        </fieldset>
+
+        <fieldset>
+            最大执行时间
+            <div class="fitem">
+                <label>时长:</label>
+                <input id="fm-max-runTime" name="max.runTime" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>时间:</label>
+                <input id="fm-max-ts" name="max.ts" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>userId:</label>
+                <input id="fm-max-uid" name="max.uid" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>dataId:</label>
+                <input id="fm-max-dataId" name="max.dataId" class="easyui-validatebox">
             </div>
         </fieldset>
 
@@ -201,11 +226,15 @@
             最新异常错误信息
             <div class="fitem">
                 <label>错误时间:</label>
-                <input name="errorNewlyTime" class="easyui-validatebox">
+                <input id="fm-error-ts"  name="error.ts" class="easyui-validatebox">
+            </div>
+            <div class="fitem">
+                <label>错误userId:</label>
+                <input id="fm-error-uid"  name="error.uid" class="easyui-validatebox">
             </div>
             <div class="fitem">
                 <label>错误dataId:</label>
-                <input name="errorNewlyDataId" class="easyui-validatebox">
+                <input id="fm-error-dataId" name="error.dataId" class="easyui-validatebox">
             </div>
             <div class="fitem">
                 <label>错误次数:</label>
@@ -213,7 +242,7 @@
             </div>
             <div class="fitem">
                 <label>错识信息:</label>
-                <textarea name="errorNewlyInfo" style="height:60px;width:220px"></textarea>
+                <textarea id="fm-error-remark"  name="error.remark" style="height:60px;width:220px"></textarea>
             </div>
         </fieldset>
 
