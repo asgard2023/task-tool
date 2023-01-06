@@ -71,8 +71,10 @@ public class TaskToolUtils {
         });
         taskCountVo.setNewly(taskInfoVo);
         String source = taskCompute.getSource();
-        AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
-        sourceCounter.incrementAndGet();
+        if(taskToolConfiguration.getControllerConfig().isSource()) {
+            AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
+            sourceCounter.incrementAndGet();
+        }
         taskCountVo.getRunCounter().incrementAndGet();
         String dataId = taskCompute.getDataId();
         if (dataId != null) {

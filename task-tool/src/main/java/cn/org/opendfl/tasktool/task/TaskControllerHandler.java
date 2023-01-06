@@ -7,6 +7,7 @@ import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 import cn.org.opendfl.tasktool.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -95,11 +96,14 @@ public class TaskControllerHandler implements HandlerInterceptor {
             //用于异常被@ExceptionHandler吃掉的处理
             errMsg=(String)request.getAttribute(RequestUtils.EXCEPTION_MSG_KEY);
         }
-        if (errMsg == null) {
+        if (errMsg == null && response.getStatus()== HttpStatus.OK.value()) {
             TaskToolUtils.finished(taskControllerVo.getTaskCompute(), classMethod, curDate, typeCountCodeMap);
         } else {
+            errMsg=errMsg!=null?errMsg:"";
+            errMsg+=",httpStatus:"+response.getStatus();
             TaskToolUtils.error(classMethod, dataId, errMsg, curDate, typeCountCodeMap);
         }
+
         taskComputeVo.remove();
     }
 

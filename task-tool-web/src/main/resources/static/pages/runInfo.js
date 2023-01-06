@@ -78,6 +78,25 @@ function onEdit() {
         $('#fm-category').val(row.taskCompute.category);
         $('#fm-dataIdArgCount').val(row.taskCompute.dataIdArgCount);
         $('#fm-showProcessing').val(row.taskCompute.showProcessing);
+
+        $('#fm-max-runTime').val(row.max.runTime);
+        $('#fm-max-ts').val(getTimeFormat(row.max.ts));
+        $('#fm-max-dataId').val(row.max.dataId);
+        $('#fm-max-uid').val(row.max.uid);
+
+        $('#fm-newly-runTime').val(row.newly.runTime);
+        $('#fm-newly-ts').val(getTimeFormat(row.newly.ts));
+        $('#fm-newly-dataId').val(row.newly.dataId);
+        $('#fm-newly-uid').val(row.newly.uid);
+
+
+        if(row.error){
+            $('#fm-error-ts').val(getTimeFormat(row.error.ts));
+            $('#fm-error-dataId').val(row.error.dataId);
+            $('#fm-error-uid').val(row.error.uid);
+            $('#fm-error-remark').val(row.error.remark);
+        }
+        console.log(row.max);
     }
 
 }
@@ -192,15 +211,22 @@ function firstTs(v, row, index){
 function firstRunTime(v, row, index){
     return row.first.runTime;
 }
+function firstUid(v, row, index){
+    return row.first.uid;
+}
 function firstDataId(v, row, index){
     return row.first.dataId;
 }
+
 
 function newlyTs(v, row, index){
     return getTimeFormat(row.newly.ts);
 }
 function newlyRunTime(v, row, index){
     return row.newly.runTime;
+}
+function newlyUid(v, row, index){
+    return row.newly.uid;
 }
 function newlyDataId(v, row, index){
     return row.newly.dataId;
@@ -211,6 +237,9 @@ function maxTs(v, row, index){
 }
 function maxRunTime(v, row, index){
     return row.max.runTime;
+}
+function maxUid(v, row, index){
+    return row.max.uid;
 }
 function maxDataId(v, row, index){
     return row.max.dataId;
@@ -227,6 +256,12 @@ function errorRunTime(v, row, index){
         return '';
     }
     return row.error.runTime;
+}
+function errorUid(v, row, index){
+    if(!row.error){
+        return '';
+    }
+    return row.error.uid;
 }
 function errorDataId(v, row, index){
     if(!row.error){

@@ -34,4 +34,9 @@ public class ControllerConfigVo {
      * dataId参数名,用于记录最大执行时间或错时对应的dataId
      */
     private String dataIdField = "dataId";
+
+    /**
+     * 是事记录来源次数
+     */
+    private boolean source=false;
 }
