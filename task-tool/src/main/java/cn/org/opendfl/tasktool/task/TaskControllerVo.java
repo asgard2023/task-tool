@@ -14,5 +14,4 @@ import java.util.Map;
 public class TaskControllerVo {
     private long startTime;
     private TaskComputeVo taskCompute;
-    private Map<String, String> typeCountCodeMap = new HashMap<>();
 }

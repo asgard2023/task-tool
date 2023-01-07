@@ -76,7 +76,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
 
             logger.debug("---preHandle--packageName={} uri={} classMethod={}", packageName, uri, classMethod);
 
-            TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime), taskController.getTypeCountCodeMap());
+            TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));
         }
     }
 
@@ -90,18 +90,17 @@ public class TaskControllerHandler implements HandlerInterceptor {
         String classMethod = taskControllerVo.getTaskCompute().getMethodCode();
         Date curDate = new Date(taskControllerVo.getStartTime());
         String dataId = taskControllerVo.getTaskCompute().getDataId();
-        Map<String, String> typeCountCodeMap = taskControllerVo.getTypeCountCodeMap();
         String errMsg=ex!=null?ex.getMessage():null;
         if(errMsg == null){
             //用于异常被@ExceptionHandler吃掉的处理
             errMsg=(String)request.getAttribute(RequestUtils.EXCEPTION_MSG_KEY);
         }
         if (errMsg == null && response.getStatus()== HttpStatus.OK.value()) {
-            TaskToolUtils.finished(taskControllerVo.getTaskCompute(), classMethod, curDate, typeCountCodeMap);
+            TaskToolUtils.finished(taskControllerVo.getTaskCompute(), classMethod, curDate);
         } else {
             errMsg=errMsg!=null?errMsg:"";
             errMsg+=",httpStatus:"+response.getStatus();
-            TaskToolUtils.error(classMethod, dataId, errMsg, curDate, typeCountCodeMap);
+            TaskToolUtils.error(classMethod, dataId, errMsg, curDate);
         }
 
         taskComputeVo.remove();

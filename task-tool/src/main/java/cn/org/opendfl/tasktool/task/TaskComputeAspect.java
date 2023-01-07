@@ -73,7 +73,6 @@ public class TaskComputeAspect {
         }
         Object result = null;
         String dataId = getDataId(joinPoint, taskCompute);
-        Map<String, String> typeCountCodeMap = new HashMap<>();
 
         try {
             TaskComputeVo taskComputeVo = new TaskComputeVo(taskCompute);
@@ -84,18 +83,17 @@ public class TaskComputeAspect {
             taskComputeVo.setDataId(dataId);
             taskComputeVo.setSource(source);
             if (taskCompute.showProcessing()) {
-                TaskToolUtils.startTask(taskComputeVo, classMethod, curDate, typeCountCodeMap);
+                TaskToolUtils.startTask(taskComputeVo, classMethod, curDate);
             }
             //	执行目标方法
             result = joinPoint.proceed();
 
-            TaskToolUtils.finished(taskComputeVo, classMethod, curDate, typeCountCodeMap);
+            TaskToolUtils.finished(taskComputeVo, classMethod, curDate);
         } catch (Throwable e) {
             //	异常通知
-            TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate, typeCountCodeMap);
+            TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate);
             throw e;
         }
-        typeCountCodeMap.clear();
 
         // 返回结果
         return result;

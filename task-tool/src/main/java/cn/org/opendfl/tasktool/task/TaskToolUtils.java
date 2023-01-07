@@ -38,17 +38,16 @@ public class TaskToolUtils {
 
     private static final Map<String, TaskCountVo> taskCounterMap = new ConcurrentHashMap<>(20);
 
-    public static void startTask(TaskComputeVo taskCompute, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
+    public static void startTask(TaskComputeVo taskCompute, String classMethod, Date curDate) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
-        Integer timeValue = null;
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
-            startTask(taskCompute, countTypeVo, classMethod, curDate, timeValue, typeCountCodeMap);
+            startTask(taskCompute, countTypeVo, classMethod, curDate);
         }
     }
 
-    public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate, Integer timeValue, Map<String, String> typeCountCodeMap) {
-        final String countCode = getCountCodeCache(countTypeVo, classMethod, timeValue, typeCountCodeMap);
+    public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {
+        final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
+        final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
 
         final TaskInfoVo taskInfoVo=new TaskInfoVo();
         taskInfoVo.setTs(curDate.getTime());
@@ -84,23 +83,23 @@ public class TaskToolUtils {
     }
 
 
-    public static void finished(TaskComputeVo taskCompute, String classMethod, Date curDate, Map<String, String> typeCountCodeMap) {
+    public static void finished(TaskComputeVo taskCompute, String classMethod, Date curDate) {
         long startTime = curDate.getTime();
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         long runTime = System.currentTimeMillis() - startTime;
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            finished(taskCompute, countTypeVo, classMethod, curDate, runTime, typeCountCodeMap);
+            finished(taskCompute, countTypeVo, classMethod, curDate, runTime);
         }
         //通知异步线程进行保存
         TaskCountSaveThreadTask.saveTaskCount();
     }
 
-    public static void finished(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, String classMethod, final Date curDate, final long runTime, Map<String, String> typeCountCodeMap) {
+    public static void finished(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, String classMethod, final Date curDate, final long runTime) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
-        final String countCode = getCountCodeCache(countTypeVo, classMethod, timeValue, typeCountCodeMap);
+        final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         if (taskCountVo == null) {
-            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, curDate, timeValue, typeCountCodeMap);
+            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, curDate);
         }
         taskCountVo.getNewly().setRunTime(runTime);
         String dataId = taskCompute.getDataId();
@@ -114,16 +113,16 @@ public class TaskToolUtils {
         }
     }
 
-    public static void error(final String classMethod, final String dataId, final String errorInfo, Date curDate, Map<String, String> typeCountCodeMap) {
+    public static void error(final String classMethod, final String dataId, final String errorInfo, Date curDate) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            error(countTypeVo, classMethod, dataId, errorInfo, curDate, typeCountCodeMap);
+            error(countTypeVo, classMethod, dataId, errorInfo, curDate);
         }
     }
 
-    public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate, Map<String, String> typeCountCodeMap) {
+    public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
-        final String countCode = getCountCodeCache(countTypeVo, classMethod, timeValue, typeCountCodeMap);
+        final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         taskCountVo.setError(taskCountVo.getNewly());
         taskCountVo.getError().setTs(curDate.getTime());
@@ -144,21 +143,6 @@ public class TaskToolUtils {
      */
     public static String getMethodCountKey(TaskCountTypeVo countTypeVo, String classMethod, Integer timeValue) {
         return classMethod + ":" + countTypeVo.getCode() + ":" + timeValue + ":" + countTypeVo.getTimeSeconds();
-    }
-
-    /**
-     * 用于生成当前时间缓存对应的唯一key
-     * 用typeCountCodeMap做缓存，以减少生生次数
-     *
-     * @param countTypeVo
-     * @param classMethod
-     * @param typeCountCodeMap
-     * @return
-     */
-    private static String getCountCodeCache(TaskCountTypeVo countTypeVo, String classMethod, Integer timeValue, Map<String, String> typeCountCodeMap) {
-        return typeCountCodeMap.computeIfAbsent(countTypeVo.getCode(), k -> {
-            return getMethodCountKey(countTypeVo, classMethod, timeValue);
-        });
     }
 
 
