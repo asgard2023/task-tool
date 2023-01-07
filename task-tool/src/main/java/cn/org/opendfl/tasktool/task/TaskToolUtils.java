@@ -126,6 +126,7 @@ public class TaskToolUtils {
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         taskCountVo.setError(taskCountVo.getNewly());
         taskCountVo.getError().setTs(curDate.getTime());
+        taskCountVo.getError().setDataId(dataId);
         taskCountVo.getError().setRemark(errorInfo);
         taskCountVo.getErrorCounter().incrementAndGet();
         if (dataId != null) {
