@@ -24,7 +24,7 @@ public class TaskToolConfiguration {
     /**
      * 版本号
      */
-    private String version = "1";
+    private String version = "1.8";
 
     /**
      * 任务统计类型配置

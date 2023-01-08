@@ -97,6 +97,8 @@ public class TaskInfoController {
                     return taskCountVo.getMax().getRunTime();
                 } else if ("error.ts".equals(sort)) {
                     return taskCountVo.getError().getTs();
+                } else if ("timeValue".equals(sort)) {
+                    return taskCountVo.getTimeValue() + 0L;
                 }
                 return 0L;
             }

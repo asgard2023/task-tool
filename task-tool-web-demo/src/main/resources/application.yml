@@ -12,18 +12,22 @@ task-tool:
   security-key: tasktooltest
   #统计时间类型
   counterTimeTypes:
-    - code: M
-      time-seconds: 60
+    - code: MI
       name: 'Minute'
+      time-seconds: 60
+      date-format: ddHHmm
+      hisCount: 5
     - code: H
-      time-seconds: 3600
       name: 'Hour'
+      time-seconds: 3600
+      hisCount: 5
     - code: D
-      time-seconds: 86400
       name: 'Day'
+      time-seconds: 86400
+      hisCount: 5
     - code: T
-      time-seconds: -1
       name: 'Total'
+      time-seconds: -1
 
 logging:
   level:

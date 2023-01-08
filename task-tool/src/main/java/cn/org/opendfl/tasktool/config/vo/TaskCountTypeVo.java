@@ -31,6 +31,10 @@ public class TaskCountTypeVo {
      */
     private String dateFormat;
     /**
+     * 保留历史个数
+     */
+    private int hisCount=1;
+    /**
      * 是否保存到数据库
      */
     private boolean saveDb;

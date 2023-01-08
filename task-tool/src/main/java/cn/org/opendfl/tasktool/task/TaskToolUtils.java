@@ -158,12 +158,6 @@ public class TaskToolUtils {
             if (!countTypeOp.isPresent()) {
                 continue;
             }
-            TaskCountTypeVo countTypeVo = countTypeOp.get();
-            int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS;
-            boolean isExpired = countTypeVo.getTimeSeconds() != -1 && curTime - taskCountVo.getFirst().getTs() > periodTime;
-            if (isExpired) {
-                continue;
-            }
 
             Map<String, Long> processingDataMap = entry.getValue().getProcessingData();
             Set<Map.Entry<String, Long>> msgKeySet = processingDataMap.entrySet();
@@ -191,9 +185,10 @@ public class TaskToolUtils {
                 continue;
             }
             TaskCountTypeVo countTypeVo = countTypeOp.get();
-            int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS * 2;
+            int periodTime = countTypeVo.getTimeSeconds() * DateTimeConstant.SECOND_MILLIS * (countTypeVo.getHisCount()+1);
             boolean isExpired = countTypeVo.getTimeSeconds() > 0 && curTime - taskCountVo.getFirst().getTs() > periodTime;
             if (isExpired) {
+                log.warn("----saveTaskCounts--expire--key={} expired", entry.getKey());
                 expireKeys.add(entry.getKey());
                 continue;
             }
