@@ -102,7 +102,7 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         }
 
         Date firstTime = new Date(taskCountVo.getFirst().getTs());
-        Integer timeValue = DateTimeConstant.getDateInt(firstTime, countType.getCode(), null);
+        Integer timeValue = taskCountVo.getTimeValue();
         final String countCode = TaskToolUtils.getMethodCountKey(countType, methodCode, timeValue);
         Integer methodCountId = countIdMap.get(countCode);
         final Integer dataMethodIdFinal = dataMethodId;
