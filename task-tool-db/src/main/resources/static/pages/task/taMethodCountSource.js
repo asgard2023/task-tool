@@ -21,11 +21,11 @@ $(function () {
         $('#query_timeType').val(timeType);
     }
     var startTime=app.getQueryString('startTime');
-    if(timeType){
+    if(startTime){
         $('#query_startTime').val(startTime);
     }
     var endTime=app.getQueryString('endTime');
-    if(timeType){
+    if(endTime){
         $('#query_endTime').val(endTime);
     }
     doSearch();
