@@ -74,17 +74,6 @@ function onEdit() {
 }
 
 function onSave() {
-    var row = $('#dg').datagrid('getSelected');
-    if (row) {
-        if (row.canModify == 0) {
-            $.messager.show({
-                title: 'Error',
-                msg: '不可修改，禁止操作'
-            });
-            return;
-        }
-    }
-
     var url = '/task/taDataMethod/save';
     var jsonParam = $('#fm').serializeJson();
     if ($('#fm').form('validate')) {

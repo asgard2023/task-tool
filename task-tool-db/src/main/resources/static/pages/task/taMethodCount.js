@@ -82,17 +82,6 @@ function onEdit() {
 }
 
 function onSave() {
-    var row = $('#dg').datagrid('getSelected');
-    if (row) {
-        if (row.canModify == 0) {
-            $.messager.show({
-                title: 'Error',
-                msg: '不可修改，禁止操作'
-            });
-            return;
-        }
-    }
-
     var url = '/task/taMethodCount/save';
     var jsonParam = $('#fm').serializeJson();
     if ($('#fm').form('validate')) {
@@ -172,16 +161,6 @@ function onDestroy() {
 }
 
 function sourceCount(){
-    var row = $('#dg').datagrid('getSelected');
-    if (!row) {
-        if (row.canModify == 0) {
-            $.messager.show({
-                title: 'Warn',
-                msg: '请选中行'
-            });
-            return;
-        }
-    }
     var url='taMethodCountSourceDetail.html?methodCountId='+row.id+'&startTime='+$('#query_startTime').val();
     //window.open('taMethodCountSource.html?methodCountId='+row.id);
     var title=row.dataMethod.code+'-'+row.timeType+'-'+row.timeValue;
