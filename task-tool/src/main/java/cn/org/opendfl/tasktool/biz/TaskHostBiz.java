@@ -27,6 +27,19 @@ public class TaskHostBiz implements ITaskHostBiz {
         exist.setHeartbeat(new Date());
     }
 
+    public void save(TaskHostVo taskHost) {
+        TaskHostVo taskHostVo = taskHostMap.get(taskHost.getCode());
+        taskHostVo.setRemark(taskHost.getRemark());
+        taskHostVo.setName(taskHost.getName());
+        taskHostVo.setType(taskHost.getType());
+        taskHostVo.setIp(taskHost.getIp());
+        taskHostVo.setPort(taskHost.getPort());
+        if (CharSequenceUtil.isNotBlank(taskHost.getAuthKey())) {
+            taskHostVo.setAuthKey(taskHost.getAuthKey());
+        }
+        taskHostVo.setUpdateDate(new Date());
+    }
+
     public boolean delete(String code) {
         log.info("---delete--code={}", code);
         Object obj = taskHostMap.remove(code);

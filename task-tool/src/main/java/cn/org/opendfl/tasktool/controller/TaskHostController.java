@@ -41,6 +41,22 @@ public class TaskHostController {
         return "{\"success\":\"ok\"}";
     }
 
+    /**
+     * 增加host
+     *
+     * @param taskHost
+     * @return
+     */
+    @PostMapping("save")
+    public Object save(@RequestParam(value = "authKey", required = false) String key, TaskHostVo taskHost) {
+        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
+            log.warn("----key={} invalid", key);
+            return "{\"errorMsg\":\"auth fail\"}";
+        }
+        this.taskHostBiz.save(taskHost);
+        return "{\"success\":\"true\"}";
+    }
+
     @RequestMapping(value = "hosts", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getHosts(@RequestParam(value = "authKey", required = false) String key
             , TaskHostVo taskHostVo, PageVO page) {
@@ -68,7 +84,7 @@ public class TaskHostController {
         }
 
         List<TaskHostVo> list = this.taskHostBiz.getHosts(taskHostVo, null, null, page);
-        List<TaskHostVo> list2=new ArrayList<>();
+        List<TaskHostVo> list2 = new ArrayList<>();
         TaskHostVo local = new TaskHostVo();
         local.setCode("");
         local.setRemark("local");

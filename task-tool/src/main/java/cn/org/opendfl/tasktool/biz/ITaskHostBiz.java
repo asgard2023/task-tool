@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ITaskHostBiz {
     public void addHost(TaskHostVo taskHost);
+    public void save(TaskHostVo taskHost);
+
     public boolean delete(String code);
 
     public TaskHostVo getTaskHost(String code);

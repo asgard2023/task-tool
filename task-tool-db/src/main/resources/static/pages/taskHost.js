@@ -78,15 +78,15 @@ function onEdit() {
 
 function onSave() {
     var row = $('#dg').datagrid('getSelected');
-    if (row) {
+    if (!row) {
         $.messager.show({
             title: 'Error',
-            msg: '不能修改'
+            msg: '请选中行'
         });
         return;
     }
 
-    var url = '/taskHost/save';
+    var url = '/taskHost/save?authKey='+securityKey;
     var jsonParam = $('#fm').serializeJson();
     if ($('#fm').form('validate')) {
         $.ajax({
