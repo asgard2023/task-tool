@@ -2,6 +2,7 @@ package cn.org.opendfl.tasktool.config;
 
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
+import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -47,4 +48,6 @@ public class TaskToolConfiguration {
     private boolean isSaveServerName;
 
     private ControllerConfigVo controllerConfig = new ControllerConfigVo();
+
+    private TaskToolVo taskToolCentral;
 }

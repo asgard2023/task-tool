@@ -1,7 +1,7 @@
 package cn.org.opendfl.task.test.biz;
 
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
-import cn.org.opendfl.tasktool.task.TaskCompute;
+import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
