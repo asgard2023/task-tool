@@ -7,7 +7,7 @@ task-tool:
   security-key: tasktooltest
   taskToolCentral:
     open: true
-    apiUrl: http://localhost:8080
+    apiUrl: https://task-tool-demo.opendfl.org.cn
     authKey: tasktooltest
     taskLocal:
       type: test
