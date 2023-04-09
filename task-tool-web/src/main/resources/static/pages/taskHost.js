@@ -5,24 +5,32 @@ $('#reset-btn').click(function () {
     $('#search-form')[0].reset();
 });
 
+var rowIds = '';
 $(function () {
-    //单位下拉框
-    $("#query_timeType").combobox ({
-        editable : false,
-        url : "/taskInfo/config?type=timeTypes&authKey="+securityKey,//url
-        valueField : "code", //相当于 option 中的 value 发送到后台的
-        textField : "name"	//option中间的内容 显示给用户看的
-    });
-
-    var beforeDay = 7;
-    initStartEndTime(beforeDay)
-    doSearch();
+    // doSearch();
 });
 
+function dataLoader(param, success, error) {
+    var url = "/taskHost/hosts?authKey="+securityKey;
+    $.ajax({
+        url: url,
+        data: param,
+        method: 'get',
+        dataType: "json",
+        success: function (data) {
+            success(data);
+        },
+        error: function (e) {
+            error(e);
+        }
+    })
+}
+
 function doSearch() {
-    var url = "/task/taMethodCount/list2";
+    console.log('-----doSearch--');
+    var url = "/taskHost/hosts";
     var jsonParam = $('#search-form').serializeJson();
-    $('#dg').datagrid({headers: app.headers, url: url, queryParams: jsonParam})
+    $('#dg').datagrid({headers: app.headers, url: url, queryParams: jsonParam});
 }
 
 
@@ -47,42 +55,38 @@ function listenerName(ex) {
 }
 
 $('#query_code').keydown(listenerName);
-$('#query_name').keydown(listenerName);
+$('#query_type').keydown(listenerName);
 
 var url;
 
 function onAdd() {
-    $('#dlg').dialog('open').dialog('setTitle', 'New TaMethodCount');
+    $('#dlg').dialog('open').dialog('setTitle', 'New 运行信息');
     $('#fm').form('clear');
-    $('#taMethodCount_status').combobox('select', '1');
-    //$("#taMethodCount_remark").val('test');
-}
-
-function getRowData(entityName, row) {
-    var tmp;
-    var obj = {}
-    obj[entityName] = {};
-    for (i in row) {
-        tmp = row[i];
-        obj[i] = tmp;
-    }
-    return obj;
+    //$("#dflRole_remark").val('test');
 }
 
 function onEdit() {
     var row = $('#dg').datagrid('getSelected');
     if (row) {
-        var entityName = 'taMethodCount';
+        var entityName = 'taskHost';
         $('#fm').form('clear');
-        var obj = getRowData(entityName, row);
-        $('#dlg').dialog('open').dialog('setTitle', 'Edit TaMethodCount');
-        $('#fm').form('load', obj);
+        $('#dlg').dialog('open').dialog('setTitle', 'Edit 运行信息');
+        $('#fm').form('load', row);
     }
 
 }
 
 function onSave() {
-    var url = '/task/taMethodCount/save';
+    var row = $('#dg').datagrid('getSelected');
+    if (row) {
+        $.messager.show({
+            title: 'Error',
+            msg: '不能修改'
+        });
+        return;
+    }
+
+    var url = '/taskHost/save';
     var jsonParam = $('#fm').serializeJson();
     if ($('#fm').form('validate')) {
         $.ajax({
@@ -125,10 +129,10 @@ function onDestroy() {
             if (r) {
                 $.ajax({
                     type: 'post',
-                    data: {id: row.id},
+                    data: {code: row.code},
                     headers: app.headers,
                     dataType: 'json',
-                    url: '/task/taMethodCount/delete',
+                    url: '/taskHost/delete?authKey='+securityKey,
                     success: function (data, textStatus, jqXHR) {
                         if (data.success) {
                             $.messager.show({    // show error message
@@ -158,12 +162,4 @@ function onDestroy() {
             msg: '请先选择要删除的记录'
         });
     }
-}
-
-function sourceCount(){
-    var url='taMethodCountSourceDetail.html?methodCountId='+row.id+'&startTime='+$('#query_startTime').val();
-    //window.open('taMethodCountSource.html?methodCountId='+row.id);
-    var title=row.dataMethod.code+'-'+row.timeType+'-'+row.timeValue;
-    $('#dlgSource').dialog('open').dialog('setTitle', title);
-    $('#iframeSource').attr('src', url);
 }

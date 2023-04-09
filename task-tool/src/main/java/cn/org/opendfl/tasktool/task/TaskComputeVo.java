@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

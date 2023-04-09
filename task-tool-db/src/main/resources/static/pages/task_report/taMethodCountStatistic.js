@@ -82,16 +82,6 @@ function onEdit() {
 }
 
 function sourceCount() {
-    var row = $('#dg').datagrid('getSelected');
-    if (!row) {
-        if (row.canModify == 0) {
-            $.messager.show({
-                title: 'Warn',
-                msg: '请选中行'
-            });
-            return;
-        }
-    }
     var url = '../task/taMethodCountSourceDetail.html?dataMethodId=' + row.dataMethodId + '&timeType=' + row.timeType + '&startTime=' + $('#query_startTime').val();
     //window.open('taMethodCountSource.html?methodCountId='+row.id);
     var title = row.dataMethod.code + '-' + row.timeType;

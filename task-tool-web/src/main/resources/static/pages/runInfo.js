@@ -9,6 +9,7 @@ var rowIds = '';
 $(function () {
     // doSearch();
     $('#query_countType').combobox({url:'/taskInfo/config?type=timeTypes&authKey=' + securityKey});
+    $('#query_taskHostCode').combobox({url:'/taskHost/hostList?authKey=' + securityKey});
 });
 
 function dataLoader(param, success, error) {

@@ -1,6 +1,6 @@
 package cn.org.opendfl.tasktool.biz;
 
-import cn.org.opendfl.tasktool.task.TaskCompute;
+import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
 import org.springframework.stereotype.Service;
 
 /**

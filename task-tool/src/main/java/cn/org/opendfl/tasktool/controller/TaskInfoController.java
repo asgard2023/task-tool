@@ -2,16 +2,14 @@ package cn.org.opendfl.tasktool.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
+import cn.org.opendfl.tasktool.client.TaskInfoRest;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.AppInfoVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -32,7 +30,15 @@ public class TaskInfoController {
 
     @Resource
     private TaskToolConfiguration taskToolConfiguration;
+    @Resource
+    private TaskInfoRest taskInfoRest;
     private static final long START_TIME = System.currentTimeMillis();
+
+    @RequestMapping(value = "runInfoJson", method = {RequestMethod.POST, RequestMethod.GET})
+    public Object getTaskInfoJson(@RequestParam(value = "authKey", required = false) String key,
+                                  @RequestParam(value = "taskHostCode", required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page) {
+        return getTaskInfo(key, taskHostCode, taskCountVo, page);
+    }
 
     /**
      * 运信信息
@@ -41,16 +47,20 @@ public class TaskInfoController {
      * @return
      */
     @RequestMapping(value = "runInfo", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object getTaskInfo(@RequestParam(value = "authKey", required = false) String key, TaskCountVo taskCountVo, PageVO page) {
+    public Object getTaskInfo(@RequestParam(value = "authKey", required = false) String key,
+                              @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            return "{\"auth\":\"fail\"}";
+            return "{\"errorMsg\":\"auth fail\"}";
+        }
+
+        if (CharSequenceUtil.isNotBlank(taskHostCode)) {
+            return taskInfoRest.getRunInfo(taskHostCode, taskCountVo, page);
         }
         List<TaskCountVo> list = TaskToolUtils.getTaskCountInfo();
-        list = list.stream().filter(t ->
-                CharSequenceUtil.isBlank(taskCountVo.getCountType()) || CharSequenceUtil.equals(taskCountVo.getCountType(), t.getCountType())
-        ).filter(t ->
-                CharSequenceUtil.isBlank(taskCountVo.getKey()) || t.getKey().contains(taskCountVo.getKey())
-        ).collect(Collectors.toList());
+        list = list.stream()
+                .filter(t -> CharSequenceUtil.isBlank(taskCountVo.getCountType()) || CharSequenceUtil.equals(taskCountVo.getCountType(), t.getCountType()))
+                .filter(t -> CharSequenceUtil.isBlank(taskCountVo.getKey()) || t.getKey().contains(taskCountVo.getKey()))
+                .collect(Collectors.toList());
 
 
         Comparator orderType = Comparator.naturalOrder();
@@ -124,7 +134,7 @@ public class TaskInfoController {
     public Object getConfig(@RequestParam(value = "authKey", required = false) String key
             , @RequestParam(value = "type", required = false) String type) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            return "{\"auth\":\"fail\"}";
+            return "{\"errorMsg\":\"auth fail\"}";
         }
 
         if ("timeTypes".equals(type)) {

@@ -15,6 +15,15 @@ task-tool:
   run-time-base: 200
   #安全key
   security-key: tasktooltest
+  taskToolCentral:
+    open: true
+    apiUrl: http://localhost:8080
+    authKey: tasktooltest
+    taskLocal:
+      type: test
+      code: test
+      ip: localhost
+      port: 8080
   #统计时间类型
   counterTimeTypes:
     - code: M

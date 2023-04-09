@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集群信息</title>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/easyui.comm.valid.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../../assets/easyui/easyui.grid.hide.js"></script>
+    <script type="text/javascript" src="../../js/easyui/Common.js"></script>
+    <script type="text/javascript" src="../../js/easyui/comm.dict.js"></script>
+    <script type="text/javascript" src="../../js/easyui/DateUtils.js"></script>
+    <script type="text/javascript" src="common.task.js"></script>
+    <script type="text/javascript" src="taskHost.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/easyui/easyui1.7.0/themes/icon.css">
+
+    <style type="text/css">
+        #fm {
+            margin: 0;
+            padding: 10px 20px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+        .fitem label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        .input_query {
+            width: 80px;
+        }
+
+        input, textarea {
+            width: 160px;
+            border: 1px solid #ccc;
+            padding: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="easyui-layout" data-options="fit:true">
+    <!-- 查询条件  -->
+    <div data-options="region:'north', title:'集群信息-条件'"
+         style="height: 80px; padding: 5px 10px;display:none;">
+        <form id="search-form">
+            <table class="search-table">
+                <tr>
+                    <td>
+                        code:
+                        <input type="text" id="query_code" name="code" class="easyui-validatebox">
+                    </td>
+                    <td>
+                        type:
+                        <input type="text" id="query_type" name="type" class="easyui-validatebox">
+                    </td>
+                    <td>
+                        <a class="easyui-linkbutton"
+                           data-options="iconCls:'icon-search'" id="search-btn" onclick="javascript:doSearch()">查询</a>
+                        <a class="easyui-linkbutton"
+                           data-options="iconCls:'icon-reload'" id="reset-btn">重置</a>
+                    </td>
+
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!-- 查询结果 center -->
+    <div data-options="region:'center', title:'查询结果'">
+        <div id="toolbar" style="display:none;">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="onEdit()">修改</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+               onclick="onDestroy()">删除</a>
+        </div>
+        <table id="dg" class="easyui-datagrid"
+               data-options="onDblClickRow:onDblClick, onClickRow:onClick, onLoadError:loadError, loader:dataLoader, onLoadSuccess:function(r){$('.datagrid-btable').find('div.datagrid-cell').css('text-align','left');}"
+               toolbar="#toolbar" pagination="true" sortName="createTime" sortOrder="desc"
+               rownumbers="true" fitColumns="true" singleSelect="true" style="display:none;">
+            <thead>
+
+            <tr>
+
+                <th align="center" field="code" width="50" sortable="true">code</th>
+                <th align="center" field="name" width="50" sortable="true">application.name</th>
+                <th align="center" field="profile" width="50" sortable="true">active.profile</th>
+                <th align="center" field="type" width="50" sortable="true">类型</th>
+                <th align="center" field="ip" width="50" sortable="true" >ip</th>
+                <th align="center" field="port" width="50" sortable="true">port</th>
+                <th align="center" field="joinDate" width="50" sortable="true" formatter="timestampFormatDateTime" >首次加入时间</th>
+                <th align="center" field="heartbeat" width="50" sortable="true" formatter="timestampFormatDateTime">心跳时间</th>
+                <th align="center" field="updateDate" width="50" sortable="true" formatter="timestampFormatDateTime">心跳时间</th>
+                <th align="center" field="remark" width="50" sortable="true" >备注</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="dlg" class="easyui-dialog" style="width:500px;height:450px;padding:5px 10px;display:none;"
+     closed="true" buttons="#dlg-buttons">
+    <form id="fm" method="post" novalidate>
+        <div class="fitem">
+            <label>code:</label>
+            <input name="code" class="easyui-validatebox" required="true" readonly>
+        </div>
+        <div class="fitem">
+            <label>name:</label>
+            <input name="name" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>profile:</label>
+            <input name="profile" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>type:</label>
+            <input name="type" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
+            <label>ip:</label>
+            <input name="ip" class="easyui-validatebox" required="true">
+        </div>
+        <div class="fitem">
+            <label>port:</label>
+            <input name="port" class="easyui-validatebox" required="true">
+        </div>
+
+<!--        <div class="fitem">-->
+<!--            <label>joinDate:</label>-->
+<!--            <input name="joinDate" class="easyui-datetimebox" required="true" readonly>-->
+<!--        </div>-->
+<!--        <div class="fitem">-->
+<!--            <label>heartbeat:</label>-->
+<!--            <input name="heartbeat" class="easyui-datetimebox" readonly>-->
+<!--        </div>-->
+<!--        <div class="fitem">-->
+<!--            <label>updateTime:</label>-->
+<!--            <input name="updateDate" class="easyui-datetimebox" readonly>-->
+<!--        </div>-->
+        <div class="fitem">
+            <label>备注:</label>
+            <textarea name="remark" style="height:80px;width:220px"></textarea>
+        </div>
+    </form>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+           onclick="javascript:$('#dlg').dialog('close')">Cancel</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
