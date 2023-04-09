@@ -54,8 +54,12 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             TaskHostVo taskHostVo = toHost(taskLocal);
             taskHostVo.setName(environment.getProperty("spring.application.name"));
             taskHostVo.setProfile(CommUtils.join(environment.getActiveProfiles(), ","));
-            String result = taskHostRest.addHost(taskHostVo);
-            log.info("---autoRegistHost--remoteApi={} result={} taskHost={}", taskToolCentral.getApiUrl(), result, taskLocal);
+            try {
+                String result = taskHostRest.addHost(taskHostVo);
+                log.info("---autoRegistHost--remoteApi={} result={} taskHost={}", taskToolCentral.getApiUrl(), result, taskLocal);
+            } catch (Exception e) {
+                log.warn("---autoRegistHost--remoteApi={} error={}", taskToolCentral.getApiUrl(), e.getMessage(), e);
+            }
         } else {
             log.info("---autoRegistHost--taskToolCentral.open={}", taskToolCentral.isOpen());
         }
