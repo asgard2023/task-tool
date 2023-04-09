@@ -5,14 +5,13 @@ $('#reset-btn').click(function () {
     $('#search-form')[0].reset();
 });
 
+var rowIds = '';
 $(function () {
     // doSearch();
-    $('#query_countType').combobox({url:'/taskInfo/config?type=timeTypes&authKey=' + securityKey});
-    $('#query_taskHostCode').combobox({url:'/taskHost/hostList?authKey=' + securityKey});
 });
 
 function dataLoader(param, success, error) {
-    var url = "/taskInfo/runInfo?authKey="+securityKey;
+    var url = "/taskHost/hosts?authKey="+securityKey;
     $.ajax({
         url: url,
         data: param,
@@ -29,7 +28,7 @@ function dataLoader(param, success, error) {
 
 function doSearch() {
     console.log('-----doSearch--');
-    var url = "/taskInfo/runInfo";
+    var url = "/taskHost/hosts";
     var jsonParam = $('#search-form').serializeJson();
     $('#dg').datagrid({headers: app.headers, url: url, queryParams: jsonParam});
 }
@@ -56,7 +55,7 @@ function listenerName(ex) {
 }
 
 $('#query_code').keydown(listenerName);
-$('#query_name').keydown(listenerName);
+$('#query_type').keydown(listenerName);
 
 var url;
 
@@ -69,34 +68,10 @@ function onAdd() {
 function onEdit() {
     var row = $('#dg').datagrid('getSelected');
     if (row) {
-        var entityName = 'dflRole';
+        var entityName = 'taskHost';
         $('#fm').form('clear');
-        row.sourceCounterJson=JSON.stringify(row.sourceCounterMap).replaceAll(',',',\n')
-        row.processingDataJson=JSON.stringify(row.processingData).replaceAll(',',',\n')
         $('#dlg').dialog('open').dialog('setTitle', 'Edit 运行信息');
         $('#fm').form('load', row);
-        $('#fm-category').val(row.taskCompute.category);
-        $('#fm-dataIdArgCount').val(row.taskCompute.dataIdArgCount);
-        $('#fm-showProcessing').val(row.taskCompute.showProcessing);
-
-        $('#fm-max-runTime').val(row.max.runTime);
-        $('#fm-max-ts').val(getTimeFormat(row.max.ts));
-        $('#fm-max-dataId').val(row.max.dataId);
-        $('#fm-max-uid').val(row.max.uid);
-
-        $('#fm-newly-runTime').val(row.newly.runTime);
-        $('#fm-newly-ts').val(getTimeFormat(row.newly.ts));
-        $('#fm-newly-dataId').val(row.newly.dataId);
-        $('#fm-newly-uid').val(row.newly.uid);
-
-
-        if(row.error){
-            $('#fm-error-ts').val(getTimeFormat(row.error.ts));
-            $('#fm-error-dataId').val(row.error.dataId);
-            $('#fm-error-uid').val(row.error.uid);
-            $('#fm-error-remark').val(row.error.remark);
-        }
-        console.log(row.max);
     }
 
 }
@@ -111,7 +86,7 @@ function onSave() {
         return;
     }
 
-    var url = '/dflRole/save';
+    var url = '/taskHost/save';
     var jsonParam = $('#fm').serializeJson();
     if ($('#fm').form('validate')) {
         $.ajax({
@@ -154,10 +129,10 @@ function onDestroy() {
             if (r) {
                 $.ajax({
                     type: 'post',
-                    data: {id: row.id},
+                    data: {code: row.code},
                     headers: app.headers,
                     dataType: 'json',
-                    url: '/dflRole/delete',
+                    url: '/taskHost/delete?authKey='+securityKey,
                     success: function (data, textStatus, jqXHR) {
                         if (data.success) {
                             $.messager.show({    // show error message
@@ -188,91 +163,3 @@ function onDestroy() {
         });
     }
 }
-
-function taskComputeShowProcessing(v, row, index){
-    return row.taskCompute.showProcessing;
-}
-
-function taskComputeDataIdArgCount(v, row, index){
-    return row.taskCompute.dataIdArgCount;
-}
-
-function taskComputeCategory(v, row, index){
-    return row.taskCompute.category;
-}
-
-function getTimeFormat(ts){
-    var date = new Date(ts);
-    return DateUtils.formatDate(date, 'yyyy-MM-dd hh:mm:ss');
-}
-function firstTs(v, row, index){
-    return getTimeFormat(row.first.ts);
-}
-function firstRunTime(v, row, index){
-    return row.first.runTime;
-}
-function firstUid(v, row, index){
-    return row.first.uid;
-}
-function firstDataId(v, row, index){
-    return row.first.dataId;
-}
-
-
-function newlyTs(v, row, index){
-    return getTimeFormat(row.newly.ts);
-}
-function newlyRunTime(v, row, index){
-    return row.newly.runTime;
-}
-function newlyUid(v, row, index){
-    return row.newly.uid;
-}
-function newlyDataId(v, row, index){
-    return row.newly.dataId;
-}
-
-function maxTs(v, row, index){
-    return getTimeFormat(row.max.ts);
-}
-function maxRunTime(v, row, index){
-    return row.max.runTime;
-}
-function maxUid(v, row, index){
-    return row.max.uid;
-}
-function maxDataId(v, row, index){
-    return row.max.dataId;
-}
-
-function errorTs(v, row, index){
-    if(!row.error){
-        return '';
-    }
-    return getTimeFormat(row.error.ts);
-}
-function errorRunTime(v, row, index){
-    if(!row.error){
-        return '';
-    }
-    return row.error.runTime;
-}
-function errorUid(v, row, index){
-    if(!row.error){
-        return '';
-    }
-    return row.error.uid;
-}
-function errorDataId(v, row, index){
-    if(!row.error){
-        return '';
-    }
-    return row.error.dataId;
-}
-function errorRemark(v, row, index){
-    if(!row.error){
-        return '';
-    }
-    return row.error.remark;
-}
-

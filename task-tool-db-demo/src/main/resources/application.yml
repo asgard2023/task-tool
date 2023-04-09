@@ -5,6 +5,14 @@ task-tool:
   run-time-base: 10
   #安全key
   security-key: tasktooltest
+  taskToolCentral:
+    open: true
+    apiUrl: http://localhost:8080
+    authKey: tasktooltest
+    taskLocal:
+      type: test
+      code: test
+      ip: localhost
   #统计时间类型
   counterTimeTypes:
     - code: MI
@@ -41,6 +49,8 @@ task-tool:
       - '*'
 
 spring:
+  application:
+    name: task-tool-db-demo
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://192.168.1.254:3306/task_tool?allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=GMT%2B8

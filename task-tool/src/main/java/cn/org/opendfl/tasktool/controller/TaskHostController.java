@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +67,14 @@ public class TaskHostController {
             return "{\"errorMsg\":\"auth fail\"}";
         }
 
-        return this.taskHostBiz.getHosts(taskHostVo, null, null, page);
+        List<TaskHostVo> list = this.taskHostBiz.getHosts(taskHostVo, null, null, page);
+        List<TaskHostVo> list2=new ArrayList<>();
+        TaskHostVo local = new TaskHostVo();
+        local.setCode("");
+        local.setRemark("local");
+        list2.add(local);
+        list2.addAll(list);
+        return list2;
     }
 
     /**
