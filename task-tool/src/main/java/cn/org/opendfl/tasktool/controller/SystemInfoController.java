@@ -42,7 +42,7 @@ public class SystemInfoController {
         else{
             info="invalid authKey";
         }
-        log.info("---checkKey--isOk={}", isOk);
+        log.info("---checkKey--isOk={} info={}", isOk, info);
         return "{\"success\":" + isOk + ",\"tokenExpireTime\":"+3600+",\"errorMsg\":\""+info+"\"}";
     }
 }

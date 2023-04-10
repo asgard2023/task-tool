@@ -50,6 +50,7 @@ public class TaskInfoController {
     public Object getTaskInfo(@RequestParam(value = "authKey", required = false) String key,
                               @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
+            log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
 
@@ -134,6 +135,7 @@ public class TaskInfoController {
     public Object getConfig(@RequestParam(value = "authKey", required = false) String key
             , @RequestParam(value = "type", required = false) String type) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
+            log.warn("----config--type={} authKey={}", type, key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
 
