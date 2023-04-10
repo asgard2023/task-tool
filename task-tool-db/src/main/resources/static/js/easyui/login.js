@@ -10,26 +10,8 @@ function initCookies() {
     return keys;
 }
 
-function encrypt_login(f) {
-    console.log('----encrypt_login--')
-    // 获取
-    var url= '/frequencyLogin/rsaKey?funcCode=login';
-    $.ajax({
-        type:"get",
-        url:url,
-        success:function(data){
-            console.log(data);
-            // console.log(encrypedPwd);
-            f(data.data);
-        },
-        error: function(result, status, xhr) {
-            submitflage = false;
-        }
-    });
-}
 
-function login_req(data) {
-    console.log('-----login_req--' + data)
+function login_req() {
     var user = $("#loginForm").serializeJSON();
     var logindata = {
         grant_type: 'password',
@@ -38,13 +20,6 @@ function login_req(data) {
     };
 
 
-    if (data) {//走加密方式
-        var pwdKey = new RSAUtils.getKeyPair(data.exponent, "", data.modulus);
-        logindata.authKey = RSAUtils.encryptedStringOfReversed(pwdKey, logindata.authKey);
-        logindata.clientIdRsa = data.clientIdRsa;
-    }
-
-    sessionStorage.access_token='';
     $.ajax({
         type: 'post',
         url: '/systemInfo/checkKey',
@@ -94,13 +69,7 @@ function loginSubmit() {
     }
 
 
-    var isEncrypt=false;//是否加密账号及密码
-    if(isEncrypt){
-        encrypt_login(login_req);
-    }
-    else{
-        login_req();
-    }
+    login_req();
 }
 
 $(function () {
