@@ -47,7 +47,7 @@ public class TaskInfoRest {
         String bodyString = JSON.toJSONString(taskCountVo);
         HttpEntity<String> httpEntitys = new HttpEntity<>(bodyString, httpHeaders);
         ResponseEntity<String> exchanges = restTemplate.postForEntity(url, httpEntitys, String.class);
-        log.info("----getRunInfo--bodyString={}, resultRemote={}", bodyString, exchanges.getBody());
+        log.info("----getRunInfo--bodyString={}, statusCode={}", bodyString, exchanges.getStatusCode());
         return exchanges.getBody();
     }
 
@@ -62,7 +62,7 @@ public class TaskInfoRest {
 
 
         ResponseEntity<String> exchanges = restTemplate.getForEntity(url, String.class);
-        log.info("----getConfig--taskHostCode={}, resultRemote={}", taskHostCode, exchanges.getBody());
+        log.info("----getConfig--taskHostCode={}, statusCode={}", taskHostCode, exchanges.getStatusCode());
         return exchanges.getBody();
     }
 }
