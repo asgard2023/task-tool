@@ -50,7 +50,7 @@ public class TaskHostController {
     @PostMapping("save")
     public Object save(@RequestParam(value = "authKey", required = false) String key, TaskHostVo taskHost) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----key={} invalid", key);
+            log.warn("----save--key={} invalid", key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         this.taskHostBiz.save(taskHost);
@@ -61,7 +61,7 @@ public class TaskHostController {
     public Object getHosts(@RequestParam(value = "authKey", required = false) String key
             , TaskHostVo taskHostVo, PageVO page) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----key={} invalid", key);
+            log.warn("----hosts--key={} invalid", key);
             return "{\"errorMsg\":\" auth fail\"}";
         }
         List<TaskHostVo> list = this.taskHostBiz.getHosts(taskHostVo, null, null, page);
@@ -80,6 +80,7 @@ public class TaskHostController {
     public Object getConfig(@RequestParam(value = "authKey", required = false) String key
             , TaskHostVo taskHostVo, PageVO page) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
+            log.warn("----hostList--key={} invalid", key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
 
@@ -105,7 +106,7 @@ public class TaskHostController {
     public Object delete(@RequestParam(value = "authKey", required = false) String key
             , @RequestParam(name = "code", required = false) String code, HttpServletRequest request) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----key={} invalid", key);
+            log.warn("----delete--key={} invalid", key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         boolean isDel = taskHostBiz.delete(code);
