@@ -53,7 +53,7 @@ public class TaskInfoController {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
-
+        log.info("----runInfo--taskHostCode={}", taskHostCode);
         if (CharSequenceUtil.isNotBlank(taskHostCode)) {
             return taskInfoRest.getRunInfo(taskHostCode, taskCountVo, page);
         }
