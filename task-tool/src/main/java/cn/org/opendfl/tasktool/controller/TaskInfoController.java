@@ -1,6 +1,7 @@
 package cn.org.opendfl.tasktool.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.extra.servlet.ServletUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.client.TaskInfoRest;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,8 +38,8 @@ public class TaskInfoController {
 
     @RequestMapping(value = "runInfoJson", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getTaskInfoJson(@RequestParam(value = "authKey", required = false) String key,
-                                  @RequestParam(value = "taskHostCode", required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page) {
-        return getTaskInfo(key, taskHostCode, taskCountVo, page);
+                                  @RequestParam(value = "taskHostCode", required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page, HttpServletRequest request) {
+        return getTaskInfo(key, taskHostCode, taskCountVo, page, request);
     }
 
     /**
@@ -48,12 +50,13 @@ public class TaskInfoController {
      */
     @RequestMapping(value = "runInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getTaskInfo(@RequestParam(value = "authKey", required = false) String key,
-                              @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page) {
+                              @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page, HttpServletRequest request) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
-
+        String ip= ServletUtil.getClientIP(request);
+        log.info("----runInfo--taskHostCode={} ip={}", taskHostCode, ip);
         if (CharSequenceUtil.isNotBlank(taskHostCode)) {
             return taskInfoRest.getRunInfo(taskHostCode, taskCountVo, page);
         }
