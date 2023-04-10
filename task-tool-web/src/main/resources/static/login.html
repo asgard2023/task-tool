@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <title>authKey输入</title>
+    <script type="text/javascript" src="assets/easyui/easyui1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/easyui/easyui1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="assets/easyui/easyui1.7.0/easyui.comm.valid.js"></script>
+    <script type="text/javascript" src="assets/easyui/easyui1.7.0/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="assets/easyui/easyui.grid.hide.js"></script>
+    <script type="text/javascript" src="assets/easyui/jquery.serializejson.min.js?v=2.7.2"></script>
+    <script type="text/javascript" src="assets/easyui/easyui.grid.hide.js"></script>
+    <script type="text/javascript" src="js/easyui/Common.js"></script>
+    <script type="text/javascript" src="js/easyui/DateUtils.js"></script>
+    <script type="text/javascript" src="js/easyui/security.js"></script>
+    <script type="text/javascript" src="js/easyui/login.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/easyui/easyui1.7.0/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="assets/easyui/easyui1.7.0/themes/bootstrap/easyui.css">
+    <style>
+        #parentLogin {
+            width: 500px;
+            height: 200px;
+            margin-top: 20%;
+            margin-left: 50%;
+            transform: translate(-50%, -50%);
+            background: #009688;
+        }
+
+        .passwordLogin, .subBtn {
+            margin-top: 2%;
+            margin-left: 3%;
+        }
+
+        .loginHeader {
+            padding-top: 1%;
+        }
+    </style>
+</head>
+<body class="login_bg">
+<div id="parentLogin">
+    <section class="loginBox">
+        <header class="loginHeader" style="text-align:center; ">
+            <h1>authKey输入</h1>
+        </header>
+        <section class="loginCont">
+            <form id="loginForm" method="post">
+                <div class="passwordLogin" style="text-align:center; ">
+                    <label for="user">authKey：</label>
+                    <input id="user" type="text" name="authKey" placeholder="请输入authKey" required="required"/>
+                </div>
+                <div class="subBtn" style="text-align:center; ">
+                    <input type="button" id="loginBtn" value="登录"/>
+                </div>
+            </form>
+        </section>
+    </section>
+</div>
+</body>
+</html>
