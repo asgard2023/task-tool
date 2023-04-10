@@ -5,7 +5,6 @@ $('#reset-btn').click(function () {
     $('#search-form')[0].reset();
 });
 
-var rowIds = '';
 $(function () {
     // doSearch();
     $('#query_countType').combobox({url:'/taskInfo/config?type=timeTypes&authKey=' + securityKey});

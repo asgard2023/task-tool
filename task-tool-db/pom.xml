@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.org.opendfl</groupId>
     <artifactId>task-tool-db</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <name>task-tool-db</name>
     <packaging>jar</packaging>
     <description>task-tool support save to db</description>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>cn.org.opendfl</groupId>
             <artifactId>task-tool</artifactId>
-            <version>1.8</version>
+            <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>

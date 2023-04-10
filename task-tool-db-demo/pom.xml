@@ -29,12 +29,12 @@
         <dependency>
             <groupId>cn.org.opendfl</groupId>
             <artifactId>task-tool</artifactId>
-            <version>1.8</version>
+            <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>cn.org.opendfl</groupId>
             <artifactId>task-tool-db</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -107,6 +107,15 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>lib/*</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
