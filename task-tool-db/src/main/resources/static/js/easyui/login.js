@@ -63,7 +63,7 @@ function loginSubmit() {
     var user = $("#loginForm").serializeJSON();
 
     if(!user.authKey||user.authKey.length<4){
-        showToastmessage('error', '账号长度不够');
+        showToastmessage('error', 'authKey长度不够');
         submitflage=false;
         return;
     }
