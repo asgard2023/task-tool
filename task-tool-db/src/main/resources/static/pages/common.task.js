@@ -1,5 +1,12 @@
 var securityKey = 'tasktooltest';
 
+$(function () {
+    if(localStorage.authKey){
+        securityKey=localStorage.authKey;
+        console.log('securityKey='+securityKey);
+    }
+});
+
 /**
  * 支持的翻译语言
  * @returns {*}
@@ -12,7 +19,7 @@ function getCountTimeTypes() {
         async: false,
         cache: false,
         success: function (res) {
-            if (res.auth) {
+            if (res.errorMsg) {
                 $.messager.show({
                     title: 'Error',
                     msg: res.auth
