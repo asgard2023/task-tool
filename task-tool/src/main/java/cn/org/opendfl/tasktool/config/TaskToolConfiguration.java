@@ -49,5 +49,6 @@ public class TaskToolConfiguration {
 
     private ControllerConfigVo controllerConfig = new ControllerConfigVo();
 
-    private TaskToolVo taskToolCentral;
+    private TaskToolVo taskToolCentral=new TaskToolVo();
+    private String taskHostBizName;
 }

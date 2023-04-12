@@ -92,8 +92,9 @@ function onSave() {
         $.ajax({
             method: 'post',
             url: url,
-            data: jsonParam,
+            data: JSON.stringify(jsonParam),
             headers: app.headers,
+            contentType: "application/json",
             dataType: 'json',
             success: function (result) {
                 if (result.success) {

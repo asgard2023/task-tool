@@ -24,6 +24,9 @@ public class TaskInfoRest {
 
     @Autowired
     private ITaskHostBiz taskHostBiz;
+    public void setTaskHostBiz(ITaskHostBiz taskHostBiz){
+        this.taskHostBiz = taskHostBiz;
+    }
 
     private String getApiUrl(TaskHostVo taskHostVo) {
         return "http://" + taskHostVo.getIp() + ":" + taskHostVo.getPort();

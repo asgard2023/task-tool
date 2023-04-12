@@ -2,10 +2,11 @@ package cn.org.opendfl.tasktool.task;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class TaskHostVo {
+public class TaskHostVo implements Serializable {
     private String code;
     private String type;
     private String ip;

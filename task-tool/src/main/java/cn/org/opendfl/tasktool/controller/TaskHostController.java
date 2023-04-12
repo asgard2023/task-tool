@@ -24,6 +24,9 @@ public class TaskHostController {
 
     @Resource
     private ITaskHostBiz taskHostBiz;
+    public void setTaskHostBiz(ITaskHostBiz taskHostBiz){
+        this.taskHostBiz = taskHostBiz;
+    }
 
     /**
      * 增加host
@@ -38,7 +41,7 @@ public class TaskHostController {
             return "{\"errorMsg\":\"auth fail\"}";
         }
         this.taskHostBiz.addHost(taskHost);
-        return "{\"success\":\"ok\"}";
+        return "{\"success\":true,\"errorMsg\":\"ok\"}";
     }
 
     /**
@@ -48,13 +51,13 @@ public class TaskHostController {
      * @return
      */
     @PostMapping("save")
-    public Object save(@RequestParam(value = "authKey", required = false) String key, TaskHostVo taskHost) {
+    public Object save(@RequestParam(value = "authKey", required = false) String key, @RequestBody TaskHostVo taskHost) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
             log.warn("----save--key={} invalid", key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         this.taskHostBiz.save(taskHost);
-        return "{\"success\":\"true\"}";
+        return "{\"success\":true,\"errorMsg\":\"ok\"}";
     }
 
     @RequestMapping(value = "hosts", method = {RequestMethod.POST, RequestMethod.GET})
@@ -84,6 +87,8 @@ public class TaskHostController {
             return "{\"errorMsg\":\"auth fail\"}";
         }
 
+        page.setSort("type");
+        page.setOrder("asc");
         List<TaskHostVo> list = this.taskHostBiz.getHosts(taskHostVo, null, null, page);
         List<TaskHostVo> list2 = new ArrayList<>();
         TaskHostVo local = new TaskHostVo();
@@ -110,6 +115,6 @@ public class TaskHostController {
             return "{\"errorMsg\":\"auth fail\"}";
         }
         boolean isDel = taskHostBiz.delete(code);
-        return "{\"success\":\"" + isDel + "\"}";
+        return "{\"success\":" + isDel + ",\"errorMsg\":\"ok\"}";
     }
 }

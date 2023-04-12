@@ -4,6 +4,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -90,6 +91,12 @@ public class TaskHostBiz implements ITaskHostBiz {
         }
         String sort = page.getSort();
         List<TaskHostVo> list = taskHostMap.values().stream()
+                .map(t-> {
+                    TaskHostVo vo = new TaskHostVo();
+                    BeanUtils.copyProperties(t, vo);
+                    vo.setRemark(vo.getType()+"-"+vo.getName());
+                    return vo;
+                })
                 .filter(t -> CharSequenceUtil.isBlank(search.getType()) || CharSequenceUtil.equals(search.getType(), t.getType()))
                 .filter(t -> CharSequenceUtil.isBlank(search.getCode()) || t.getCode().contains(search.getCode()))
                 .filter(t -> startDate == null || t.getHeartbeat().compareTo(startDate) > 0)

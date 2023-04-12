@@ -2,9 +2,12 @@ package cn.org.opendfl.tasktool.config;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
 import cn.org.opendfl.tasktool.client.TaskHostRest;
+import cn.org.opendfl.tasktool.client.TaskInfoRest;
 import cn.org.opendfl.tasktool.config.vo.TaskLocalVo;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
+import cn.org.opendfl.tasktool.controller.TaskHostController;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
 import cn.org.opendfl.tasktool.utils.SpringUtils;
@@ -39,6 +42,16 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
     }
 
     public void autoRegistHost() {
+        if(CharSequenceUtil.isNotBlank(taskToolConfiguration.getTaskHostBizName())){
+            Object taskHostBiz = SpringUtils.getBean(taskToolConfiguration.getTaskHostBizName());
+            if(taskHostBiz!=null && taskHostBiz instanceof ITaskHostBiz){
+                TaskHostController taskHostController = SpringUtils.getBean(TaskHostController.class);
+                TaskInfoRest taskInfoRest = SpringUtils.getBean(TaskInfoRest.class);
+                taskHostController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
+                taskInfoRest.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
+                log.info("----autoRegistHost--taskHostBiz={}", taskHostBiz);
+            }
+        }
         TaskToolVo taskToolCentral = taskToolConfiguration.getTaskToolCentral();
         if (taskToolCentral.isOpen()) {
             TaskHostRest taskHostRest = SpringUtils.getBean(TaskHostRest.class);
