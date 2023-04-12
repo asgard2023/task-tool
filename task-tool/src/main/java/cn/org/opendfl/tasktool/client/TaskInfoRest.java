@@ -29,7 +29,11 @@ public class TaskInfoRest {
     }
 
     private String getApiUrl(TaskHostVo taskHostVo) {
-        return "http://" + taskHostVo.getIp() + ":" + taskHostVo.getPort();
+        String url= taskHostVo.getIp();
+        if(!url.startsWith("http")){
+            url = "http://"+url;
+        }
+        return url + ":" + taskHostVo.getPort();
     }
 
     public Object getRunInfo(String taskHostCode, TaskCountVo taskCountVo, PageVO page) {
