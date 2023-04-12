@@ -36,8 +36,8 @@ public class TaskInfoController {
 
     @RequestMapping(value = "runInfoJson", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getTaskInfoJson(@RequestParam(value = "authKey", required = false) String key,
-                                  @RequestParam(value = "taskHostCode", required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page) {
-        return getTaskInfo(key, taskHostCode, taskCountVo, page);
+                                  @RequestParam(value = "taskHostCode", required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page, HttpServletRequest request) {
+        return getTaskInfo(key, taskHostCode, taskCountVo, page, request);
     }
 
     /**
@@ -48,12 +48,13 @@ public class TaskInfoController {
      */
     @RequestMapping(value = "runInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getTaskInfo(@RequestParam(value = "authKey", required = false) String key,
-                              @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page) {
+                              @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page, HttpServletRequest request) {
         if (!taskToolConfiguration.getSecurityKey().equals(key)) {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, key);
             return "{\"errorMsg\":\"auth fail\"}";
         }
-        log.info("----runInfo--taskHostCode={}", taskHostCode);
+        String ip= ServletUtil.getClientIP(request);
+        log.info("----runInfo--taskHostCode={} ip={}", taskHostCode, ip);
         if (CharSequenceUtil.isNotBlank(taskHostCode)) {
             return taskInfoRest.getRunInfo(taskHostCode, taskCountVo, page);
         }
