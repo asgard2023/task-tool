@@ -1,6 +1,5 @@
 package cn.org.opendfl.tasktool.client;
 
-import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
@@ -20,8 +19,6 @@ import javax.annotation.Resource;
 @Service
 @Slf4j
 public class TaskHostRest {
-    @Resource
-    private ITaskHostBiz taskHostBiz;
     @Autowired
     private RestTemplate restTemplate;
 

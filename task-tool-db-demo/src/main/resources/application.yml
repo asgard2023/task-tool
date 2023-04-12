@@ -5,6 +5,8 @@ task-tool:
   run-time-base: 10
   #安全key
   security-key: tasktooltest
+  #taskHostBizName: taskHostBiz
+  taskHostBizName: taskHostRedisBiz
   taskToolCentral:
     open: true
     apiUrl: https://task-tool-demo.opendfl.org.cn
