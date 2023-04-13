@@ -90,6 +90,7 @@ public class TaskHostController {
         page.setSort("type");
         page.setOrder("asc");
         List<TaskHostVo> list = this.taskHostBiz.getHosts(taskHostVo, null, null, page);
+        list.stream().forEach(t->t.setRemark(t.getType()+"-"+t.getName()));
         List<TaskHostVo> list2 = new ArrayList<>();
         TaskHostVo local = new TaskHostVo();
         local.setCode("");

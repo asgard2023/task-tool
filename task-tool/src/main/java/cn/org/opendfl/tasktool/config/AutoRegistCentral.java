@@ -12,10 +12,12 @@ import cn.org.opendfl.tasktool.task.TaskHostVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
 import cn.org.opendfl.tasktool.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
@@ -29,6 +31,10 @@ import javax.annotation.Resource;
 public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEvent> {
     @Resource
     private TaskToolConfiguration taskToolConfiguration;
+
+    @Value("${project.build.timestamp}")
+    private String buildTime;
+
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -49,7 +55,7 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
                 TaskInfoRest taskInfoRest = SpringUtils.getBean(TaskInfoRest.class);
                 taskHostController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
                 taskInfoRest.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
-                log.info("----autoRegistHost--taskHostBiz={}", taskHostBiz);
+                log.info("----autoRegistHost--buildTime={} taskHostBiz={}", buildTime, taskHostBiz);
             }
         }
         TaskToolVo taskToolCentral = taskToolConfiguration.getTaskToolCentral();
@@ -65,11 +71,14 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             }
 
             TaskHostVo taskHostVo = toHost(taskLocal);
+            if(CharSequenceUtil.isNumeric(buildTime)){
+                taskHostVo.setBuildTime(Long.parseLong(buildTime));
+            }
             taskHostVo.setName(environment.getProperty("spring.application.name"));
             taskHostVo.setProfile(CommUtils.join(environment.getActiveProfiles(), ","));
             try {
                 String result = taskHostRest.addHost(taskHostVo);
-                log.info("---autoRegistHost--remoteApi={} result={} taskHost={}", taskToolCentral.getApiUrl(), result, taskLocal);
+                log.info("---autoRegistHost--remoteApi={} result={} taskHost={}", taskToolCentral.getApiUrl(), result, taskHostVo);
             } catch (Exception e) {
                 log.warn("---autoRegistHost--remoteApi={} error={}", taskToolCentral.getApiUrl(), e.getMessage(), e);
             }

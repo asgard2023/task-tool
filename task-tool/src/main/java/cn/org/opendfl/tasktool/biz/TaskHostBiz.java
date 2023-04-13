@@ -26,6 +26,7 @@ public class TaskHostBiz implements ITaskHostBiz {
         });
         log.info("---addHost--code={}", taskHost.getCode());
         exist.setHeartbeat(new Date());
+        exist.setBuildTime(taskHost.getBuildTime());
     }
 
     public void save(TaskHostVo taskHost) {
@@ -94,7 +95,6 @@ public class TaskHostBiz implements ITaskHostBiz {
                 .map(t-> {
                     TaskHostVo vo = new TaskHostVo();
                     BeanUtils.copyProperties(t, vo);
-                    vo.setRemark(vo.getType()+"-"+vo.getName());
                     return vo;
                 })
                 .filter(t -> CharSequenceUtil.isBlank(search.getType()) || CharSequenceUtil.equals(search.getType(), t.getType()))
