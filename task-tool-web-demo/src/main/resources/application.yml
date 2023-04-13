@@ -1,4 +1,6 @@
-
+project:
+  build:
+    timestamp: ${project.build.timestamp}
 
 spring:
   mvc:

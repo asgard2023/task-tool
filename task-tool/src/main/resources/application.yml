@@ -1,3 +1,6 @@
+project:
+  build:
+    timestamp: ${project.build.timestamp}
 logging:
   level:
     root: INFO

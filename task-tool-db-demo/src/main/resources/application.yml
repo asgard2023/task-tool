@@ -1,3 +1,7 @@
+project:
+  build:
+    timestamp: ${project.build.timestamp}
+
 task-tool:
   #版本号
   version: 1
