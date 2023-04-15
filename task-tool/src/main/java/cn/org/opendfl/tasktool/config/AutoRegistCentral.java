@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
 import cn.org.opendfl.tasktool.client.TaskHostRest;
-import cn.org.opendfl.tasktool.client.TaskInfoRest;
 import cn.org.opendfl.tasktool.config.vo.TaskLocalVo;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.controller.TaskHostController;
@@ -17,7 +16,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
@@ -52,9 +50,7 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             Object taskHostBiz = SpringUtils.getBean(taskToolConfiguration.getTaskHostBizName());
             if(taskHostBiz!=null && taskHostBiz instanceof ITaskHostBiz){
                 TaskHostController taskHostController = SpringUtils.getBean(TaskHostController.class);
-                TaskInfoRest taskInfoRest = SpringUtils.getBean(TaskInfoRest.class);
                 taskHostController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
-                taskInfoRest.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
                 log.info("----autoRegistHost--buildTime={} taskHostBiz={}", buildTime, taskHostBiz);
             }
         }

@@ -2,6 +2,7 @@ package cn.org.opendfl.tasktool.biz;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
+import cn.org.opendfl.tasktool.task.RouteApiVo;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -52,6 +53,20 @@ public class TaskHostBiz implements ITaskHostBiz {
         return taskHostMap.get(code);
     }
 
+    private String getApiUrl(TaskHostVo taskHostVo) {
+        String url = taskHostVo.getIp();
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
+        return url + ":" + taskHostVo.getPort();
+    }
+
+    public RouteApiVo getRouteApi(String taskHostCode) {
+        TaskHostVo taskHostVo = this.getTaskHost(taskHostCode);
+        String apiUrl = getApiUrl(taskHostVo);
+        return RouteApiVo.of(apiUrl, taskHostVo.getAuthKey(), "tasktool");
+    }
+
     private void sortList(List<TaskHostVo> list, final String sort, final String order) {
         boolean asc = "asc".equals(order);
         Collections.sort(list, new Comparator<TaskHostVo>() {
@@ -92,7 +107,7 @@ public class TaskHostBiz implements ITaskHostBiz {
         }
         String sort = page.getSort();
         List<TaskHostVo> list = taskHostMap.values().stream()
-                .map(t-> {
+                .map(t -> {
                     TaskHostVo vo = new TaskHostVo();
                     BeanUtils.copyProperties(t, vo);
                     return vo;

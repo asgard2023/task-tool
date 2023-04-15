@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.utils;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
@@ -8,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * servletRequest参数处理
+ *
  * @author chenjh
  */
 public class RequestUtils {
-    private RequestUtils(){
+    private RequestUtils() {
 
     }
+
     public static final String EXCEPTION_MSG_KEY = "expMsgKey";
 
     /**
@@ -44,6 +47,9 @@ public class RequestUtils {
      * @return
      */
     public static String getRequestValue(HttpServletRequest request, String fieldName) {
+        if (CharSequenceUtil.isBlank(fieldName)) {
+            return null;
+        }
         Object fieldValue = request.getParameter(fieldName);
         if (fieldValue == null) {
             fieldValue = request.getAttribute(fieldName);
