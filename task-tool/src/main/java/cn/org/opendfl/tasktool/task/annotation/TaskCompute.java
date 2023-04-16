@@ -33,7 +33,7 @@ public @interface TaskCompute {
      *
      * @return
      */
-    int dataIdArgCount() default -1;
+    int dataIdArgCount() default 0;
 
     /**
      * 用于显示正在执行的数据
