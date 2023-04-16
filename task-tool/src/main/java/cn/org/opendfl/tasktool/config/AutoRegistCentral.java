@@ -63,7 +63,17 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
                 taskLocal.setAuthKey(taskToolConfiguration.getSecurityKey());
             }
             if (taskLocal.getPort() == 0) {
-                taskLocal.setPort(Integer.parseInt(environment.getProperty("local.server.port")));
+                String serverPort= environment.getProperty("local.server.port");
+                if(serverPort==null){
+                    serverPort= environment.getProperty("server.port");
+                }
+                if(serverPort!=null) {
+                    taskLocal.setPort(Integer.parseInt(serverPort));
+                }
+                else{
+                    log.warn("----autoRegistHost--serverPort is null");
+                    return;
+                }
             }
 
             TaskHostVo taskHostVo = toHost(taskLocal);
