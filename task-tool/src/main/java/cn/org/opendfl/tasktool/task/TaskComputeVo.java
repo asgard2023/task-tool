@@ -14,6 +14,7 @@ public class TaskComputeVo {
         this.methodCode = taskCompute.methodCode();
         this.category = taskCompute.category();
         this.showProcessing = taskCompute.showProcessing();
+        this.dataIdArgCount = taskCompute.dataIdArgCount();
         this.type = "taskCompute";
     }
 
