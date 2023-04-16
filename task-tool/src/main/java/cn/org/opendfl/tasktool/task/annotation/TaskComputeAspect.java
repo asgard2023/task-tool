@@ -23,29 +23,44 @@ import java.util.Date;
 @Slf4j
 public class TaskComputeAspect {
 
-    private String getDataId(ProceedingJoinPoint joinPoint, TaskCompute taskCompute) {
-        int argCount = taskCompute.dataIdArgCount();
-        if (argCount == -1) {
-            return null;
+    private TaskComputeVo getComputeParam(ProceedingJoinPoint joinPoint, TaskCompute taskCompute) {
+        int dataIdCount = taskCompute.dataIdArgCount();
+        int userIdCount = taskCompute.userIdArgCount();
+        TaskComputeVo taskComputeVo = new TaskComputeVo(taskCompute);
+        if (dataIdCount == -1 && userIdCount == -1) {
+            return taskComputeVo;
         }
 
         Object[] args = joinPoint.getArgs();
         int argLen = args.length;
-        if (argLen == 0 || argCount >= argLen) {
-            return null;
-        }
+        Object dataId = getArgs(args, argLen, dataIdCount);
+        Object userId = getArgs(args, argLen, userIdCount);
 
-        Object object = args[argCount];
-        if (object == null) {
+        taskComputeVo.setDataId(getDataId(dataId));
+        if(userId!=null) {
+            taskComputeVo.setUserId("" + userId);
+        }
+        return taskComputeVo;
+    }
+
+    private String getDataId(Object dataId) {
+        String dataIdstr = null;
+        if (dataId == null) {
             return null;
         }
-        String dataId = null;
-        if (object instanceof Date) {
-            dataId = "" + ((Date) object).getTime();
+        if (dataId instanceof Date) {
+            dataIdstr = "" + ((Date) dataId).getTime();
         } else {
-            dataId = "" + object;
+            dataIdstr = "" + dataId;
         }
-        return dataId;
+        return dataIdstr;
+    }
+
+    private Object getArgs(Object[] args, int argLen, int idx) {
+        if (argLen == 0 || idx >= argLen) {
+            return null;
+        }
+        return args[idx];
     }
 
 
@@ -72,15 +87,13 @@ public class TaskComputeAspect {
             }
         }
         Object result = null;
-        String dataId = getDataId(joinPoint, taskCompute);
-
+        TaskComputeVo taskComputeVo = null;
         try {
-            TaskComputeVo taskComputeVo = new TaskComputeVo(taskCompute);
+            taskComputeVo = getComputeParam(joinPoint, taskCompute);
             Object target = joinPoint.getTarget();
 
             //初始化包名，来源，数据ID
             taskComputeVo.setPkg(target.getClass().getPackage().getName());
-            taskComputeVo.setDataId(dataId);
             taskComputeVo.setSource(source);
             if (taskCompute.showProcessing()) {
                 TaskToolUtils.startTask(taskComputeVo, classMethod, curDate);
@@ -91,7 +104,7 @@ public class TaskComputeAspect {
             TaskToolUtils.finished(taskComputeVo, classMethod, curDate);
         } catch (Throwable e) {
             //	异常通知
-            TaskToolUtils.error(classMethod, dataId, e.getMessage(), curDate);
+            TaskToolUtils.error(classMethod, taskComputeVo.getDataId(), e.getMessage(), curDate);
             throw e;
         }
 
