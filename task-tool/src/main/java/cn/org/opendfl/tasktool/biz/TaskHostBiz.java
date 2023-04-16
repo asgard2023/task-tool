@@ -53,19 +53,7 @@ public class TaskHostBiz implements ITaskHostBiz {
         return taskHostMap.get(code);
     }
 
-    private String getApiUrl(TaskHostVo taskHostVo) {
-        String url = taskHostVo.getIp();
-        if (!url.startsWith("http")) {
-            url = "http://" + url;
-        }
-        return url + ":" + taskHostVo.getPort();
-    }
 
-    public RouteApiVo getRouteApi(String taskHostCode) {
-        TaskHostVo taskHostVo = this.getTaskHost(taskHostCode);
-        String apiUrl = getApiUrl(taskHostVo);
-        return RouteApiVo.of(apiUrl, taskHostVo.getAuthKey(), "tasktool");
-    }
 
     private void sortList(List<TaskHostVo> list, final String sort, final String order) {
         boolean asc = "asc".equals(order);

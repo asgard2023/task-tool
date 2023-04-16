@@ -15,7 +15,19 @@ public interface ITaskHostBiz {
 
     public TaskHostVo getTaskHost(String code);
 
-    public RouteApiVo getRouteApi(String taskHostCode);
-
     public List<TaskHostVo> getHosts(TaskHostVo search, Date startDate, Date endDate, final PageVO page);
+
+    public default String getApiUrl(TaskHostVo taskHostVo) {
+        String url = taskHostVo.getIp();
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
+        return url + ":" + taskHostVo.getPort();
+    }
+
+    public default RouteApiVo getRouteApi(String taskHostCode) {
+        TaskHostVo taskHostVo = this.getTaskHost(taskHostCode);
+        String apiUrl = getApiUrl(taskHostVo);
+        return RouteApiVo.of(apiUrl, taskHostVo.getAuthKey(), "tasktool");
+    }
 }
