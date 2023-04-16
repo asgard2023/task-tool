@@ -5,7 +5,6 @@ import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,12 @@ public class TaskHostRedisBiz implements ITaskHostBiz {
             redisTemplateJson.opsForHash().put(REDIS_TASK_TOOL_HOSTS, code, taskHost);
         } else {
             TaskHostVo exist = (TaskHostVo) redisTemplateJson.opsForHash().get(REDIS_TASK_TOOL_HOSTS, code);
+            if(exist==null){
+                log.info("---addHost--code={} unexist", taskHost.getCode());
+                return;
+            }
             exist.setHeartbeat(new Date());
+            exist.setBuildTime(taskHost.getBuildTime());
             redisTemplateJson.opsForHash().put(REDIS_TASK_TOOL_HOSTS, code, exist);
         }
         log.info("---addHost--code={}", taskHost.getCode());
@@ -44,6 +48,9 @@ public class TaskHostRedisBiz implements ITaskHostBiz {
 
     public void save(TaskHostVo taskHost) {
         TaskHostVo taskHostVo = (TaskHostVo) redisTemplateJson.opsForHash().get(REDIS_TASK_TOOL_HOSTS, taskHost.getCode());
+        if(taskHostVo == null){
+            taskHostVo = taskHost;
+        }
         taskHostVo.setRemark(taskHost.getRemark());
         taskHostVo.setName(taskHost.getName());
         taskHostVo.setType(taskHost.getType());
@@ -53,7 +60,7 @@ public class TaskHostRedisBiz implements ITaskHostBiz {
             taskHostVo.setAuthKey(taskHost.getAuthKey());
         }
         taskHostVo.setUpdateDate(new Date());
-        redisTemplateJson.opsForHash().put(REDIS_TASK_TOOL_HOSTS, taskHost.getCode(), taskHost);
+        redisTemplateJson.opsForHash().put(REDIS_TASK_TOOL_HOSTS, taskHost.getCode(), taskHostVo);
     }
 
     public boolean delete(String code) {
@@ -72,6 +79,8 @@ public class TaskHostRedisBiz implements ITaskHostBiz {
             Long getTimeBySort(TaskHostVo taskCountVo) {
                 if ("updateTime".equals(sort)) {
                     return taskCountVo.getUpdateDate().getTime() + 0L;
+                } else if ("buildTime".equals(sort)) {
+                    return taskCountVo.getBuildTime();
                 } else if ("joinDate".equals(sort)) {
                     return taskCountVo.getJoinDate().getTime() + 0L;
                 } else if ("heartbeat".equals(sort)) {
@@ -106,12 +115,7 @@ public class TaskHostRedisBiz implements ITaskHostBiz {
         }
         String sort = page.getSort();
         List<Object> taskHosts = redisTemplateJson.opsForHash().values(REDIS_TASK_TOOL_HOSTS);
-        List<TaskHostVo> list = taskHosts.stream().map(t-> {
-                    TaskHostVo vo = new TaskHostVo();
-                    BeanUtils.copyProperties(t, vo);
-                    vo.setRemark(vo.getType()+"-"+vo.getName());
-                    return vo;
-                })
+        List<TaskHostVo> list = taskHosts.stream().map(TaskHostVo.class::cast)
                 .filter(t -> CharSequenceUtil.isBlank(search.getType()) || CharSequenceUtil.equals(search.getType(), t.getType()))
                 .filter(t -> CharSequenceUtil.isBlank(search.getCode()) || t.getCode().contains(search.getCode()))
                 .filter(t -> startDate == null || t.getHeartbeat().compareTo(startDate) > 0)
