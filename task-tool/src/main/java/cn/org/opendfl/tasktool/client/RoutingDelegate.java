@@ -3,14 +3,13 @@ package cn.org.opendfl.tasktool.client;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.task.RouteApiVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
+import cn.org.opendfl.tasktool.utils.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,9 +22,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class RoutingDelegate {
-
-    @Resource
-    private RestTemplate restTemplate;
 
     public ResponseEntity<String> redirect(HttpServletRequest request, HttpServletResponse response, String prefix, RouteApiVo routeApi) {
         String redirectUrl=null;
@@ -62,7 +58,7 @@ public class RoutingDelegate {
     }
 
     private ResponseEntity<String> route(RequestEntity requestEntity) {
-        return restTemplate.exchange(requestEntity, String.class);
+        return RestTemplateUtils.getRestTemplate().exchange(requestEntity, String.class);
     }
 
 

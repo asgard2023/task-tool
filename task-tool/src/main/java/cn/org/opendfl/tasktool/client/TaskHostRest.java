@@ -4,9 +4,9 @@ import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
+import cn.org.opendfl.tasktool.utils.RestTemplateUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,8 +19,6 @@ import javax.annotation.Resource;
 @Service
 @Slf4j
 public class TaskHostRest {
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Resource
     private TaskToolConfiguration taskToolConfiguration;
@@ -34,7 +32,7 @@ public class TaskHostRest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntitys = new HttpEntity<>(bodyString, httpHeaders);
-        ResponseEntity<String> exchanges = restTemplate.postForEntity(url, httpEntitys, String.class);
+        ResponseEntity<String> exchanges = RestTemplateUtils.getRestTemplate().postForEntity(url, httpEntitys, String.class);
         if (exchanges.getStatusCode() != HttpStatus.OK) {
             log.warn("----addHost={}, errorCode={} resultRemote={}", taskHostVo.getCode(), exchanges.getStatusCode(), exchanges.getBody());
             return null;

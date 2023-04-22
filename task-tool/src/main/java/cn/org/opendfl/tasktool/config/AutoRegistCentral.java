@@ -10,6 +10,7 @@ import cn.org.opendfl.tasktool.controller.TaskHostController;
 import cn.org.opendfl.tasktool.controller.TaskInfoController;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
+import cn.org.opendfl.tasktool.utils.RestTemplateUtils;
 import cn.org.opendfl.tasktool.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +60,7 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             }
         }
         TaskToolVo taskToolCentral = taskToolConfiguration.getTaskToolCentral();
-        if (taskToolCentral.isOpen()) {
+        if (taskToolCentral.isOpen() && RestTemplateUtils.isContainRestTemplate()) {
             TaskHostRest taskHostRest = SpringUtils.getBean(TaskHostRest.class);
             Environment environment = SpringUtils.getBean(Environment.class);
             TaskLocalVo taskLocal = taskToolCentral.getTaskLocal();
