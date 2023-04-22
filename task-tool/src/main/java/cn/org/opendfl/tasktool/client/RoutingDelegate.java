@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,7 +24,8 @@ import java.util.List;
 @Slf4j
 public class RoutingDelegate {
 
-
+    @Resource
+    private RestTemplate restTemplate;
 
     public ResponseEntity<String> redirect(HttpServletRequest request, HttpServletResponse response, String prefix, RouteApiVo routeApi) {
         String redirectUrl=null;
@@ -43,6 +45,9 @@ public class RoutingDelegate {
     private String createRedictUrl(HttpServletRequest request, String routeUrl, String prefix, RouteApiVo routeApi) {
         String queryString = request.getQueryString();
         queryString = CommUtils.removeParam("&"+queryString, new String[]{"taskHostCode", "authKey"});
+        if(queryString.startsWith("&")){
+            queryString = queryString.substring(1);
+        }
         return routeUrl + request.getRequestURI().replace(prefix, "") +
                 (queryString != null ? "?" + queryString : "");
     }
@@ -57,7 +62,6 @@ public class RoutingDelegate {
     }
 
     private ResponseEntity<String> route(RequestEntity requestEntity) {
-        RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(requestEntity, String.class);
     }
 

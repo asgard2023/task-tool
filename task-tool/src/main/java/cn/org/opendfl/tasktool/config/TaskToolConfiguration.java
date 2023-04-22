@@ -49,6 +49,7 @@ public class TaskToolConfiguration {
      * 是否保存服务器名
      */
     private boolean isSaveServerName;
+    private boolean restTemplateConfig=true;
 
     private ControllerConfigVo controllerConfig = new ControllerConfigVo();
 
