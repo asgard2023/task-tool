@@ -11,6 +11,7 @@ import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import cn.org.opendfl.tasktool.task.RouteApiVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.task.TaskToolUtils;
+import cn.org.opendfl.tasktool.utils.RequestParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +40,8 @@ public class TaskInfoController {
     private RoutingDelegate routingDelegate;
     @Resource
     private ITaskHostBiz taskHostBiz;
-    public void setTaskHostBiz(ITaskHostBiz taskHostBiz){
+
+    public void setTaskHostBiz(ITaskHostBiz taskHostBiz) {
         this.taskHostBiz = taskHostBiz;
     }
 
@@ -47,8 +49,8 @@ public class TaskInfoController {
 
 
     @RequestMapping(value = "runInfoJson", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object getTaskInfoJson(@RequestParam(value = "authKey", required = false) String key,
-                                  @RequestParam(value = "taskHostCode", required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page
+    public Object getTaskInfoJson(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String key,
+                                  @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page
             , HttpServletRequest request, HttpServletResponse response) {
         return getTaskInfo(key, taskHostCode, taskCountVo, page, request, response);
     }
@@ -56,15 +58,15 @@ public class TaskInfoController {
     /**
      * 运信信息
      *
-     * @param key
+     * @param authKey
      * @return
      */
     @RequestMapping(value = "runInfo", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object getTaskInfo(@RequestParam(value = "authKey", required = false) String key,
-                              @RequestParam(value = "taskHostCode", required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page
+    public Object getTaskInfo(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey,
+                              @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page
             , HttpServletRequest request, HttpServletResponse response) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, key);
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         String ip = ServletUtil.getClientIP(request);
@@ -145,16 +147,16 @@ public class TaskInfoController {
     /**
      * 配置查询
      *
-     * @param key
+     * @param authKey
      * @return
      */
     @RequestMapping(value = "config", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object getConfig(@RequestParam(value = "authKey", required = false) String key
+    public Object getConfig(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey
             , @RequestParam(value = "type", required = false) String type
             , @RequestParam(value = "taskHostCode", required = false) String taskHostCode
             , HttpServletRequest request, HttpServletResponse response) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----config--type={} authKey={}", type, key);
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----config--type={} authKey={}", type, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
 

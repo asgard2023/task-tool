@@ -26,21 +26,23 @@ public class RoutingDelegate {
 
 
     public ResponseEntity<String> redirect(HttpServletRequest request, HttpServletResponse response, String prefix, RouteApiVo routeApi) {
+        String redirectUrl=null;
         try {
             // build up the redirect URL
             String routeUrl = routeApi.getApiUrl();
-            String redirectUrl = createRedictUrl(request, routeUrl, prefix, routeApi);
-            redirectUrl = CommUtils.removeParam(redirectUrl, new String[]{"taskHostCode", "authKey"});
+            redirectUrl = createRedictUrl(request, routeUrl, prefix, routeApi);
             log.info("----redirect--redirectUrl={}", redirectUrl);
             RequestEntity requestEntity = createRequestEntity(request, redirectUrl, routeApi);
             return route(requestEntity);
         } catch (Exception e) {
+            log.error("----redirect--redirectUrl={} error={}", redirectUrl, e.getMessage(), e);
             return new ResponseEntity("REDIRECT ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     private String createRedictUrl(HttpServletRequest request, String routeUrl, String prefix, RouteApiVo routeApi) {
         String queryString = request.getQueryString();
+        queryString = CommUtils.removeParam("&"+queryString, new String[]{"taskHostCode", "authKey"});
         return routeUrl + request.getRequestURI().replace(prefix, "") +
                 (queryString != null ? "?" + queryString : "");
     }

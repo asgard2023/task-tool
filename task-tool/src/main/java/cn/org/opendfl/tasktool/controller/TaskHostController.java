@@ -4,6 +4,7 @@ import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
+import cn.org.opendfl.tasktool.utils.RequestParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +36,9 @@ public class TaskHostController {
      * @return
      */
     @PostMapping("add")
-    public Object addHost(@RequestParam(value = "authKey", required = false) String key, @RequestBody TaskHostVo taskHost) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----key={} invalid", key);
+    public Object addHost(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey, @RequestBody TaskHostVo taskHost, HttpServletRequest request) {
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----key={} invalid", authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         this.taskHostBiz.addHost(taskHost);
@@ -51,9 +52,9 @@ public class TaskHostController {
      * @return
      */
     @PostMapping("save")
-    public Object save(@RequestParam(value = "authKey", required = false) String key, @RequestBody TaskHostVo taskHost) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----save--key={} invalid", key);
+    public Object save(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey, @RequestBody TaskHostVo taskHost, HttpServletRequest request) {
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----save--key={} invalid", authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         this.taskHostBiz.save(taskHost);
@@ -61,10 +62,10 @@ public class TaskHostController {
     }
 
     @RequestMapping(value = "hosts", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object getHosts(@RequestParam(value = "authKey", required = false) String key
-            , TaskHostVo taskHostVo, PageVO page) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----hosts--key={} invalid", key);
+    public Object getHosts(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey
+            , TaskHostVo taskHostVo, PageVO page, HttpServletRequest request) {
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----hosts--key={} invalid", authKey);
             return "{\"errorMsg\":\" auth fail\"}";
         }
         List<TaskHostVo> list = this.taskHostBiz.getHosts(taskHostVo, null, null, page);
@@ -76,14 +77,14 @@ public class TaskHostController {
     /**
      * 配置查询
      *
-     * @param key
+     * @param authKey
      * @return
      */
     @RequestMapping(value = "hostList", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object getConfig(@RequestParam(value = "authKey", required = false) String key
-            , TaskHostVo taskHostVo, PageVO page) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----hostList--key={} invalid", key);
+    public Object getConfig(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey
+            , TaskHostVo taskHostVo, PageVO page, HttpServletRequest request) {
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----hostList--key={} invalid", authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
 
@@ -103,16 +104,16 @@ public class TaskHostController {
     /**
      * 删除
      *
-     * @param key
+     * @param authKey
      * @param code
      * @param request
      * @return
      */
     @RequestMapping(value = "delete", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object delete(@RequestParam(value = "authKey", required = false) String key
+    public Object delete(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey
             , @RequestParam(name = "code", required = false) String code, HttpServletRequest request) {
-        if (!taskToolConfiguration.getSecurityKey().equals(key)) {
-            log.warn("----delete--key={} invalid", key);
+        if (!taskToolConfiguration.isAuth(authKey, request)) {
+            log.warn("----delete--key={} invalid", authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
         boolean isDel = taskHostBiz.delete(code);
