@@ -39,6 +39,10 @@ public class TaskInfoController {
     private RoutingDelegate routingDelegate;
     @Resource
     private ITaskHostBiz taskHostBiz;
+    public void setTaskHostBiz(ITaskHostBiz taskHostBiz){
+        this.taskHostBiz = taskHostBiz;
+    }
+
     private static final long START_TIME = System.currentTimeMillis();
 
 

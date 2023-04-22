@@ -7,6 +7,7 @@ import cn.org.opendfl.tasktool.client.TaskHostRest;
 import cn.org.opendfl.tasktool.config.vo.TaskLocalVo;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.controller.TaskHostController;
+import cn.org.opendfl.tasktool.controller.TaskInfoController;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
 import cn.org.opendfl.tasktool.utils.SpringUtils;
@@ -51,6 +52,9 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             if(taskHostBiz!=null && taskHostBiz instanceof ITaskHostBiz){
                 TaskHostController taskHostController = SpringUtils.getBean(TaskHostController.class);
                 taskHostController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
+
+                TaskInfoController taskInfoController = SpringUtils.getBean(TaskInfoController.class);
+                taskInfoController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
                 log.info("----autoRegistHost--buildTime={} taskHostBiz={}", buildTime, taskHostBiz);
             }
         }

@@ -1,9 +1,28 @@
 package cn.org.opendfl.tasktool.utils;
 
 
+/**
+ * 常用工具类
+ * @author chenjh
+ */
 public class CommUtils {
     private CommUtils() {
 
+    }
+
+    /**
+     * 去除url指定参数
+     *
+     * @param url
+     * @param name
+     * @return
+     */
+    public static String removeParam(String url, String... name) {
+        for (String s : name) {
+            // 使用replaceAll正则替换,replace不支持正则
+            url = url.replaceAll("[&|?]" + s + "=[^&]*", "");
+        }
+        return url;
     }
 
     /**

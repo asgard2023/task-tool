@@ -2,6 +2,8 @@ package cn.org.opendfl.tasktool.client;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.task.RouteApiVo;
+import cn.org.opendfl.tasktool.utils.CommUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -18,14 +20,18 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Slf4j
 public class RoutingDelegate {
+
 
 
     public ResponseEntity<String> redirect(HttpServletRequest request, HttpServletResponse response, String prefix, RouteApiVo routeApi) {
         try {
             // build up the redirect URL
             String routeUrl = routeApi.getApiUrl();
-            String redirectUrl = createRedictUrl(request, routeUrl, prefix);
+            String redirectUrl = createRedictUrl(request, routeUrl, prefix, routeApi);
+            redirectUrl = CommUtils.removeParam(redirectUrl, new String[]{"taskHostCode", "authKey"});
+            log.info("----redirect--redirectUrl={}", redirectUrl);
             RequestEntity requestEntity = createRequestEntity(request, redirectUrl, routeApi);
             return route(requestEntity);
         } catch (Exception e) {
@@ -33,7 +39,7 @@ public class RoutingDelegate {
         }
     }
 
-    private String createRedictUrl(HttpServletRequest request, String routeUrl, String prefix) {
+    private String createRedictUrl(HttpServletRequest request, String routeUrl, String prefix, RouteApiVo routeApi) {
         String queryString = request.getQueryString();
         return routeUrl + request.getRequestURI().replace(prefix, "") +
                 (queryString != null ? "?" + queryString : "");
