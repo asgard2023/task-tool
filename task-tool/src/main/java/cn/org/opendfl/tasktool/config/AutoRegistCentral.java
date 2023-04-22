@@ -60,7 +60,8 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             }
         }
         TaskToolVo taskToolCentral = taskToolConfiguration.getTaskToolCentral();
-        if (taskToolCentral.isOpen() && RestTemplateUtils.isContainRestTemplate()) {
+        boolean isContainRestTemplate=RestTemplateUtils.isContainRestTemplate();
+        if (taskToolCentral.isOpen() && isContainRestTemplate) {
             TaskHostRest taskHostRest = SpringUtils.getBean(TaskHostRest.class);
             Environment environment = SpringUtils.getBean(Environment.class);
             TaskLocalVo taskLocal = taskToolCentral.getTaskLocal();
@@ -94,7 +95,7 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
                 log.warn("---autoRegistHost--remoteApi={} error={}", taskToolCentral.getApiUrl(), e.getMessage(), e);
             }
         } else {
-            log.info("---autoRegistHost--taskToolCentral.open={}", taskToolCentral.isOpen());
+            log.warn("---autoRegistHost--taskToolCentral.open={} isContainRestTemplate={} not auto register host", taskToolCentral.isOpen(), isContainRestTemplate);
         }
     }
 }
