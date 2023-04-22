@@ -38,6 +38,7 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        this.taskHostBizInit();
         this.autoRegistHost();
     }
 
@@ -47,20 +48,23 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
         return taskHost;
     }
 
-    public void autoRegistHost() {
-        if(CharSequenceUtil.isNotBlank(taskToolConfiguration.getTaskHostBizName())){
+    public void taskHostBizInit() {
+        if (CharSequenceUtil.isNotBlank(taskToolConfiguration.getTaskHostBizName())) {
             Object taskHostBiz = SpringUtils.getBean(taskToolConfiguration.getTaskHostBizName());
-            if(taskHostBiz!=null && taskHostBiz instanceof ITaskHostBiz){
+            if (taskHostBiz instanceof ITaskHostBiz) {
                 TaskHostController taskHostController = SpringUtils.getBean(TaskHostController.class);
-                taskHostController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
+                taskHostController.setTaskHostBiz((ITaskHostBiz) taskHostBiz);
 
                 TaskInfoController taskInfoController = SpringUtils.getBean(TaskInfoController.class);
-                taskInfoController.setTaskHostBiz((ITaskHostBiz)taskHostBiz);
-                log.info("----autoRegistHost--buildTime={} taskHostBiz={}", buildTime, taskHostBiz);
+                taskInfoController.setTaskHostBiz((ITaskHostBiz) taskHostBiz);
+                log.info("----taskHostBizInit--buildTime={} taskHostBiz={}", buildTime, taskHostBiz);
             }
         }
+    }
+
+    private void autoRegistHost() {
         TaskToolVo taskToolCentral = taskToolConfiguration.getTaskToolCentral();
-        boolean isContainRestTemplate=RestTemplateUtils.isContainRestTemplate();
+        boolean isContainRestTemplate = RestTemplateUtils.isContainRestTemplate();
         if (taskToolCentral.isOpen() && isContainRestTemplate) {
             TaskHostRest taskHostRest = SpringUtils.getBean(TaskHostRest.class);
             Environment environment = SpringUtils.getBean(Environment.class);
@@ -68,22 +72,13 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
             if (CharSequenceUtil.isBlank(taskLocal.getAuthKey())) {
                 taskLocal.setAuthKey(taskToolConfiguration.getSecurityKey());
             }
-            if (taskLocal.getPort() == 0) {
-                String serverPort= environment.getProperty("local.server.port");
-                if(serverPort==null){
-                    serverPort= environment.getProperty("server.port");
-                }
-                if(serverPort!=null) {
-                    taskLocal.setPort(Integer.parseInt(serverPort));
-                }
-                else{
-                    log.warn("----autoRegistHost--serverPort is null");
-                    return;
-                }
+            if (taskLocal.getPort() == 0 && !initServerPort(environment, taskLocal)) {
+                log.warn("----autoRegistHost--serverPort is null");
+                return;
             }
 
             TaskHostVo taskHostVo = toHost(taskLocal);
-            if(CharSequenceUtil.isNumeric(buildTime)){
+            if (CharSequenceUtil.isNumeric(buildTime)) {
                 taskHostVo.setBuildTime(Long.parseLong(buildTime));
             }
             taskHostVo.setName(environment.getProperty("spring.application.name"));
@@ -97,5 +92,17 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
         } else {
             log.warn("---autoRegistHost--taskToolCentral.open={} isContainRestTemplate={} not auto register host", taskToolCentral.isOpen(), isContainRestTemplate);
         }
+    }
+
+    private static boolean initServerPort(Environment environment, TaskLocalVo taskLocal) {
+        String serverPort = environment.getProperty("local.server.port");
+        if (serverPort == null) {
+            serverPort = environment.getProperty("server.port");
+        }
+        boolean hasServrPort=serverPort!=null;
+        if (hasServrPort) {
+            taskLocal.setPort(Integer.parseInt(serverPort));
+        }
+        return hasServrPort;
     }
 }
