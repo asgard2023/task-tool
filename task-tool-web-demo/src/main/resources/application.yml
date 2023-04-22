@@ -1,6 +1,6 @@
 project:
   build:
-    timestamp: 0
+    timestamp: ${project.build.timestamp}
 
 spring:
   mvc:
