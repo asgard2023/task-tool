@@ -27,7 +27,7 @@ http://task-tool-demo.opendfl.org.cn/index.html
 <dependency>
     <groupId>cn.org.opendfl</groupId>
     <artifactId>task-tool</artifactId>
-    <version>1.8</version>
+    <version>1.10</version>
 </dependency>
 ```
 
