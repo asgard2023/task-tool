@@ -23,18 +23,21 @@ import java.util.List;
 @Slf4j
 public class RoutingDelegate {
 
-    public ResponseEntity<String> redirect(HttpServletRequest request, HttpServletResponse response, String prefix, RouteApiVo routeApi) {
+    public String redirect(HttpServletRequest request, HttpServletResponse response, String prefix, RouteApiVo routeApi) {
         String redirectUrl=null;
         try {
             // build up the redirect URL
             String routeUrl = routeApi.getApiUrl();
             redirectUrl = createRedictUrl(request, routeUrl, prefix, routeApi);
-            log.info("----redirect--redirectUrl={}", redirectUrl);
             RequestEntity requestEntity = createRequestEntity(request, redirectUrl, routeApi);
-            return route(requestEntity);
+            ResponseEntity<String> responseEntity = route(requestEntity);
+            if(responseEntity.getStatusCode()!= HttpStatus.OK){
+                log.warn("----redirect--redirectUrl={} statusCode={}", responseEntity.getStatusCode());
+            }
+            return responseEntity.getBody();
         } catch (Exception e) {
             log.error("----redirect--redirectUrl={} error={}", redirectUrl, e.getMessage(), e);
-            return new ResponseEntity("REDIRECT ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+            return "{\"errorMsg\":\"REDIRECT ERROR:"+e.getMessage()+"\"}";
         }
     }
 
