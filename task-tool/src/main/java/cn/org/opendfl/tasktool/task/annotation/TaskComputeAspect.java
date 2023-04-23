@@ -57,7 +57,7 @@ public class TaskComputeAspect {
     }
 
     private Object getArgs(Object[] args, int argLen, int idx) {
-        if (argLen == 0 || idx >= argLen) {
+        if (argLen == 0 || idx<0 || idx >= argLen) {
             return null;
         }
         return args[idx];
