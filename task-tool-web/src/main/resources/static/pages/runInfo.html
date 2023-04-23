@@ -96,7 +96,7 @@
                rownumbers="true" fitColumns="true" singleSelect="true" style="display:none;">
             <thead>
             <tr>
-                <th align="center" field="key" width="100" sortable="true" rowspan="2">key</th>
+                <th align="center" field="key" width="150" sortable="true" rowspan="2">key</th>
                 <th align="center" field="countType" width="50" sortable="true" rowspan="2">时间类型</th>
                 <th align="center" field="timeValue" width="50" sortable="true" rowspan="2">timeValue</th>
                 <th colspan="6">taskCompute</th>
@@ -112,7 +112,7 @@
                 <th align="center" field="taskCompute.pkg" width="100" hidden="true" data-options="formatter: function(value,row,index){
                                 return row.taskCompute.pkg;
                             }">pkg</th>
-                <th align="center" field="taskCompute.type" width="100" sortable="true" data-options="formatter: function(value,row,index){
+                <th align="center" field="taskCompute.type" width="50" sortable="true" data-options="formatter: function(value,row,index){
                                 return row.taskCompute.type;
                             }">type</th>
                 <th align="center" field="runCounter" width="50" sortable="true">执行次数</th>
@@ -140,13 +140,13 @@
                 <th align="center" field="max.uid" width="50" hidden="true" formatter="maxUid">最大时长userId</th>
                 <th align="center" field="max.dataId" width="50" hidden="true" formatter="maxDataId">最大时长dataId</th>
 
-                <th align="center" field="error.ts" width="100" hidden="true" sortable="true"
+                <th align="center" field="error.ts" width="50" hidden="true" sortable="true"
                     formatter="errorTs">错误时间
                 </th>
-                <th align="center" field="error.uid" width="100" hidden="true" formatter="errorUid">错误userId</th>
-                <th align="center" field="error.dataId" width="100" hidden="true" formatter="errorDataId">错误dataId</th>
-                <th align="center" field="error.remark" width="100" hidden="true" formatter="errorRemark">错误信息</th>
-                <th align="center" field="errorCounter" width="100" sortable="true">错误次数</th>
+                <th align="center" field="error.uid" width="50" hidden="true" formatter="errorUid">错误userId</th>
+                <th align="center" field="error.dataId" width="50" formatter="errorDataId">错误dataId</th>
+                <th align="center" field="error.remark" width="100" formatter="errorRemark">错误信息</th>
+                <th align="center" field="errorCounter" width="50" sortable="true">错误次数</th>
             </tr>
             </thead>
         </table>
