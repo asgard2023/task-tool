@@ -33,7 +33,9 @@ public class TaskComputeAspect {
 
         Object[] args = joinPoint.getArgs();
         int argLen = args.length;
+        //取dataId参数
         Object dataId = getArgs(args, argLen, dataIdCount);
+        //取userId参数
         Object userId = getArgs(args, argLen, userIdCount);
 
         taskComputeVo.setDataId(getDataId(dataId));
@@ -56,7 +58,15 @@ public class TaskComputeAspect {
         return dataIdstr;
     }
 
+    /**
+     *
+     * @param args 参数数组
+     * @param argLen 参数个数
+     * @param idx 参数下标
+     * @return
+     */
     private Object getArgs(Object[] args, int argLen, int idx) {
+        //idx=-1个表示无参，idx>=argLen表示配置错误，实际参数低于参数个数
         if (argLen == 0 || idx<0 || idx >= argLen) {
             return null;
         }
