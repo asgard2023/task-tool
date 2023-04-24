@@ -1,15 +1,14 @@
 package cn.org.opendfl.tasktool.client;
 
+import cn.hutool.json.JSONUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import cn.org.opendfl.tasktool.utils.CommUtils;
 import cn.org.opendfl.tasktool.utils.RestTemplateUtils;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
@@ -28,7 +27,7 @@ public class TaskHostRest {
         TaskToolVo taskToolVo = taskToolConfiguration.getTaskToolCentral();
         String url = CommUtils.appendUrl(taskToolVo.getApiUrl(), "taskHost/add");
         url += "?authKey=" + taskToolVo.getAuthKey();
-        String bodyString = JSON.toJSONString(taskHostVo);
+        String bodyString = JSONUtil.toJsonStr(taskHostVo);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntitys = new HttpEntity<>(bodyString, httpHeaders);

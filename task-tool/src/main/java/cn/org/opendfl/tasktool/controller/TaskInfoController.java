@@ -50,9 +50,9 @@ public class TaskInfoController {
 
     @RequestMapping(value = "runInfoJson", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getTaskInfoJson(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String key,
-                                  @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo, PageVO page
+                                  @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, @RequestBody TaskCountVo taskCountVo
             , HttpServletRequest request, HttpServletResponse response) {
-        return getTaskInfo(key, taskHostCode, taskCountVo, page, request, response);
+        return getTaskInfo(key, taskHostCode, taskCountVo, request, response);
     }
 
     /**
@@ -63,12 +63,13 @@ public class TaskInfoController {
      */
     @RequestMapping(value = "runInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getTaskInfo(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey,
-                              @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, TaskCountVo taskCountVo, PageVO page
+                              @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, TaskCountVo taskCountVo
             , HttpServletRequest request, HttpServletResponse response) {
         if (!taskToolConfiguration.isAuth(authKey, request)) {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
+        PageVO page = new PageVO(request);
         String ip = ServletUtil.getClientIP(request);
         log.info("----runInfo--taskHostCode={} ip={}", taskHostCode, ip);
         if (CharSequenceUtil.isNotBlank(taskHostCode)) {
@@ -100,8 +101,13 @@ public class TaskInfoController {
             log.warn("----sort={}", sort, e);
         }
 
-        page.setTotalSize(list.size());
-        page.setDatas(list);
+        int pageEnd = page.getPageBegin()+ page.getPageSize();
+        int total = list.size();
+        if(pageEnd>total){
+            pageEnd=total;
+        }
+        page.setTotalSize(total);
+        page.setDatas(list.subList(page.getPageBegin(), pageEnd));
         return page;
     }
 
