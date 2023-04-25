@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -84,22 +83,7 @@ public class TaskInfoController {
                 .collect(Collectors.toList());
 
 
-        Comparator orderType = Comparator.naturalOrder();
-        if ("desc".equals(page.getOrder())) {
-            orderType = Comparator.reverseOrder();
-        }
-        String sort = page.getSort();
-        try {
-            if ("key".equals(sort)) {
-                list.sort(Comparator.comparing(TaskCountVo::getKey, orderType));
-            } else if ("countType".equals(sort)) {
-                list.sort(Comparator.comparing(TaskCountVo::getCountType, orderType));
-            } else {
-                sortList(list, sort, page.getOrder());
-            }
-        } catch (Exception e) {
-            log.warn("----sort={}", sort, e);
-        }
+        sortList(page, list);
 
         int pageEnd = page.getPageBegin()+ page.getPageSize();
         int total = list.size();
@@ -111,43 +95,105 @@ public class TaskInfoController {
         return page;
     }
 
-    private void sortList(List<TaskCountVo> list, final String sort, final String order) {
-        boolean asc = "asc".equals(order);
-        Collections.sort(list, new Comparator<TaskCountVo>() {
-            Long getTimeBySort(TaskCountVo taskCountVo) {
-                if ("runCounter".equals(sort)) {
-                    return taskCountVo.getRunCounter().get() + 0L;
-                } else if ("errorCounter".equals(sort)) {
-                    return taskCountVo.getErrorCounter().get() + 0L;
-                } else if ("first.ts".equals(sort)) {
-                    return taskCountVo.getFirst().getTs();
-                } else if ("first.runTime".equals(sort)) {
-                    return taskCountVo.getFirst().getRunTime();
-                } else if ("newly.ts".equals(sort)) {
-                    return taskCountVo.getNewly().getTs();
-                } else if ("newly.runTime".equals(sort)) {
-                    return taskCountVo.getNewly().getRunTime();
-                } else if ("max.ts".equals(sort)) {
-                    return taskCountVo.getMax().getTs();
-                } else if ("max.runTime".equals(sort)) {
-                    return taskCountVo.getMax().getRunTime();
-                } else if ("error.ts".equals(sort)) {
-                    return taskCountVo.getError().getTs();
-                } else if ("timeValue".equals(sort)) {
-                    return taskCountVo.getTimeValue() + 0L;
+    private void sortList(PageVO page, List<TaskCountVo> list) {
+        String sort = page.getSort();
+        try {
+            if(CharSequenceUtil.isNotBlank(sort)){
+                Comparator<TaskCountVo> comparator = null;
+                if(sort.startsWith("taskCompute.")){
+                    comparator = getSortCompute(sort);
                 }
-                return 0L;
+                else{
+                    comparator = getSort(sort);
+                }
+                if(comparator!=null){
+                    boolean asc = "asc".equals(page.getOrder());
+                    if(asc){
+                        list.sort(comparator);
+                    }
+                    else{
+                        list.sort(comparator.reversed());
+                    }
+                }
+                else{
+                    log.warn("----sortList--sort={} invalid", sort);
+                }
             }
+        } catch (Exception e) {
+            log.warn("----sortList--sort={}", sort, e);
+        }
+    }
 
-            @Override
-            public int compare(TaskCountVo o1, TaskCountVo o2) {
-                if (asc) {
-                    return getTimeBySort(o1).compareTo(getTimeBySort(o2));
-                } else {
-                    return getTimeBySort(o2).compareTo(getTimeBySort(o1));
-                }
-            }
-        });
+
+    private Comparator<TaskCountVo> getSortCompute(final String sort) {
+        Comparator<TaskCountVo> computeCompare = null;
+        switch (sort){
+            case "taskCompute.pkg":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getPkg());
+                break;
+            case "taskCompute.category":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getCategory());
+                break;
+            case "taskCompute.methodCode":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getMethodCode());
+                break;
+            case "taskCompute.type":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getType());
+                break;
+            case "taskCompute.dataId":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getDataId());
+                break;
+            case "taskCompute.userId":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getUserId());
+                break;
+            case "taskCompute.source":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getSource());
+                break;
+            default:
+                log.warn("----getSortCompute--sort={} invalid", sort);
+        }
+        return computeCompare;
+    }
+    private Comparator<TaskCountVo> getSort(final String sort) {
+        Comparator<TaskCountVo> taskCountCompare = null;
+        switch (sort){
+            case "runCounter":
+                taskCountCompare = Comparator.comparing(temp-> temp.getRunCounter().get());
+                break;
+            case "errCounter":
+                taskCountCompare = Comparator.comparing(temp-> temp.getErrorCounter().get());
+                break;
+            case "timeValue":
+                taskCountCompare = Comparator.comparing(TaskCountVo::getTimeValue);
+                break;
+            case "key":
+                taskCountCompare = Comparator.comparing(TaskCountVo::getKey);
+                break;
+            case "countType":
+                taskCountCompare = Comparator.comparing(TaskCountVo::getCountType);
+                break;
+            case "first.ts":
+                taskCountCompare = Comparator.comparing(temp-> temp.getFirst().getTs());
+                break;
+            case "first.runTime":
+                taskCountCompare = Comparator.comparing(temp-> temp.getFirst().getRunTime());
+                break;
+            case "newly.ts":
+                taskCountCompare = Comparator.comparing(temp-> temp.getNewly().getTs());
+                break;
+            case "newly.runTime":
+                taskCountCompare = Comparator.comparing(temp-> temp.getNewly().getRunTime());
+                break;
+            case "max.ts":
+                taskCountCompare = Comparator.comparing(temp-> temp.getMax().getTs());
+                break;
+            case "max.runTime":
+                taskCountCompare = Comparator.comparing(temp-> temp.getMax().getRunTime());
+                break;
+            default:
+                log.warn("----sort={} invalid", sort);
+        }
+        return taskCountCompare;
     }
 
     /**

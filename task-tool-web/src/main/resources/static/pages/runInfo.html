@@ -109,10 +109,10 @@
                 <th align="center" field="taskCompute.showProcessing" width="100" hidden="true" formatter="taskComputeShowProcessing" >showProcessing</th>
                 <th align="center" field="taskCompute.dataIdArgCount" width="100" hidden="true" formatter="taskComputeDataIdArgCount">dataIdArgCount</th>
                 <th align="center" field="taskCompute.category" width="100" hidden="true" formatter="taskComputeCategory">category</th>
-                <th align="center" field="taskCompute.pkg" width="100" hidden="true" data-options="formatter: function(value,row,index){
+                <th align="center" field="taskCompute.pkg" width="100" hidden="true" sortable="true"  data-options="formatter: function(value,row,index){
                                 return row.taskCompute.pkg;
                             }">pkg</th>
-                <th align="center" field="taskCompute.type" width="50" sortable="true" data-options="formatter: function(value,row,index){
+                <th align="center" field="taskCompute.type" width="50" sortable="true" sortable="true" data-options="formatter: function(value,row,index){
                                 return row.taskCompute.type;
                             }">type</th>
                 <th align="center" field="runCounter" width="50" sortable="true">执行次数</th>
