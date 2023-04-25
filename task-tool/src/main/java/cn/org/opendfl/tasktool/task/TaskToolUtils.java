@@ -51,7 +51,7 @@ public class TaskToolUtils {
         }
         CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
         futureAllOff.join();
-        log.debug("---startTask--result={}", result);
+        log.debug("---startTask--source={} classMethod={} result={}", taskCompute.getSource(), classMethod, result);
     }
 
     public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {
