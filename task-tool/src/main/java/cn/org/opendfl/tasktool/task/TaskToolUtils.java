@@ -1,6 +1,5 @@
 package cn.org.opendfl.tasktool.task;
 
-import cn.hutool.core.date.DateUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,9 +40,18 @@ public class TaskToolUtils {
 
     public static void startTask(TaskComputeVo taskCompute, String classMethod, Date curDate) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
+        StringBuilder result = new StringBuilder();
+        List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            startTask(taskCompute, countTypeVo, classMethod, curDate);
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                startTask(taskCompute, countTypeVo, classMethod, curDate);
+                result.append(countTypeVo.getCode());
+            });
+            futures.add(future);
         }
+        CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+        futureAllOff.join();
+        log.debug("---startTask--result={}", result);
     }
 
     public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {
@@ -87,9 +96,15 @@ public class TaskToolUtils {
         long startTime = curDate.getTime();
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         long runTime = System.currentTimeMillis() - startTime;
+        List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            finished(taskCompute, countTypeVo, classMethod, curDate, runTime);
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                finished(taskCompute, countTypeVo, classMethod, curDate, runTime);
+            });
+            futures.add(future);
         }
+        CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+        futureAllOff.join();
         //通知异步线程进行保存
         TaskCountSaveThreadTask.saveTaskCount();
     }
