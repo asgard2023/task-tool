@@ -85,13 +85,7 @@ public class TaskInfoController {
 
         sortList(page, list);
 
-        int pageEnd = page.getPageBegin()+ page.getPageSize();
-        int total = list.size();
-        if(pageEnd>total){
-            pageEnd=total;
-        }
-        page.setTotalSize(total);
-        page.setDatas(list.subList(page.getPageBegin(), pageEnd));
+        page.loadCurrentPage(list);
         return page;
     }
 

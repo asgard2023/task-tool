@@ -51,6 +51,9 @@ public class RequestUtils {
             return null;
         }
         Object fieldValue = request.getParameter(fieldName);
+        if(fieldValue==null){
+            fieldValue = request.getHeader(fieldName);
+        }
         if (fieldValue == null) {
             fieldValue = request.getAttribute(fieldName);
         }

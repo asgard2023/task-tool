@@ -70,6 +70,24 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
 
     }
 
+
+    /**
+     * 加载当前页
+     *
+     * @param list
+     */
+    public void loadCurrentPage(List<T> list) {
+        int pageEnd = getPageBegin() + getPageSize();
+        int total = list.size();
+        if (pageEnd > total) {
+            pageEnd = total;
+        }
+        this.totalSize=total;
+        totalPage = this.calcTotalPage();
+
+        this.datas=(list.subList(getPageBegin(), pageEnd));
+    }
+
     private static final char UNDERLINE = '_';
 
     public String camelToUnderline(String param) {

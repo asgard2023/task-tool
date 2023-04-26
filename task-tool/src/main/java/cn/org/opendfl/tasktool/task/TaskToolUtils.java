@@ -98,7 +98,7 @@ public class TaskToolUtils {
         long runTime = System.currentTimeMillis() - startTime;
         List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
-                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 finished(taskCompute, countTypeVo, classMethod, curDate, runTime);
             });
             futures.add(future);
@@ -130,9 +130,15 @@ public class TaskToolUtils {
 
     public static void error(final String classMethod, final String dataId, final String errorInfo, Date curDate) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
+        List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            error(countTypeVo, classMethod, dataId, errorInfo, curDate);
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                error(countTypeVo, classMethod, dataId, errorInfo, curDate);
+            });
+            futures.add(future);
         }
+        CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+        futureAllOff.join();
     }
 
     public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate) {
