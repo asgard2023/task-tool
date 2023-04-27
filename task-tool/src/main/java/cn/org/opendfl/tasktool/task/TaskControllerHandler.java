@@ -4,6 +4,8 @@ package cn.org.opendfl.tasktool.task;
 import cn.hutool.core.collection.CollUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
+import cn.org.opendfl.tasktool.task.annotation.TaskComputeController;
+import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * controller接口或web请求接口统计处理
@@ -52,9 +55,22 @@ public class TaskControllerHandler implements HandlerInterceptor {
 
 
 
-
+    private static Map<String, TaskComputeReq> methodUriMap=new ConcurrentHashMap<>(100);
     private void preTaskCompute(HttpServletRequest request, final String uri, HandlerMethod handlerMethod) {
         long curTime = System.currentTimeMillis();
+        String key=handlerMethod.getBean().getClass().getSimpleName()+"/"+uri;
+        TaskComputeReq taskComputeReq = methodUriMap.get(key);
+        if (taskComputeReq == null) {
+            TaskComputeController taskComputeController =  handlerMethod.getMethodAnnotation(TaskComputeController.class);
+            if (taskComputeController != null) {
+                taskComputeReq = new TaskComputeReq(taskComputeController, uri);
+            }
+            if(taskComputeReq==null){
+                taskComputeReq = new TaskComputeReq();
+            }
+            methodUriMap.put(key, taskComputeReq);
+        }
+
         TaskControllerVo taskController = new TaskControllerVo();
         taskController.setStartTime(curTime);
         String packageName = handlerMethod.getBean().getClass().getPackage().getName();
@@ -67,8 +83,14 @@ public class TaskControllerHandler implements HandlerInterceptor {
 
             computeVo.setType("controller");
             computeVo.setPkg(packageName);
-            computeVo.setDataId(RequestUtils.getDataId(taskToolConfiguration, request));
-            computeVo.setUserId(RequestUtils.getUserId(taskToolConfiguration, request));
+            if(taskComputeReq.getType()!=null) {
+                computeVo.setDataId(RequestUtils.getRequestValue(request, taskComputeReq.getDataIdParamName()));
+                computeVo.setUserId(RequestUtils.getRequestValue(request, taskComputeReq.getUserIdParamName()));
+            }
+            else {
+                computeVo.setDataId(RequestUtils.getDataId(taskToolConfiguration, request));
+                computeVo.setUserId(RequestUtils.getUserId(taskToolConfiguration, request));
+            }
             computeVo.setSource(uri);
 
             taskController.setTaskCompute(computeVo);

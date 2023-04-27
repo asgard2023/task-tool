@@ -1,6 +1,7 @@
 package cn.org.opendfl.tasktooldemo.controller;
 
 
+import cn.org.opendfl.tasktool.task.annotation.TaskComputeController;
 import cn.org.opendfl.tasktooldemo.biz.ITaskTestBiz;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,12 @@ public class TaskTestController {
 
     @RequestMapping(value = "hello", method = {RequestMethod.POST, RequestMethod.GET})
     public String hello(@RequestParam("name") String name, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
+        return taskTestBiz.hello(name, sleep);
+    }
+
+    @RequestMapping(value = "hello2", method = {RequestMethod.POST, RequestMethod.GET})
+    @TaskComputeController(dataIdParamName = "name",userIdParamName = "uid")
+    public String hello2(@RequestParam("name") String name, @RequestParam("uid") String uid, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
         return taskTestBiz.hello(name, sleep);
     }
 

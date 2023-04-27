@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeServlet;
 import cn.org.opendfl.tasktool.utils.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class TaskComputeFilter implements Filter {
         String uri = req.getRequestURI();
         HttpServletMapping mapping = req.getHttpServletMapping();
         String className = mapping.getServletName();
-        TaskComputeServlet servletCompute = getServletCompute(className);
+        TaskComputeReq servletCompute = getServletCompute(className, uri);
         if (servletCompute == null) {
             chain.doFilter(request, response);
             return;
@@ -56,11 +57,9 @@ public class TaskComputeFilter implements Filter {
         computeVo.setShowProcessing(true);
         computeVo.setCategory(null);
         computeVo.setPkg(pkg);
-        computeVo.setType("servlet");
-        String dataId = RequestUtils.getRequestValue(req, servletCompute.dataIdParamName());
-        String userId = RequestUtils.getRequestValue(req, servletCompute.userIdParamName());
-        computeVo.setDataId(dataId);
-        computeVo.setUserId(userId);
+        computeVo.setType(servletCompute.getType());
+        computeVo.setDataId(RequestUtils.getRequestValue(req, servletCompute.getUserIdParamName()));
+        computeVo.setUserId(RequestUtils.getRequestValue(req, servletCompute.getUserIdParamName()));
         computeVo.setSource(req.getMethod());
         taskController.setTaskCompute(computeVo);
 
@@ -74,24 +73,29 @@ public class TaskComputeFilter implements Filter {
     }
 
     private static Map<String, Class> classMap = new ConcurrentHashMap<>(10);
-    private static Map<String, TaskComputeServlet> servletComputeMap = new ConcurrentHashMap<>(10);
+    private static Map<String, TaskComputeReq> servletComputeMap = new ConcurrentHashMap<>(10);
 
-    private static TaskComputeServlet getServletCompute(String className) {
+    private static TaskComputeReq getServletCompute(String className, String uri) {
         //非servlet接口调用不处理
         if ("dispatcherServlet".equals(className)) {
             return null;
         }
-        TaskComputeServlet servletCompute = servletComputeMap.get(className);
-        if (servletCompute == null) {
+        String key = className+":"+uri;
+        TaskComputeReq taskComputeReq = servletComputeMap.get(key);
+        if (taskComputeReq == null) {
             Class clazz = getClass(className);
             if (clazz.getName().equals(className)) {
-                servletCompute = (TaskComputeServlet) clazz.getDeclaredAnnotation(TaskComputeServlet.class);
+                TaskComputeServlet servletCompute = (TaskComputeServlet) clazz.getDeclaredAnnotation(TaskComputeServlet.class);
                 if (servletCompute != null) {
-                    servletComputeMap.put(className, servletCompute);
+                    taskComputeReq = new TaskComputeReq(servletCompute, uri);
                 }
             }
+            if(taskComputeReq==null){
+                taskComputeReq = new TaskComputeReq();
+            }
+            servletComputeMap.put(className, taskComputeReq);
         }
-        return servletCompute;
+        return taskComputeReq;
     }
 
     private static Class getClass(String className) {
