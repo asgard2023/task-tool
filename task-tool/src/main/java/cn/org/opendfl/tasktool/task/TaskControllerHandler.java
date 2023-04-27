@@ -54,7 +54,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
         return true;
     }
 
-    private AtomicInteger startLogCounter=new AtomicInteger();
+    private static AtomicInteger startLogCounter=new AtomicInteger();
 
 
     private static Map<String, TaskComputeReq> methodUriMap=new ConcurrentHashMap<>(100);
@@ -88,9 +88,9 @@ public class TaskControllerHandler implements HandlerInterceptor {
             taskComputeVo.set(taskController);
 
             int logCount = startLogCounter.get();
-            if(logCount < TaskToolUtils.START_LOG_COUNT) {
+            if(logCount < taskToolConfiguration.getStartLogCount()) {
                 logCount = startLogCounter.incrementAndGet();
-                logger.debug("---preHandle--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, TaskToolUtils.START_LOG_COUNT-logCount);
+                logger.debug("---preTaskCompute--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, taskToolConfiguration.getStartLogCount()-logCount);
             }
 
             TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));

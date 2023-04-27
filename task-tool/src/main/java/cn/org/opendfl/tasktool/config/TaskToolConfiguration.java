@@ -42,6 +42,10 @@ public class TaskToolConfiguration {
      * 即：低于这个时间的不记录最大执行时间
      */
     private int runTimeBase = 100;
+    /**
+     * 用于控制日志输出量，使日志只在启动时输出一段时间，后面不再输出
+     */
+    private int startLogCount=100;
 
     private String securityKey = "tasktooltest";
 

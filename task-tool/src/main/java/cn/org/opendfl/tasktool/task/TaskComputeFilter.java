@@ -66,9 +66,9 @@ public class TaskComputeFilter implements Filter {
         taskController.setTaskCompute(computeVo);
 
         int logCount = startLogCounter.get();
-        if(logCount < TaskToolUtils.START_LOG_COUNT) {
+        if(logCount < taskToolConfiguration.getStartLogCount()) {
             logCount = startLogCounter.incrementAndGet();
-            log.debug("---doFilter--uri={} classMethod={} startLogCount={}", uri, classMethod, TaskToolUtils.START_LOG_COUNT-logCount);
+            log.debug("---doFilter--uri={} classMethod={} startLogCount={}", uri, classMethod, taskToolConfiguration.getStartLogCount()-logCount);
         }
 
         TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));
