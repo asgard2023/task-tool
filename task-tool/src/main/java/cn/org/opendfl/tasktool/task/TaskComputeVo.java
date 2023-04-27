@@ -21,7 +21,8 @@ public class TaskComputeVo {
         this.methodCode = taskCompute.methodCode();
         this.category = taskCompute.category();
         this.showProcessing = taskCompute.showProcessing();
-        this.dataIdArgCount = taskCompute.dataIdArgCount();
+        this.dataIdArg = ""+taskCompute.dataIdArgCount();
+        this.userIdArg = ""+taskCompute.userIdArgCount();
         this.type = "taskCompute";
     }
 
@@ -38,7 +39,8 @@ public class TaskComputeVo {
      * 0表示第一个参数，如果无参数的话也兼容
      * 建议放第1个，以免在中间增加参数时序号变了
      */
-    private int dataIdArgCount;
+    private String dataIdArg;
+    private String userIdArg;
 
     /**
      * 用于显示正在执行的数据
@@ -69,13 +71,15 @@ public class TaskComputeVo {
         this.category = taskComputeReq.getCategory();
         this.methodCode = taskComputeReq.getMethodCode();
         if(taskComputeReq.getType()!=null) {
-            this.setDataId(RequestUtils.getRequestValue(request, taskComputeReq.getDataIdParamName()));
-            this.setUserId(RequestUtils.getRequestValue(request, taskComputeReq.getUserIdParamName()));
+            this.userIdArg = taskComputeReq.getUserIdParamName();
+            this.dataIdArg = taskComputeReq.getDataIdParamName();
         }
         else {
-            this.setDataId(RequestUtils.getDataId(taskToolConfiguration, request));
-            this.setUserId(RequestUtils.getUserId(taskToolConfiguration, request));
+            this.userIdArg = taskToolConfiguration.getControllerConfig().getUserIdField();
+            this.dataIdArg = taskToolConfiguration.getControllerConfig().getDataIdField();
         }
+        this.setDataId(RequestUtils.getRequestValue(request, dataIdArg));
+        this.setUserId(RequestUtils.getRequestValue(request, userIdArg));
     }
 
     public void readTaskParam(ProceedingJoinPoint joinPoint, TaskCompute taskCompute){
