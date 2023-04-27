@@ -30,6 +30,12 @@ public class TaskToolUtils {
 
     private static TaskToolConfiguration taskToolConfiguration;
 
+    /**
+     * 用于控制日志输出量，使日志只在启动时输出一段时间，后面不再输出
+     */
+    public static final int START_LOG_COUNT=100;
+    private static AtomicInteger startLogCounter=new AtomicInteger();
+
     @Resource
     public void setTaskToolConfiguration(TaskToolConfiguration taskToolConfiguration) {
         TaskToolUtils.taskToolConfiguration = taskToolConfiguration;
@@ -51,7 +57,11 @@ public class TaskToolUtils {
         }
         CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
         futureAllOff.join();
-        log.debug("---startTask--source={} classMethod={} result={}", taskCompute.getSource(), classMethod, result);
+        int logCount = startLogCounter.get();
+        if(logCount < TaskToolUtils.START_LOG_COUNT) {
+            logCount = startLogCounter.incrementAndGet();
+            log.debug("---startTask--source={} classMethod={} result={} startLogCount={}", taskCompute.getSource(), classMethod, result, TaskToolUtils.START_LOG_COUNT-logCount);
+        }
     }
 
     public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {

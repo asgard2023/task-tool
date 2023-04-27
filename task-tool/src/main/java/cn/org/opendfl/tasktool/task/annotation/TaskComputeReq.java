@@ -7,16 +7,16 @@ public class TaskComputeReq {
     public TaskComputeReq(){
 
     }
-    public TaskComputeReq(TaskComputeServlet taskComputeServlet, String uri){
-        this.type = "servlet";
+    public void load(TaskComputeServlet taskComputeServlet, String uri){
+        this.type = "TaskComputeServlet";
         this.methodCode = taskComputeServlet.methodCode();
         this.dataIdParamName = taskComputeServlet.dataIdParamName();
         this.userIdParamName = taskComputeServlet.userIdParamName();
         this.category = taskComputeServlet.category();
         this.uri = uri;
     }
-    public TaskComputeReq(TaskComputeController taskComputeController, String uri){
-        this.type = "controller";
+    public void load(TaskComputeController taskComputeController, String uri){
+        this.type = "TaskComputeController";
         this.methodCode = taskComputeController.methodCode();
         this.dataIdParamName = taskComputeController.dataIdParamName();
         this.userIdParamName = taskComputeController.userIdParamName();

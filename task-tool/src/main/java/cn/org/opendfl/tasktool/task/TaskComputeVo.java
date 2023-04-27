@@ -1,8 +1,13 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
+import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
+import cn.org.opendfl.tasktool.utils.RequestUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * TaskCompute的vo对象
@@ -56,4 +61,18 @@ public class TaskComputeVo {
      */
     private String dataId;
     private String userId;
+
+    public void readTaskParam(TaskToolConfiguration taskToolConfiguration, HttpServletRequest request, TaskComputeReq taskComputeReq){
+        this.type = taskComputeReq.getType();
+        this.category = taskComputeReq.getCategory();
+        this.methodCode = taskComputeReq.getMethodCode();
+        if(taskComputeReq.getType()!=null) {
+            this.setDataId(RequestUtils.getRequestValue(request, taskComputeReq.getDataIdParamName()));
+            this.setUserId(RequestUtils.getRequestValue(request, taskComputeReq.getUserIdParamName()));
+        }
+        else {
+            this.setDataId(RequestUtils.getDataId(taskToolConfiguration, request));
+            this.setUserId(RequestUtils.getUserId(taskToolConfiguration, request));
+        }
+    }
 }

@@ -1,13 +1,14 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeServlet;
-import cn.org.opendfl.tasktool.utils.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletMapping;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * servlet调用统计
@@ -26,15 +28,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @WebFilter(urlPatterns = "/*")
 public class TaskComputeFilter implements Filter {
+    @Resource
+    private TaskToolConfiguration taskToolConfiguration;
 
+    private static AtomicInteger startLogCounter=new AtomicInteger();
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         String uri = req.getRequestURI();
         HttpServletMapping mapping = req.getHttpServletMapping();
         String className = mapping.getServletName();
-        TaskComputeReq servletCompute = getServletCompute(className, uri);
-        if (servletCompute == null) {
+        TaskComputeReq taskComputeReq = getServletCompute(className, uri);
+        if (taskComputeReq==null || taskComputeReq.getType()==null) {
             chain.doFilter(request, response);
             return;
         }
@@ -55,15 +60,16 @@ public class TaskComputeFilter implements Filter {
         TaskComputeVo computeVo = new TaskComputeVo();
         computeVo.setMethodCode(classMethod);
         computeVo.setShowProcessing(true);
-        computeVo.setCategory(null);
         computeVo.setPkg(pkg);
-        computeVo.setType(servletCompute.getType());
-        computeVo.setDataId(RequestUtils.getRequestValue(req, servletCompute.getUserIdParamName()));
-        computeVo.setUserId(RequestUtils.getRequestValue(req, servletCompute.getUserIdParamName()));
+        computeVo.readTaskParam(taskToolConfiguration, req, taskComputeReq);
         computeVo.setSource(req.getMethod());
         taskController.setTaskCompute(computeVo);
 
-//        log.debug("---doFilter--uri={} classMethod={}", uri, classMethod);
+        int logCount = startLogCounter.get();
+        if(logCount < TaskToolUtils.START_LOG_COUNT) {
+            logCount = startLogCounter.incrementAndGet();
+            log.debug("---doFilter--uri={} classMethod={} startLogCount={}", uri, classMethod, TaskToolUtils.START_LOG_COUNT-logCount);
+        }
 
         TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));
 
@@ -72,7 +78,7 @@ public class TaskComputeFilter implements Filter {
         TaskToolUtils.finished(computeVo, classMethod, curDate);
     }
 
-    private static Map<String, Class> classMap = new ConcurrentHashMap<>(10);
+    private static Map<String, Class<?>> classMap = new ConcurrentHashMap<>(10);
     private static Map<String, TaskComputeReq> servletComputeMap = new ConcurrentHashMap<>(10);
 
     private static TaskComputeReq getServletCompute(String className, String uri) {
@@ -81,25 +87,22 @@ public class TaskComputeFilter implements Filter {
             return null;
         }
         String key = className+":"+uri;
-        TaskComputeReq taskComputeReq = servletComputeMap.get(key);
-        if (taskComputeReq == null) {
-            Class clazz = getClass(className);
+        return servletComputeMap.computeIfAbsent(key, k->{
+            TaskComputeReq taskComputeReqVo = new TaskComputeReq();
+            taskComputeReqVo.setType("servlet");
+            Class<?> clazz = getClass(className);
             if (clazz.getName().equals(className)) {
-                TaskComputeServlet servletCompute = (TaskComputeServlet) clazz.getDeclaredAnnotation(TaskComputeServlet.class);
+                TaskComputeServlet servletCompute = clazz.getDeclaredAnnotation(TaskComputeServlet.class);
                 if (servletCompute != null) {
-                    taskComputeReq = new TaskComputeReq(servletCompute, uri);
+                    taskComputeReqVo.load(servletCompute, uri);
                 }
             }
-            if(taskComputeReq==null){
-                taskComputeReq = new TaskComputeReq();
-            }
-            servletComputeMap.put(className, taskComputeReq);
-        }
-        return taskComputeReq;
+            return taskComputeReqVo;
+        });
     }
 
-    private static Class getClass(String className) {
-        Class clazz = classMap.get(className);
+    private static Class<?> getClass(String className) {
+        Class<?> clazz = classMap.get(className);
         try {
             if (clazz == null) {
                 clazz = Class.forName(className);

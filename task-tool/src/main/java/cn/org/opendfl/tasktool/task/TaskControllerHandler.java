@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * controller接口或web请求接口统计处理
@@ -53,23 +54,24 @@ public class TaskControllerHandler implements HandlerInterceptor {
         return true;
     }
 
+    private AtomicInteger startLogCounter=new AtomicInteger();
 
 
     private static Map<String, TaskComputeReq> methodUriMap=new ConcurrentHashMap<>(100);
     private void preTaskCompute(HttpServletRequest request, final String uri, HandlerMethod handlerMethod) {
         long curTime = System.currentTimeMillis();
-        String key=handlerMethod.getBean().getClass().getSimpleName()+"/"+uri;
-        TaskComputeReq taskComputeReq = methodUriMap.get(key);
-        if (taskComputeReq == null) {
+        String key= request.getMethod()+"/"+uri;
+        TaskComputeReq taskComputeReq = methodUriMap.computeIfAbsent(key, k->{
             TaskComputeController taskComputeController =  handlerMethod.getMethodAnnotation(TaskComputeController.class);
+            TaskComputeReq taskComputeReqVo = new TaskComputeReq();
             if (taskComputeController != null) {
-                taskComputeReq = new TaskComputeReq(taskComputeController, uri);
+                taskComputeReqVo.load(taskComputeController, uri);
             }
-            if(taskComputeReq==null){
-                taskComputeReq = new TaskComputeReq();
+            else{
+                taskComputeReqVo.setType("controller");
             }
-            methodUriMap.put(key, taskComputeReq);
-        }
+            return taskComputeReqVo;
+        });
 
         TaskControllerVo taskController = new TaskControllerVo();
         taskController.setStartTime(curTime);
@@ -79,24 +81,17 @@ public class TaskControllerHandler implements HandlerInterceptor {
             TaskComputeVo computeVo = new TaskComputeVo();
             computeVo.setMethodCode(classMethod);
             computeVo.setShowProcessing(true);
-            computeVo.setCategory(null);
-
-            computeVo.setType("controller");
             computeVo.setPkg(packageName);
-            if(taskComputeReq.getType()!=null) {
-                computeVo.setDataId(RequestUtils.getRequestValue(request, taskComputeReq.getDataIdParamName()));
-                computeVo.setUserId(RequestUtils.getRequestValue(request, taskComputeReq.getUserIdParamName()));
-            }
-            else {
-                computeVo.setDataId(RequestUtils.getDataId(taskToolConfiguration, request));
-                computeVo.setUserId(RequestUtils.getUserId(taskToolConfiguration, request));
-            }
+            computeVo.readTaskParam(taskToolConfiguration, request, taskComputeReq);
             computeVo.setSource(uri);
-
             taskController.setTaskCompute(computeVo);
             taskComputeVo.set(taskController);
 
-            logger.debug("---preHandle--packageName={} uri={} classMethod={}", packageName, uri, classMethod);
+            int logCount = startLogCounter.get();
+            if(logCount < TaskToolUtils.START_LOG_COUNT) {
+                logCount = startLogCounter.incrementAndGet();
+                logger.debug("---preHandle--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, TaskToolUtils.START_LOG_COUNT-logCount);
+            }
 
             TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));
         }
