@@ -179,7 +179,9 @@ public class TaDataMethodBiz extends BaseService<TaDataMethodPo> implements ITaD
             entity.setCode(methodCode);
             entity.setPkg(taskComputeVo.getPkg());
             entity.setType(taskComputeVo.getType());
-            entity.setDataIdArgCount(taskComputeVo.getDataIdArgCount());
+            if(taskComputeVo.getDataIdArg()!=null) {
+                entity.setDataIdArgCount(Integer.parseInt(taskComputeVo.getDataIdArg()));
+            }
             entity.setCategory(taskCountVo.getTaskCompute().getCategory());
             Integer ifShowProcessing = 0;
             if (taskComputeVo.isShowProcessing()) {
