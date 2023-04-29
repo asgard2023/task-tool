@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
@@ -66,10 +67,12 @@ public class TaskComputeVo {
     private String dataId;
     private String userId;
 
-    public void readTaskParam(TaskToolConfiguration taskToolConfiguration, HttpServletRequest request, TaskComputeReq taskComputeReq){
+    public void readTaskParam(TaskToolConfiguration taskToolConfiguration, TaskComputeReq taskComputeReq){
         this.type = taskComputeReq.getType();
         this.category = taskComputeReq.getCategory();
-        this.methodCode = taskComputeReq.getMethodCode();
+        if(CharSequenceUtil.isNotBlank(taskComputeReq.getMethodCode())) {
+            this.methodCode = taskComputeReq.getMethodCode();
+        }
         if(taskComputeReq.getType()!=null) {
             this.userIdArg = taskComputeReq.getUserIdParamName();
             this.dataIdArg = taskComputeReq.getDataIdParamName();
@@ -78,8 +81,6 @@ public class TaskComputeVo {
             this.userIdArg = taskToolConfiguration.getControllerConfig().getUserIdField();
             this.dataIdArg = taskToolConfiguration.getControllerConfig().getDataIdField();
         }
-        this.setDataId(RequestUtils.getRequestValue(request, dataIdArg));
-        this.setUserId(RequestUtils.getRequestValue(request, userIdArg));
     }
 
     public void readTaskParam(ProceedingJoinPoint joinPoint, TaskCompute taskCompute){
@@ -94,6 +95,11 @@ public class TaskComputeVo {
         if(userId!=null) {
             this.setUserId("" + userId);
         }
+    }
+
+    public void readParam(HttpServletRequest request){
+        this.setDataId(RequestUtils.getRequestValue(request, this.getDataId()));
+        this.setUserId(RequestUtils.getRequestValue(request, this.getUserId()));
     }
 
     /**

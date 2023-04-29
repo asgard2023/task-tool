@@ -13,6 +13,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author chenjh
@@ -31,11 +33,10 @@ public class TaskComputeAspect {
             return taskComputeVo;
         }
 
-        taskComputeVo.readTaskParam(joinPoint, taskCompute);
         return taskComputeVo;
     }
 
-
+    private static Map<String, TaskComputeVo> methodCodeMap=new ConcurrentHashMap<>(100);
     @Around(value = "@annotation(taskCompute)")
     public Object doAround(ProceedingJoinPoint joinPoint, TaskCompute taskCompute) throws Throwable {
         HttpServletRequest request = getRequest();
@@ -58,25 +59,30 @@ public class TaskComputeAspect {
                 }
             }
         }
+        final String sourceFinal = source;
         Object result = null;
-        TaskComputeVo taskComputeVo = null;
-        try {
-            taskComputeVo = getComputeParam(joinPoint, taskCompute);
+        String key = classMethod;
+        TaskComputeVo  taskComputeVV = methodCodeMap.computeIfAbsent(key, k->{
+            TaskComputeVo taskComputeVo = getComputeParam(joinPoint, taskCompute);
             Object target = joinPoint.getTarget();
 
             //初始化包名，来源，数据ID
             taskComputeVo.setPkg(target.getClass().getPackage().getName());
-            taskComputeVo.setSource(source);
+            taskComputeVo.setSource(sourceFinal);
+            return taskComputeVo;
+        });
+        try {
+            taskComputeVV.readTaskParam(joinPoint, taskCompute);
             if (taskCompute.showProcessing()) {
-                TaskToolUtils.startTask(taskComputeVo, classMethod, curDate);
+                TaskToolUtils.startTask(taskComputeVV, classMethod, curDate);
             }
             //	执行目标方法
             result = joinPoint.proceed();
 
-            TaskToolUtils.finished(taskComputeVo, classMethod, curDate);
+            TaskToolUtils.finished(taskComputeVV, classMethod, curDate);
         } catch (Throwable e) {
             //	异常通知
-            TaskToolUtils.error(classMethod, taskComputeVo.getDataId(), e.getMessage(), curDate);
+            TaskToolUtils.error(classMethod, taskComputeVV.getDataId(), e.getMessage(), curDate);
             throw e;
         }
 

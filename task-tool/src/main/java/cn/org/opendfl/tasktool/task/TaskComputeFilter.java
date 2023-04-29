@@ -3,6 +3,7 @@ package cn.org.opendfl.tasktool.task;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeServlet;
+import cn.org.opendfl.tasktool.utils.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -38,8 +39,9 @@ public class TaskComputeFilter implements Filter {
         String uri = req.getRequestURI();
         HttpServletMapping mapping = req.getHttpServletMapping();
         String className = mapping.getServletName();
-        TaskComputeReq taskComputeReq = getServletCompute(className, uri);
-        if (taskComputeReq==null || taskComputeReq.getType()==null) {
+
+        //非servlet接口调用不处理
+        if ("dispatcherServlet".equals(className)) {
             chain.doFilter(request, response);
             return;
         }
@@ -57,13 +59,9 @@ public class TaskComputeFilter implements Filter {
         }
         String classMethod = className + ":" + uri;
 
-        TaskComputeVo computeVo = new TaskComputeVo();
-        computeVo.setMethodCode(classMethod);
-        computeVo.setShowProcessing(true);
-        computeVo.setPkg(pkg);
-        computeVo.readTaskParam(taskToolConfiguration, req, taskComputeReq);
-        computeVo.setSource(req.getMethod());
+        TaskComputeVo computeVo = getServletCompute(className, uri, pkg, req);
         taskController.setTaskCompute(computeVo);
+        computeVo.readParam(req);
 
         int logCount = startLogCounter.get();
         if(logCount < taskToolConfiguration.getStartLogCount()) {
@@ -79,13 +77,9 @@ public class TaskComputeFilter implements Filter {
     }
 
     private static Map<String, Class<?>> classMap = new ConcurrentHashMap<>(10);
-    private static Map<String, TaskComputeReq> servletComputeMap = new ConcurrentHashMap<>(10);
+    private static Map<String, TaskComputeVo> servletComputeMap = new ConcurrentHashMap<>(10);
 
-    private static TaskComputeReq getServletCompute(String className, String uri) {
-        //非servlet接口调用不处理
-        if ("dispatcherServlet".equals(className)) {
-            return null;
-        }
+    private  TaskComputeVo getServletCompute(String className, String uri, String pkg, HttpServletRequest req) {
         String key = className+":"+uri;
         return servletComputeMap.computeIfAbsent(key, k->{
             TaskComputeReq taskComputeReqVo = new TaskComputeReq();
@@ -97,7 +91,12 @@ public class TaskComputeFilter implements Filter {
                     taskComputeReqVo.load(servletCompute, uri);
                 }
             }
-            return taskComputeReqVo;
+            TaskComputeVo computeVo = new TaskComputeVo();
+            computeVo.setMethodCode(key);
+            computeVo.setShowProcessing(true);
+            computeVo.setPkg(pkg);
+            computeVo.setSource(uri);
+            return computeVo;
         });
     }
 

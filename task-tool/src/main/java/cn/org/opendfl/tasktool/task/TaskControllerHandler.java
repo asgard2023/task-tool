@@ -15,6 +15,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.Resource;
+import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -57,34 +58,47 @@ public class TaskControllerHandler implements HandlerInterceptor {
     private static AtomicInteger startLogCounter=new AtomicInteger();
 
 
-    private static Map<String, TaskComputeReq> methodUriMap=new ConcurrentHashMap<>(100);
+    private static Map<String, TaskComputeVo> methodUriMap=new ConcurrentHashMap<>(100);
     private void preTaskCompute(HttpServletRequest request, final String uri, HandlerMethod handlerMethod) {
         long curTime = System.currentTimeMillis();
-        String key= request.getMethod()+"/"+uri;
-        TaskComputeReq taskComputeReq = methodUriMap.computeIfAbsent(key, k->{
-            TaskComputeController taskComputeController =  handlerMethod.getMethodAnnotation(TaskComputeController.class);
-            TaskComputeReq taskComputeReqVo = new TaskComputeReq();
-            if (taskComputeController != null) {
-                taskComputeReqVo.load(taskComputeController, uri);
-            }
-            else{
-                taskComputeReqVo.setType("controller");
-            }
-            return taskComputeReqVo;
-        });
 
         TaskControllerVo taskController = new TaskControllerVo();
         taskController.setStartTime(curTime);
         String packageName = handlerMethod.getBean().getClass().getPackage().getName();
         if (isContainPackage(packageName)) {
-            String classMethod = getMethodKey(handlerMethod);
-            TaskComputeVo computeVo = new TaskComputeVo();
-            computeVo.setMethodCode(classMethod);
-            computeVo.setShowProcessing(true);
-            computeVo.setPkg(packageName);
-            computeVo.readTaskParam(taskToolConfiguration, request, taskComputeReq);
-            computeVo.setSource(uri);
-            taskController.setTaskCompute(computeVo);
+            String key= request.getMethod()+"/"+uri;
+            TaskComputeVo compute = methodUriMap.computeIfAbsent(key, k->{
+                String classMethod = getMethodKey(handlerMethod);
+                TaskComputeVo computeVo = new TaskComputeVo();
+                TaskComputeController taskComputeController =  handlerMethod.getMethodAnnotation(TaskComputeController.class);
+                TaskComputeReq taskComputeReqVo = new TaskComputeReq();
+                computeVo.setMethodCode(classMethod);
+                if (taskComputeController != null) {
+                    taskComputeReqVo.load(taskComputeController, uri);
+                }
+                else{
+                    taskComputeReqVo.setType("controller");
+                }
+                computeVo.setShowProcessing(true);
+                computeVo.setPkg(packageName);
+                computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
+                computeVo.setSource(uri);
+                return computeVo;
+            });
+            taskController.setTaskCompute(compute);
+            String classMethod = compute.getMethodCode();
+
+            if("BasicErrorController.errorHtml".equals(classMethod)){
+                logger.warn("---error---uri={} origin={}", request.getRequestURI(), request.getHeader("Origin"));
+            }
+
+            if(request.getDispatcherType() == DispatcherType.ERROR){
+                compute.setDataId(request.getQueryString());
+            }
+            else{
+                compute.readParam(request);
+            }
+
             taskComputeVo.set(taskController);
 
             int logCount = startLogCounter.get();
@@ -93,7 +107,8 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 logger.debug("---preTaskCompute--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, taskToolConfiguration.getStartLogCount()-logCount);
             }
 
-            TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));
+
+            TaskToolUtils.startTask(compute, classMethod, new Date(curTime));
         }
     }
 
