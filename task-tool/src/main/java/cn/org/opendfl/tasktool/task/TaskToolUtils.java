@@ -40,13 +40,13 @@ public class TaskToolUtils {
 
     private static final Map<String, TaskCountVo> taskCounterMap = new ConcurrentHashMap<>(20);
 
-    public static void startTask(TaskComputeVo taskCompute, String classMethod, Date curDate) {
+    public static void startTask(TaskControllerVo taskControllerVo, String classMethod, Date curDate) {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         StringBuilder result = new StringBuilder();
         List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                startTask(taskCompute, countTypeVo, classMethod, curDate);
+                startTask(taskControllerVo, countTypeVo, classMethod, curDate);
                 result.append(countTypeVo.getCode());
             });
             futures.add(future);
@@ -56,24 +56,24 @@ public class TaskToolUtils {
         int logCount = startLogCounter.get();
         if(logCount < taskToolConfiguration.getStartLogCount()) {
             logCount = startLogCounter.incrementAndGet();
-            log.debug("---startTask--source={} classMethod={} result={} startLogCount={}", taskCompute.getSource(), classMethod, result, taskToolConfiguration.getStartLogCount()-logCount);
+            log.debug("---startTask--source={} classMethod={} result={} startLogCount={}", taskControllerVo.getTaskCompute().getSource(), classMethod, result, taskToolConfiguration.getStartLogCount()-logCount);
         }
     }
 
-    public static TaskCountVo startTask(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {
+    public static TaskCountVo startTask(TaskControllerVo taskControllerVo, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
         final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
 
         final TaskInfoVo taskInfoVo=new TaskInfoVo();
         taskInfoVo.setTs(curDate.getTime());
-        taskInfoVo.setDataId(taskCompute.getDataId());
-        taskInfoVo.setUid(taskCompute.getUserId());
+        taskInfoVo.setDataId(taskControllerVo.getDataId());
+        taskInfoVo.setUid(taskControllerVo.getUserId());
         long startTime = curDate.getTime();
         TaskCountVo taskCountVo = taskCounterMap.computeIfAbsent(countCode, k -> {
             TaskCountVo vo = new TaskCountVo();
             vo.setCountType(countTypeVo.getCode());
             vo.setTimeValue(timeValue);
-            vo.setTaskCompute(taskCompute);
+            vo.setTaskCompute(taskControllerVo.getTaskCompute());
             vo.setKey(classMethod);
             vo.setFirst(taskInfoVo);
             vo.setMax(taskInfoVo);
@@ -84,13 +84,13 @@ public class TaskToolUtils {
             return vo;
         });
         taskCountVo.setNewly(taskInfoVo);
-        String source = taskCompute.getSource();
+        String source = taskControllerVo.getTaskCompute().getSource();
         if(taskToolConfiguration.getControllerConfig().isSource()) {
             AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
             sourceCounter.incrementAndGet();
         }
         taskCountVo.getRunCounter().incrementAndGet();
-        String dataId = taskCompute.getDataId();
+        String dataId = taskControllerVo.getDataId();
         if (dataId != null) {
             taskCountVo.getProcessingData().put(dataId, startTime);
         }
@@ -98,14 +98,14 @@ public class TaskToolUtils {
     }
 
 
-    public static void finished(TaskComputeVo taskCompute, String classMethod, Date curDate) {
+    public static void finished(TaskControllerVo taskControllerVo, String classMethod, Date curDate) {
         long startTime = curDate.getTime();
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         long runTime = System.currentTimeMillis() - startTime;
         List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                finished(taskCompute, countTypeVo, classMethod, curDate, runTime);
+                finished(taskControllerVo, countTypeVo, classMethod, curDate, runTime);
             });
             futures.add(future);
         }
@@ -115,15 +115,15 @@ public class TaskToolUtils {
         TaskCountSaveThreadTask.saveTaskCount();
     }
 
-    public static void finished(TaskComputeVo taskCompute, TaskCountTypeVo countTypeVo, String classMethod, final Date curDate, final long runTime) {
+    public static void finished(TaskControllerVo taskControllerVo, TaskCountTypeVo countTypeVo, String classMethod, final Date curDate, final long runTime) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
         final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
         if (taskCountVo == null) {
-            taskCountVo = startTask(taskCompute, countTypeVo, classMethod, curDate);
+            taskCountVo = startTask(taskControllerVo, countTypeVo, classMethod, curDate);
         }
         taskCountVo.getNewly().setRunTime(runTime);
-        String dataId = taskCompute.getDataId();
+        String dataId = taskControllerVo.getDataId();
         if (runTime > taskToolConfiguration.getRunTimeBase()) {
             if (runTime > taskCountVo.getMax().getRunTime()) {
                 taskCountVo.setMax(taskCountVo.getNewly());

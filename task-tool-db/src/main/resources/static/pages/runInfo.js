@@ -193,8 +193,12 @@ function taskComputeShowProcessing(v, row, index){
     return row.taskCompute.showProcessing;
 }
 
-function taskComputeDataIdArgCount(v, row, index){
-    return row.taskCompute.dataIdArgCount;
+function taskComputeDataIdArg(v, row, index){
+    return row.taskCompute.dataIdArg;
+}
+
+function taskComputeUserIdArg(v, row, index){
+    return row.taskCompute.userIdArg;
 }
 
 function taskComputeCategory(v, row, index){

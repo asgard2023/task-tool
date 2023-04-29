@@ -88,15 +88,11 @@ public class TaskControllerHandler implements HandlerInterceptor {
             taskController.setTaskCompute(compute);
             String classMethod = compute.getMethodCode();
 
-            if("BasicErrorController.errorHtml".equals(classMethod)){
-                logger.warn("---error---uri={} origin={}", request.getRequestURI(), request.getHeader("Origin"));
-            }
-
             if(request.getDispatcherType() == DispatcherType.ERROR){
-                compute.setDataId(request.getQueryString());
+                taskController.setDataId(request.getQueryString());
             }
             else{
-                compute.readParam(request);
+                taskController.readParam(request);
             }
 
             taskComputeVo.set(taskController);
@@ -108,7 +104,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
             }
 
 
-            TaskToolUtils.startTask(compute, classMethod, new Date(curTime));
+            TaskToolUtils.startTask(taskController, classMethod, new Date(curTime));
         }
     }
 
@@ -121,14 +117,14 @@ public class TaskControllerHandler implements HandlerInterceptor {
         }
         String classMethod = taskControllerVo.getTaskCompute().getMethodCode();
         Date curDate = new Date(taskControllerVo.getStartTime());
-        String dataId = taskControllerVo.getTaskCompute().getDataId();
+        String dataId = taskControllerVo.getDataId();
         String errMsg=ex!=null?ex.getMessage():null;
         if(errMsg == null){
             //用于异常被@ExceptionHandler吃掉的处理
             errMsg=(String)request.getAttribute(RequestUtils.EXCEPTION_MSG_KEY);
         }
         if (errMsg == null && response.getStatus()== HttpStatus.OK.value()) {
-            TaskToolUtils.finished(taskControllerVo.getTaskCompute(), classMethod, curDate);
+            TaskToolUtils.finished(taskControllerVo, classMethod, curDate);
         } else {
             errMsg=errMsg!=null?errMsg:"";
             errMsg+=",httpStatus:"+response.getStatus();

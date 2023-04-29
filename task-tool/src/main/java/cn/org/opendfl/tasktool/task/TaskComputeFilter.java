@@ -61,7 +61,7 @@ public class TaskComputeFilter implements Filter {
 
         TaskComputeVo computeVo = getServletCompute(className, uri, pkg, req);
         taskController.setTaskCompute(computeVo);
-        computeVo.readParam(req);
+        taskController.readParam(req);
 
         int logCount = startLogCounter.get();
         if(logCount < taskToolConfiguration.getStartLogCount()) {
@@ -69,11 +69,11 @@ public class TaskComputeFilter implements Filter {
             log.debug("---doFilter--uri={} classMethod={} startLogCount={}", uri, classMethod, taskToolConfiguration.getStartLogCount()-logCount);
         }
 
-        TaskToolUtils.startTask(computeVo, classMethod, new Date(curTime));
+        TaskToolUtils.startTask(taskController, classMethod, new Date(curTime));
 
         chain.doFilter(request, response);
         Date curDate = new Date(curTime);
-        TaskToolUtils.finished(computeVo, classMethod, curDate);
+        TaskToolUtils.finished(taskController, classMethod, curDate);
     }
 
     private static Map<String, Class<?>> classMap = new ConcurrentHashMap<>(10);

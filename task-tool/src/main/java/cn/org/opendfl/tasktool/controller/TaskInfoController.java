@@ -134,11 +134,11 @@ public class TaskInfoController {
             case "taskCompute.type":
                 computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getType());
                 break;
-            case "taskCompute.dataId":
-                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getDataId());
+            case "taskCompute.dataIdArg":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getDataIdArg());
                 break;
-            case "taskCompute.userId":
-                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getUserId());
+            case "taskCompute.userIdArg":
+                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getUserIdArg());
                 break;
             case "taskCompute.source":
                 computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getSource());

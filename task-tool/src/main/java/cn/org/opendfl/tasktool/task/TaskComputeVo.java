@@ -4,13 +4,8 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
-import cn.org.opendfl.tasktool.utils.RequestUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.aspectj.lang.ProceedingJoinPoint;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 /**
  * TaskCompute的vo对象
@@ -22,8 +17,8 @@ public class TaskComputeVo {
         this.methodCode = taskCompute.methodCode();
         this.category = taskCompute.category();
         this.showProcessing = taskCompute.showProcessing();
-        this.dataIdArg = ""+taskCompute.dataIdArgCount();
-        this.userIdArg = ""+taskCompute.userIdArgCount();
+        this.dataIdArg = "" + taskCompute.dataIdArgCount();
+        this.userIdArg = "" + taskCompute.userIdArgCount();
         this.type = "taskCompute";
     }
 
@@ -61,77 +56,20 @@ public class TaskComputeVo {
      * 来源
      */
     private String source;
-    /**
-     * 数据dataId，优先dataId，没有取userId，再没有取用户IP
-     */
-    private String dataId;
-    private String userId;
 
-    public void readTaskParam(TaskToolConfiguration taskToolConfiguration, TaskComputeReq taskComputeReq){
+
+    public void readTaskParam(TaskToolConfiguration taskToolConfiguration, TaskComputeReq taskComputeReq) {
         this.type = taskComputeReq.getType();
         this.category = taskComputeReq.getCategory();
-        if(CharSequenceUtil.isNotBlank(taskComputeReq.getMethodCode())) {
+        if (CharSequenceUtil.isNotBlank(taskComputeReq.getMethodCode())) {
             this.methodCode = taskComputeReq.getMethodCode();
         }
-        if(taskComputeReq.getType()!=null) {
+        if (!CharSequenceUtil.equals("controller", taskComputeReq.getType())) {
             this.userIdArg = taskComputeReq.getUserIdParamName();
             this.dataIdArg = taskComputeReq.getDataIdParamName();
-        }
-        else {
+        } else {
             this.userIdArg = taskToolConfiguration.getControllerConfig().getUserIdField();
             this.dataIdArg = taskToolConfiguration.getControllerConfig().getDataIdField();
         }
-    }
-
-    public void readTaskParam(ProceedingJoinPoint joinPoint, TaskCompute taskCompute){
-        Object[] args = joinPoint.getArgs();
-        int argLen = args.length;
-        //取dataId参数
-        Object dataId = getArgs(args, argLen, taskCompute.dataIdArgCount());
-        //取userId参数
-        Object userId = getArgs(args, argLen, taskCompute.userIdArgCount());
-
-        this.setDataId(getDataId(dataId));
-        if(userId!=null) {
-            this.setUserId("" + userId);
-        }
-    }
-
-    public void readParam(HttpServletRequest request){
-        this.setDataId(RequestUtils.getRequestValue(request, this.getDataId()));
-        this.setUserId(RequestUtils.getRequestValue(request, this.getUserId()));
-    }
-
-    /**
-     * id转字符串
-     * @param dataId
-     * @return
-     */
-    private String getDataId(Object dataId) {
-        String dataIdstr = null;
-        if (dataId == null) {
-            return null;
-        }
-        if (dataId instanceof Date) {
-            dataIdstr = "" + ((Date) dataId).getTime();
-        } else {
-            dataIdstr = "" + dataId;
-        }
-        return dataIdstr;
-    }
-
-    /**
-     *
-     * @param args 参数数组
-     * @param argLen 参数个数
-     * @param idx 参数下标
-     * @return
-     */
-    private Object getArgs(Object[] args, int argLen, int idx) {
-        //idx=-1个表示无参，idx>=argLen表示配置错误，实际参数低于参数个数
-        if (argLen == 0 || idx<0 || idx >= argLen) {
-            return null;
-        }
-        return args[idx];
     }
 }

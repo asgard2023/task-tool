@@ -2,6 +2,7 @@ package cn.org.opendfl.tasktool.task.annotation;
 
 
 import cn.org.opendfl.tasktool.task.TaskComputeVo;
+import cn.org.opendfl.tasktool.task.TaskControllerVo;
 import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -43,6 +44,8 @@ public class TaskComputeAspect {
 
         long curTime = System.currentTimeMillis();
         Date curDate = new Date(curTime);
+        TaskControllerVo taskControllerVo = new TaskControllerVo();
+        taskControllerVo.setStartTime(curTime);
         String classMethod = getMethodKey(joinPoint, taskCompute);
 
         String source = "internal";
@@ -71,18 +74,19 @@ public class TaskComputeAspect {
             taskComputeVo.setSource(sourceFinal);
             return taskComputeVo;
         });
+        taskControllerVo.setTaskCompute(taskComputeVV);
         try {
-            taskComputeVV.readTaskParam(joinPoint, taskCompute);
+            taskControllerVo.readTaskParam(joinPoint, taskCompute);
             if (taskCompute.showProcessing()) {
-                TaskToolUtils.startTask(taskComputeVV, classMethod, curDate);
+                TaskToolUtils.startTask(taskControllerVo, classMethod, curDate);
             }
             //	执行目标方法
             result = joinPoint.proceed();
 
-            TaskToolUtils.finished(taskComputeVV, classMethod, curDate);
+            TaskToolUtils.finished(taskControllerVo, classMethod, curDate);
         } catch (Throwable e) {
             //	异常通知
-            TaskToolUtils.error(classMethod, taskComputeVV.getDataId(), e.getMessage(), curDate);
+            TaskToolUtils.error(classMethod, taskControllerVo.getDataId(), e.getMessage(), curDate);
             throw e;
         }
 
