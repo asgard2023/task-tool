@@ -22,7 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @author chenjh
  */
 @SpringBootTest
-@ActiveProfiles(value = "dev")
+@ActiveProfiles(value = "test")
 @AutoConfigureMockMvc
 @WebAppConfiguration
 class TaskTestControllerTest {

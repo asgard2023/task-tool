@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.annotation.Resource;
 
 @SpringBootTest
-@ActiveProfiles(value = "dev")
+@ActiveProfiles(value = "test")
 public class TaskHostRestTest {
     @Resource
     private TaskHostRest taskHostRest;
