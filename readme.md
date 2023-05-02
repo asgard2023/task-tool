@@ -38,7 +38,7 @@ http://task-tool-demo.opendfl.org.cn/index.html
 <dependency>
     <groupId>cn.org.opendfl</groupId>
     <artifactId>task-tool</artifactId>
-    <version>1.10</version>
+    <version>2.0</version>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@ http://task-tool-demo.opendfl.org.cn/index.html
 <dependency>
     <groupId>cn.org.opendfl</groupId>
     <artifactId>task-tool-db</artifactId>
-    <version>1.2</version>
+    <version>2.0</version>
 </dependency>
 ```
 
