@@ -84,7 +84,7 @@ public class TaskComputeFilter implements Filter {
         return servletComputeMap.computeIfAbsent(key, k->{
             TaskComputeReq taskComputeReqVo = new TaskComputeReq();
             taskComputeReqVo.setType("servlet");
-            Class<?> clazz = getClass(className);
+            Class<?> clazz = getClass(pkg+"."+className);
             if (clazz.getName().equals(className)) {
                 TaskComputeServlet servletCompute = clazz.getDeclaredAnnotation(TaskComputeServlet.class);
                 if (servletCompute != null) {

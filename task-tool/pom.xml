@@ -11,7 +11,7 @@
 
     <groupId>cn.org.opendfl</groupId>
     <artifactId>task-tool</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
     <name>task-tool</name>
     <packaging>jar</packaging>
     <description>task-tool spring interface calls statistics tool</description>
