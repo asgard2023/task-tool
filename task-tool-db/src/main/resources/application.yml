@@ -1,3 +1,7 @@
+project:
+  build:
+    timestamp: 0
+
 task-tool:
   #版本号
   version: 1
