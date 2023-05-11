@@ -99,7 +99,8 @@
                 <th align="center" field="key" width="150" sortable="true" rowspan="2">key</th>
                 <th align="center" field="countType" width="50" sortable="true" rowspan="2">时间类型</th>
                 <th align="center" field="timeValue" width="50" sortable="true" rowspan="2">timeValue</th>
-                <th colspan="6">taskCompute</th>
+                <th colspan="7">taskCompute</th>
+                <th align="center" field="runCounter" width="50" sortable="true" rowspan="2">执行次数</th>
                 <th colspan="4">首次</th>
                 <th colspan="4">最新</th>
                 <th colspan="4">最大</th>
@@ -119,7 +120,6 @@
                 <th align="center" field="taskCompute.source" width="50" sortable="true" sortable="true" data-options="formatter: function(value,row,index){
                                 return row.taskCompute.source;
                             }">source</th>
-                <th align="center" field="runCounter" width="50" sortable="true">执行次数</th>
                 <th align="center" field="first.ts" width="50" sortable="true" hidden="true" formatter="firstTs">
                     首次时间
                 </th>
