@@ -59,7 +59,7 @@ public class TaskComputeFilter implements Filter {
         }
         String classMethod = className + ":" + uri;
 
-        TaskComputeVo computeVo = getServletCompute(className, uri, pkg, req);
+        TaskComputeVo computeVo = getServletCompute(className, uri, pkg);
         taskController.setTaskCompute(computeVo);
         taskController.readParam(req);
 
@@ -79,21 +79,20 @@ public class TaskComputeFilter implements Filter {
     private static Map<String, Class<?>> classMap = new ConcurrentHashMap<>(10);
     private static Map<String, TaskComputeVo> servletComputeMap = new ConcurrentHashMap<>(10);
 
-    private  TaskComputeVo getServletCompute(String className, String uri, String pkg, HttpServletRequest req) {
+    private  TaskComputeVo getServletCompute(String className, String uri, String pkg) {
         String key = className+":"+uri;
         return servletComputeMap.computeIfAbsent(key, k->{
             TaskComputeReq taskComputeReqVo = new TaskComputeReq();
             taskComputeReqVo.setType("servlet");
             Class<?> clazz = getClass(pkg+"."+className);
-            if (clazz.getName().equals(className)) {
-                TaskComputeServlet servletCompute = clazz.getDeclaredAnnotation(TaskComputeServlet.class);
-                if (servletCompute != null) {
-                    taskComputeReqVo.load(servletCompute, uri);
-                }
+            TaskComputeServlet servletCompute = clazz.getDeclaredAnnotation(TaskComputeServlet.class);
+            if (servletCompute != null) {
+                taskComputeReqVo.load(servletCompute, uri);
             }
             TaskComputeVo computeVo = new TaskComputeVo();
             computeVo.setMethodCode(key);
             computeVo.setShowProcessing(true);
+            computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
             computeVo.setPkg(pkg);
             computeVo.setSource(uri);
             return computeVo;
