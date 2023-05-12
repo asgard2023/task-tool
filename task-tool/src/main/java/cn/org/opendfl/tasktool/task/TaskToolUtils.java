@@ -30,7 +30,7 @@ public class TaskToolUtils {
 
     private static TaskToolConfiguration taskToolConfiguration;
 
-    private static AtomicInteger startLogCounter=new AtomicInteger();
+    private static final AtomicInteger startLogCounter=new AtomicInteger();
 
     @Resource
     public void setTaskToolConfiguration(TaskToolConfiguration taskToolConfiguration) {
@@ -104,9 +104,9 @@ public class TaskToolUtils {
         long runTime = System.currentTimeMillis() - startTime;
         List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                finished(taskControllerVo, countTypeVo, classMethod, curDate, runTime);
-            });
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
+                finished(taskControllerVo, countTypeVo, classMethod, curDate, runTime)
+            );
             futures.add(future);
         }
         CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
@@ -138,9 +138,9 @@ public class TaskToolUtils {
         List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         List<CompletableFuture<Void>> futures = new ArrayList<>(countTypes.size());
         for (TaskCountTypeVo countTypeVo : countTypes) {
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                error(countTypeVo, classMethod, dataId, errorInfo, curDate);
-            });
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() ->
+                error(countTypeVo, classMethod, dataId, errorInfo, curDate)
+            );
             futures.add(future);
         }
         CompletableFuture<Void> futureAllOff = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
@@ -167,7 +167,7 @@ public class TaskToolUtils {
      * @param countTypeVo 统计类型
      * @param classMethod 类名+方法名
      * @param timeValue   类型对应的时间值
-     * @return
+     * @return 返回key
      */
     public static String getMethodCountKey(TaskCountTypeVo countTypeVo, String classMethod, Integer timeValue) {
         return classMethod + ":" + countTypeVo.getCode() + ":" + timeValue + ":" + countTypeVo.getTimeSeconds();

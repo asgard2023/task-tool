@@ -55,10 +55,10 @@ public class TaskControllerHandler implements HandlerInterceptor {
         return true;
     }
 
-    private static AtomicInteger startLogCounter=new AtomicInteger();
+    private static final AtomicInteger startLogCounter=new AtomicInteger();
 
 
-    private static Map<String, TaskComputeVo> methodUriMap=new ConcurrentHashMap<>(100);
+    private static final Map<String, TaskComputeVo> methodUriMap=new ConcurrentHashMap<>(100);
     private void preTaskCompute(HttpServletRequest request, final String uri, HandlerMethod handlerMethod) {
         long curTime = System.currentTimeMillis();
 
@@ -139,7 +139,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
      * 是否忽略
      *
      * @param handler
-     * @param uri
+     * @param uri uri
      * @return
      */
     private boolean skip(Object handler, String uri) {
@@ -159,7 +159,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
 
 
     private boolean isContainPackage(String packageName) {
-        boolean isContainPackage = false;
+        boolean isContainPackage;
         List<String> basePackages = taskToolConfiguration.getControllerConfig().getPackages();
 
         if (CollUtil.isEmpty(basePackages) || PKG_MATCH_ALL.equals(basePackages.get(0))) {

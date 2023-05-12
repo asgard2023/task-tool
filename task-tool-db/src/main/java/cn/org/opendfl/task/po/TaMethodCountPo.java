@@ -50,7 +50,7 @@ public class TaMethodCountPo implements Serializable {
     }
 
     public void loadMax(TaskCountVo taskCountVo, String serverName) {
-        Long runTimeMax = taskCountVo.getMax().getRunTime();;
+        Long runTimeMax = taskCountVo.getMax().getRunTime();
         this.setMaxRunTime(runTimeMax.intValue());
         this.setMaxRunTimeDate(new Date(taskCountVo.getMax().getTs()));
         this.setMaxRunTimeDataId(taskCountVo.getMax().getDataId());

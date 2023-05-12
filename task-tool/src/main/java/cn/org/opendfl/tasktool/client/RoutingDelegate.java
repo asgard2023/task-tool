@@ -34,12 +34,12 @@ public class RoutingDelegate {
             RequestEntity<?> requestEntity = createRequestEntity(request, redirectUrl, routeApi);
             ResponseEntity<String> responseEntity = route(requestEntity);
             if(responseEntity.getStatusCode()!= HttpStatus.OK){
-                log.warn("----redirect--redirectUrl={} statusCode={}", responseEntity.getStatusCode());
+                log.warn("----redirect--redirectUrl={} statusCode={}", redirectUrl, responseEntity.getStatusCode());
             }
             return responseEntity;
         } catch (Exception e) {
             log.error("----redirect--redirectUrl={} error={}", redirectUrl, e.getMessage(), e);
-            return new ResponseEntity("{\"errorMsg\":\"REDIRECT ERROR:"+e.getMessage()+"\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("{\"errorMsg\":\"REDIRECT ERROR:"+e.getMessage()+"\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -72,7 +72,7 @@ public class RoutingDelegate {
         while (params.hasMoreElements()) {
             String param = params.nextElement();
             if (!queryString.contains(param)) {
-                paramSB .append( "&" + param + "=" + URLEncodeUtil.encode(request.getParameter(param)));
+                paramSB .append("&").append( param).append("=").append(URLEncodeUtil.encode(request.getParameter(param)));
             }
         }
         String paramStr = paramSB.toString();

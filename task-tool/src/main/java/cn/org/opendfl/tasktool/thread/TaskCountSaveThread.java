@@ -16,7 +16,7 @@ public class TaskCountSaveThread implements Runnable {
     static Logger logger = LoggerFactory.getLogger(TaskCountSaveThread.class);
     private static volatile Long saveTime = 0L;
     private static final int INTERVAL_SAVE_TIME = TaskCountSaveThreadTask.SAVE_INTERVAL / 5;
-    private Object lock = new Object();
+    private final Object lock = new Object();
 
     private ITaskCountSaveBiz taskCountSaveBiz;
 

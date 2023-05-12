@@ -82,7 +82,7 @@ public class TaMethodCountReportController extends BaseController {
         List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
         pageInfo.getList().stream().forEach(t -> {
             for (TaDataMethodPo taDataMethodPo : dataMethodPos) {
-                if (taDataMethodPo.getId().intValue() == t.getDataMethodId()) {
+                if (taDataMethodPo.getId() == t.getDataMethodId()) {
                     t.setDataMethod(taDataMethodPo);
                     break;
                 }
@@ -228,7 +228,7 @@ public class TaMethodCountReportController extends BaseController {
         List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
         pageInfo.getList().stream().forEach(t -> {
             for (TaDataMethodPo taDataMethodPo : dataMethodPos) {
-                if (taDataMethodPo.getId().intValue() == t.getDataMethodId()) {
+                if (taDataMethodPo.getId() == t.getDataMethodId()) {
                     t.setDataMethod(taDataMethodPo);
                     t.setMethodCode(taDataMethodPo.getCode());
                     break;
@@ -242,7 +242,7 @@ public class TaMethodCountReportController extends BaseController {
         List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
         pageInfo.getList().stream().forEach(t -> {
             for (TaDataMethodPo taDataMethodPo : dataMethodPos) {
-                if (taDataMethodPo.getId().intValue() == t.getDataMethodId()) {
+                if (taDataMethodPo.getId() == t.getDataMethodId()) {
                     t.setDataMethod(taDataMethodPo);
                     t.setMethodCode(taDataMethodPo.getCode());
                     break;
@@ -256,7 +256,7 @@ public class TaMethodCountReportController extends BaseController {
         List<TaDataMethodPo> dataMethodPos = this.taDataMethodBiz.getDataByIds(dataMethodIdList, "createTime,modifyTime");
         pageInfo.getList().stream().forEach(t -> {
             for (TaDataMethodPo taDataMethodPo : dataMethodPos) {
-                if (taDataMethodPo.getId().intValue() == t.getDataMethodId()) {
+                if (taDataMethodPo.getId() == t.getDataMethodId()) {
                     t.setDataMethod(taDataMethodPo);
                     t.setMethodCode(taDataMethodPo.getCode());
                     break;

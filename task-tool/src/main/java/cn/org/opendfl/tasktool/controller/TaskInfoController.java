@@ -68,7 +68,7 @@ public class TaskInfoController {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
-        PageVO page = new PageVO(request);
+        PageVO<TaskCountVo> page = new PageVO(request);
         String ip = ServletUtil.getClientIP(request);
         log.info("----runInfo--taskHostCode={} ip={}", taskHostCode, ip);
         if (CharSequenceUtil.isNotBlank(taskHostCode)) {

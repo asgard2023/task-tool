@@ -63,7 +63,7 @@ public class TaskHostController {
 
     @RequestMapping(value = "hosts", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getHosts(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey
-            , TaskHostVo taskHostVo, PageVO page, HttpServletRequest request) {
+            , TaskHostVo taskHostVo, PageVO<TaskHostVo> page, HttpServletRequest request) {
         if (!taskToolConfiguration.isAuth(authKey, request)) {
             log.warn("----hosts--key={} invalid", authKey);
             return "{\"errorMsg\":\" auth fail\"}";
@@ -82,7 +82,7 @@ public class TaskHostController {
      */
     @RequestMapping(value = "hostList", method = {RequestMethod.POST, RequestMethod.GET})
     public Object getConfig(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey
-            , TaskHostVo taskHostVo, PageVO page, HttpServletRequest request) {
+            , TaskHostVo taskHostVo, PageVO<TaskHostVo> page, HttpServletRequest request) {
         if (!taskToolConfiguration.isAuth(authKey, request)) {
             log.warn("----hostList--key={} invalid", authKey);
             return "{\"errorMsg\":\"auth fail\"}";
