@@ -11,7 +11,7 @@ import cn.org.opendfl.task.mapper.TaDataMethodMyMapper;
 import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.tasktool.task.TaskComputeVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -120,7 +120,7 @@ public class TaDataMethodBiz extends BaseService<TaDataMethodPo> implements ITaD
         if (StringUtil.isNotEmpty(pageInfo.getOrderBy()) && StringUtil.isNotEmpty(pageInfo.getOrder())) {
             example.setOrderByClause(StringUtil.camelhumpToUnderline(pageInfo.getOrderBy()) + " " + pageInfo.getOrder());
         }
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
         List<TaDataMethodPo> list = this.getMapper().selectByExample(example);
         return new MyPageInfo<>(list);
     }
@@ -180,7 +180,7 @@ public class TaDataMethodBiz extends BaseService<TaDataMethodPo> implements ITaD
             entity.setPkg(taskComputeVo.getPkg());
             entity.setType(taskComputeVo.getType());
             if(taskComputeVo.getDataIdArg()!=null) {
-                entity.setDataIdArgCount(Integer.parseInt(taskComputeVo.getDataIdArg()));
+                entity.setDataIdArg(taskComputeVo.getDataIdArg());
             }
             entity.setCategory(taskCountVo.getTaskCompute().getCategory());
             Integer ifShowProcessing = 0;

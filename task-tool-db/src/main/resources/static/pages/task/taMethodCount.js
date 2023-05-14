@@ -161,9 +161,12 @@ function onDestroy() {
 }
 
 function sourceCount(){
-    var url='taMethodCountSourceDetail.html?methodCountId='+row.id+'&startTime='+$('#query_startTime').val();
-    //window.open('taMethodCountSource.html?methodCountId='+row.id);
-    var title=row.dataMethod.code+'-'+row.timeType+'-'+row.timeValue;
-    $('#dlgSource').dialog('open').dialog('setTitle', title);
-    $('#iframeSource').attr('src', url);
+    var row = $('#dg').datagrid('getSelected');
+    if (row) {
+        var url = 'taMethodCountSourceDetail.html?methodCountId=' + row.id + '&startTime=' + $('#query_startTime').val();
+        //window.open('taMethodCountSource.html?methodCountId='+row.id);
+        var title = row.dataMethod.code + '-' + row.timeType + '-' + row.timeValue;
+        $('#dlgSource').dialog('open').dialog('setTitle', title);
+        $('#iframeSource').attr('src', url);
+    }
 }

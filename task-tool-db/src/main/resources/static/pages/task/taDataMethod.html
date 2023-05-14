@@ -35,7 +35,7 @@
 
         .fitem label {
             display: inline-block;
-            width: 60px;
+            width: 100px;
         }
 
         .input_query {
@@ -43,7 +43,7 @@
         }
 
         input, textarea {
-            width: 160px;
+            width: 200px;
             border: 1px solid #ccc;
             padding: 2px;
         }
@@ -96,32 +96,33 @@
             <thead>
             <tr>
                 <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
-                <th align="center" field="code" width="50" sortable="true">方法名</th>
+                <th align="center" field="code" width="100" sortable="true">方法名</th>
                 <th align="center" field="name" width="50" sortable="true">名称</th>
                 <th align="center" field="type" width="50" sortable="true">类别</th>
-                <th align="center" field="pkg" width="50" sortable="true">包名</th>
-                <th align="center" field="category" width="50" sortable="true">分类：仅分类，没其他作用</th>
+                <th align="center" field="pkg" width="100" sortable="true">包名</th>
+                <th align="center" field="category" width="80" sortable="true">分类：仅分类，没其他作用</th>
                 <th align="center" field="showProcessing" width="50" sortable="true">是否显示正在进行中的任务</th>
-                <th align="center" field="dataIdArgCount" width="50" sortable="true">dataId参数序号</th>
+                <th align="center" field="dataIdArg" width="100" sortable="true">dataId参数序号或参数名</th>
+                <th align="center" field="ifLogDetail" width="50" sortable="true"> 是否日志详情</th>
+                <th align="center" field="ifRemind" width="50" sortable="true">是否进行告警提示</th>
                 <th align="center" field="ifDel" width="50" sortable="true" hidden="true">是否删除</th>
                 <th align="center" field="status" width="50" sortable="true" data-options="formatter: function(value,row,index){
                                 return formatterCombobox(dict_status, value, false);
                             }">状态
                 </th>
-                <th align="center" field="remark" width="50" sortable="true">备注</th>
-                <th align="center" field="createTime" width="50" sortable="true">创建时间</th>
-                <th align="center" field="modifyTime" width="50" sortable="true">修改时间</th>
-                <th align="center" field="createUser" width="50" sortable="true">创建人</th>
-                <th align="center" field="modifyUser" width="50" sortable="true">修改人</th>
-                <th align="center" field="ifLogDetail" width="50" sortable="true"> 是否日志详情</th>
-                <th align="center" field="ifRemind" width="50" sortable="true">是否进行告警提示</th>
+                <th align="center" field="remark" width="100" sortable="true" hidden="true">备注</th>
+                <th align="center" field="createTime" width="50" sortable="true" hidden="true">创建时间</th>
+                <th align="center" field="modifyTime" width="50" sortable="true" hidden="true">修改时间</th>
+                <th align="center" field="createUser" width="50" sortable="true" hidden="true">创建人</th>
+                <th align="center" field="modifyUser" width="50" sortable="true" hidden="true">修改人</th>
+
             </tr>
             </thead>
         </table>
     </div>
 </div>
 
-<div id="dlg" class="easyui-dialog" style="width:400px;height:500px;padding:5px 10px;display:none;"
+<div id="dlg" class="easyui-dialog" style="width:500px;height:500px;padding:5px 10px;display:none;"
      closed="true" buttons="#dlg-buttons">
     <form id="fm" method="post" novalidate>
         <input type="hidden" name="id">
@@ -150,8 +151,16 @@
             <input name="showProcessing" class="easyui-validatebox">
         </div>
         <div class="fitem">
-            <label>dataId参数序号:</label>
-            <input name="dataIdArgCount" class="easyui-validatebox">
+            <label>dataId参数序号或参数名:</label>
+            <input name="dataIdArg" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label> 是否日志详情:</label>
+            <input name="ifLogDetail" class="easyui-validatebox">
+        </div>
+        <div class="fitem">
+            <label>是否进行告警提示:</label>
+            <input name="ifRemind" class="easyui-validatebox">
         </div>
         <input type="hidden" name="ifDel">
         <div class="fitem">
@@ -164,32 +173,9 @@
         </div>
         <div class="fitem">
             <label>备注:</label>
-            <input name="remark" class="easyui-validatebox">
+            <textarea name="remark" style="height:80px;width:220px"></textarea>
         </div>
-        <div class="fitem">
-            <label>创建时间:</label>
-            <input name="createTime" class="easyui-datetimebox">
-        </div>
-        <div class="fitem">
-            <label>修改时间:</label>
-            <input name="modifyTime" class="easyui-datetimebox">
-        </div>
-        <div class="fitem">
-            <label>创建人:</label>
-            <input name="createUser" class="easyui-validatebox">
-        </div>
-        <div class="fitem">
-            <label>修改人:</label>
-            <input name="modifyUser" class="easyui-validatebox">
-        </div>
-        <div class="fitem">
-            <label> 是否日志详情:</label>
-            <input name="ifLogDetail" class="easyui-validatebox">
-        </div>
-        <div class="fitem">
-            <label>是否进行告警提示:</label>
-            <input name="ifRemind" class="easyui-validatebox">
-        </div>
+
     </form>
     <div id="dlg-buttons">
         <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" onclick="onSave()">Save</a>

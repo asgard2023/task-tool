@@ -96,31 +96,35 @@
             <tr>
                 <th align="center" field="id" width="50" sortable="true" hidden="true" rowspan="2">id</th>
                 <th align="center" field="dataMethodId" width="50" sortable="true" hidden="true"  rowspan="2">接口方法id</th>
-                <th align="center" field="dataMethodCode" width="50" sortable="false" rowspan="2" data-options="formatter: function(value,row,index){
+                <th align="center" field="dataMethodCode" width="150" sortable="false" rowspan="2" data-options="formatter: function(value,row,index){
                                 return row.dataMethod.code;
                             }">接口方法</th>
                 <th align="center" field="timeValue" width="50" sortable="true"  rowspan="2">时间值</th>
                 <th align="center" field="timeType" width="50" sortable="true"  rowspan="2">时间类型</th>
                 <th align="center" field="runCount" width="50" sortable="true"  rowspan="2">运行次数</th>
-                <th align="center" field="first" width="50" sortable="true"  colspan="2">首次</th>
-                <th align="center" field="newly" width="50" sortable="true"  colspan="3">最新</th>
-                <th align="center" field="max" width="50" sortable="true"  colspan="5">最大</th>
-                <th align="center" field="error" width="50" sortable="true"  colspan="10"></th>
+                <th align="center"  colspan="2">首次</th>
+                <th align="center"  colspan="3">最新</th>
+                <th align="center"  colspan="5">最大</th>
+                <th align="center"  colspan="6"><font color="red">错误</font></th>
+                <th align="center" rowspan="2" field="status" width="50" sortable="true" data-options="formatter: function(value,row,index){
+                                return formatterCombobox(dict_status, value, false);
+                            }">是否有效
+                </th>
+                <th align="center"  colspan="2">时间</th>
             </tr>
             <tr>
-                <th align="center" field="firstTime" width="50" sortable="true">首次运行时间</th>
+                <th align="center" field="firstTime" width="100" sortable="true">首次运行时间</th>
                 <th align="center" field="firstUid" width="50" sortable="true">首次运行UserId</th>
 
                 <th align="center" field="runTime" width="50" sortable="true">最新时间(ms)</th>
                 <th align="center" field="runUid" width="50" sortable="true">最新UserId</th>
-                <th align="center" field="runServer" width="50" sortable="true" >最新服务器名</th>
+                <th align="center" field="runServer" width="50" sortable="true" hidden="true">最新服务器名</th>
 
                 <th align="center" field="maxRunTime" width="50" sortable="true">最大执行时间(ms)</th>
-                <th align="center" field="maxRunTimeDate" width="50" sortable="true">最大发生时间</th>
+                <th align="center" field="maxRunTimeDate" width="100" sortable="true">最大发生时间</th>
                 <th align="center" field="maxRunTimeDataId" width="50" sortable="true" hidden="true">最大dataId</th>
                 <th align="center" field="maxRunTimeUserId" width="50" sortable="true" hidden="true">最大UserId</th>
                 <th align="center" field="maxRunServer" width="50" sortable="true" hidden="true">最大服务器名</th>
-
 
                 <th align="center" field="errorCount" width="50" sortable="true">错误次数</th>
                 <th align="center" field="errorNewlyInfo" width="50" sortable="true">错误信息</th>
@@ -129,13 +133,8 @@
                 <th align="center" field="errorNewlyTime" width="50" sortable="true">错误时间</th>
                 <th align="center" field="errorNewlyServer" width="50" sortable="true" hidden="true">错误对应的服务器名</th>
 
-                <th align="center" field="ifDel" width="50" sortable="true" hidden="true">是否删除</th>
-                <th align="center" field="status" width="50" sortable="true" data-options="formatter: function(value,row,index){
-                                return formatterCombobox(dict_status, value, false);
-                            }">是否有效
-                </th>
-                <th align="center" field="createTime" width="50" sortable="true">创建时间</th>
-                <th align="center" field="modifyTime" width="50" sortable="true">修改时间</th>
+                <th align="center" field="createTime" width="100" sortable="true">创建时间</th>
+                <th align="center" field="modifyTime" width="100" sortable="true">修改时间</th>
             </tr>
             </thead>
         </table>

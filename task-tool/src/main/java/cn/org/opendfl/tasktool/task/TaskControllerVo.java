@@ -27,13 +27,13 @@ public class TaskControllerVo {
         Object[] args = joinPoint.getArgs();
         int argLen = args.length;
         //取dataId参数
-        Object dataId = getArgs(args, argLen, taskCompute.dataIdArgCount());
+        Object dataIdObj = getArgs(args, argLen, taskCompute.dataIdArgCount());
         //取userId参数
-        Object userId = getArgs(args, argLen, taskCompute.userIdArgCount());
+        Object userIdObj= getArgs(args, argLen, taskCompute.userIdArgCount());
 
-        this.setDataId(getDataId(dataId));
-        if(userId!=null) {
-            this.setUserId("" + userId);
+        this.setDataId(getDataId(dataIdObj));
+        if(userIdObj!=null) {
+            this.setUserId("" + userIdObj);
         }
     }
 

@@ -124,10 +124,8 @@ public class TaskToolUtils {
         }
         taskCountVo.getNewly().setRunTime(runTime);
         String dataId = taskControllerVo.getDataId();
-        if (runTime > taskToolConfiguration.getRunTimeBase()) {
-            if (runTime > taskCountVo.getMax().getRunTime()) {
-                taskCountVo.setMax(taskCountVo.getNewly());
-            }
+        if (runTime > taskToolConfiguration.getRunTimeBase() && runTime > taskCountVo.getMax().getRunTime()) {
+            taskCountVo.setMax(taskCountVo.getNewly());
         }
         if (dataId != null) {
             taskCountVo.getProcessingData().remove(dataId);

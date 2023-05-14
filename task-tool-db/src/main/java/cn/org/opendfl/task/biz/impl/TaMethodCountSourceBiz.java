@@ -9,7 +9,7 @@ import cn.org.opendfl.task.biz.ITaMethodCountSourceBiz;
 import cn.org.opendfl.task.mapper.TaMethodCountSourceMapper;
 import cn.org.opendfl.task.mapper.TaMethodCountSourceMyMapper;
 import cn.org.opendfl.task.po.TaMethodCountSourcePo;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +134,7 @@ public class TaMethodCountSourceBiz extends BaseService<TaMethodCountSourcePo> i
         if (StringUtil.isNotEmpty(pageInfo.getOrderBy()) && StringUtil.isNotEmpty(pageInfo.getOrder())) {
             example.setOrderByClause(StringUtil.camelhumpToUnderline(pageInfo.getOrderBy()) + " " + pageInfo.getOrder());
         }
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
         List<TaMethodCountSourcePo> list = this.getMapper().selectByExample(example);
         return new MyPageInfo<>(list);
     }

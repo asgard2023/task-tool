@@ -1,5 +1,6 @@
 package cn.org.opendfl.task.biz.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.org.opendfl.task.biz.ITaDataMethodBiz;
 import cn.org.opendfl.task.biz.ITaMethodCountBiz;
 import cn.org.opendfl.task.biz.ITaMethodCountSourceBiz;
@@ -93,12 +94,8 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         final String methodCode = taskCountVo.getKey();
         Integer dataMethodId = codeIdMap.get(methodCode);
         if (dataMethodId == null) {
-            dataMethodId = codeIdMap.computeIfAbsent(methodCode, k -> (Integer) LockCallUtils.lockCall("saveTaskCount", methodCode, new LockCallback() {
-                @Override
-                public Object callback(String lockKey) {
-                    return taDataMethodBiz.autoSave(methodCode, taskCountVo);
-                }
-            }));
+            dataMethodId = codeIdMap.computeIfAbsent(methodCode, k -> (Integer) LockCallUtils.lockCall("saveTaskCount", methodCode
+                    , kk-> taDataMethodBiz.autoSave(methodCode, taskCountVo)));
         }
 
         Date firstTime = new Date(taskCountVo.getFirst().getTs());
@@ -107,12 +104,8 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
         Integer methodCountId = countIdMap.get(countCode);
         final Integer dataMethodIdFinal = dataMethodId;
         if (methodCountId == null) {
-            methodCountId = countIdMap.computeIfAbsent(countCode, k -> (Integer) LockCallUtils.lockCall("saveTaskCount", countCode, new LockCallback() {
-                @Override
-                public Object callback(String lockKey) {
-                    return taMethodCountBiz.autoSave(countType.getCode(), timeValue, dataMethodIdFinal, countType.getTimeSeconds(), firstTime);
-                }
-            }));
+            methodCountId = countIdMap.computeIfAbsent(countCode, k -> (Integer) LockCallUtils.lockCall("saveTaskCount", countCode
+                    , kk-> taMethodCountBiz.autoSave(countType.getCode(), timeValue, dataMethodIdFinal, countType.getTimeSeconds(), firstTime)));
         }
         //更新运行次数
         int v = this.taMethodCountBiz.updateTaskRunCount(methodCountId, taskCountVo, firstTime);
@@ -139,6 +132,9 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
      * @return 更新数据量
      */
     private int saveTaskCountSource(final TaskCountVo taskCountVo, final Integer methodCountId) {
+        if(MapUtil.isEmpty(taskCountVo.getSourceCounterMap())){
+            return 0;
+        }
         Set<Map.Entry<String, AtomicInteger>> sourceCountSet = taskCountVo.getSourceCounterMap().entrySet();
         Map<String, Integer> sourceIdMap = methodCountSourceIdMap.computeIfAbsent(methodCountId, k -> new ConcurrentHashMap<>());
         int v = 0;
@@ -146,12 +142,8 @@ public class TaskCountSaveBiz implements ITaskCountSaveBiz {
             String source = entity.getKey();
             Integer sourceId = sourceIdMap.get(source);
             if (sourceId == null) {
-                sourceId = sourceIdMap.computeIfAbsent(source, k -> (Integer) LockCallUtils.lockCall("saveTaskCountSource", source, new LockCallback() {
-                    @Override
-                    public Object callback(String lockKey) {
-                        return taMethodCountSourceBiz.autoSave(methodCountId, source);
-                    }
-                }));
+                sourceId = sourceIdMap.computeIfAbsent(source, k -> (Integer) LockCallUtils.lockCall("saveTaskCountSource", source
+                        , kk->taMethodCountSourceBiz.autoSave(methodCountId, source)));
             }
             int runCount = entity.getValue().get();
             entity.getValue().getAndAdd(-runCount);

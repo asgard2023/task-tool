@@ -42,7 +42,6 @@ public class TaskTestScheduler {
             }
         } catch (Exception e) {
             log.error("-----testSchedulesJob--count={}", v, e.getMessage(), e);
-//            throw new RuntimeException(e);
         }
     }
 

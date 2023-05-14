@@ -14,8 +14,11 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 public class InetAddressUtils {
+	private InetAddressUtils(){
 
-	final static Logger logger = LoggerFactory.getLogger(InetAddressUtils.class);
+	}
+
+	private static final  Logger logger = LoggerFactory.getLogger(InetAddressUtils.class);
 
 	private static String localhostIp=null;
 	private static String localhostName=null;

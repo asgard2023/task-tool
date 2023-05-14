@@ -114,16 +114,16 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
      * @return
      */
     public String getOrderClause() {
-        String sort = getSort();
-        if (CharSequenceUtil.isEmpty(sort)) {
+        String sortStr = getSort();
+        if (CharSequenceUtil.isEmpty(sortStr)) {
             return null;
         }
-        sort = camelToUnderline(sort);
-        String order = getOrder();
-        if (CharSequenceUtil.isEmpty(order)) {
+        sortStr = camelToUnderline(sortStr);
+        String orderStr = getOrder();
+        if (CharSequenceUtil.isEmpty(orderStr)) {
             return null;
         }
-        return sort + " " + order;
+        return sortStr + " " + orderStr;
     }
 
     private void pageSizeCheck() {
@@ -243,7 +243,7 @@ public class PageVO<T> implements IPageVO<T>, java.io.Serializable {
         return this.datas.toArray();
     }
 
-    public <T> T[] toArray(T[] a) {
+    public T[] toArray(T[] a) {
         return this.datas.toArray(a);
     }
 

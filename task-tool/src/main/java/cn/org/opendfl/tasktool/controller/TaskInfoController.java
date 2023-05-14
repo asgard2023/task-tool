@@ -68,7 +68,7 @@ public class TaskInfoController {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
-        PageVO<TaskCountVo> page = new PageVO(request);
+        PageVO<TaskCountVo> page = new PageVO<>(request);
         String ip = ServletUtil.getClientIP(request);
         log.info("----runInfo--taskHostCode={} ip={}", taskHostCode, ip);
         if (CharSequenceUtil.isNotBlank(taskHostCode)) {
@@ -89,7 +89,7 @@ public class TaskInfoController {
         return page;
     }
 
-    private void sortList(PageVO page, List<TaskCountVo> list) {
+    private void sortList(PageVO<TaskCountVo> page, List<TaskCountVo> list) {
         String sort = page.getSort();
         try {
             if(CharSequenceUtil.isNotBlank(sort)){

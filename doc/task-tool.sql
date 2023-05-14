@@ -5,7 +5,7 @@ CREATE TABLE `ta_data_method`
     `name`              varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '名称',
     `category`          varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT '分类：仅分类，没基他作用',
     `show_processing`   tinyint                                                 DEFAULT NULL COMMENT '是否显示正在进行中的任务',
-    `data_id_arg_count` tinyint                                                 DEFAULT NULL COMMENT 'dataId参数序号',
+    `data_id_arg`       varchar(64)                                             DEFAULT NULL COMMENT 'dataId参数序号或参数名',
     `if_del`            tinyint                                                 DEFAULT NULL COMMENT '是否删除',
     `status`            tinyint                                                 DEFAULT NULL COMMENT '状态',
     `remark`            varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '备注',
@@ -20,7 +20,7 @@ CREATE TABLE `ta_data_method`
     PRIMARY KEY (`id`) USING BTREE,
     KEY                 `idx_code` (`code`) USING BTREE,
     KEY                 `idx_create` (`create_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
 
 
 CREATE TABLE `ta_method_count`
@@ -56,7 +56,7 @@ CREATE TABLE `ta_method_count`
     KEY                    `idx_create` (`create_time`) USING BTREE,
     KEY                    `idx_data_method_id` (`data_method_id`) USING BTREE,
     KEY                    `idx_time_value` (`time_value`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6829 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='任务运行次数统计记录';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='任务运行次数统计记录';
 
 
 CREATE TABLE `ta_method_count_source`
@@ -71,4 +71,4 @@ CREATE TABLE `ta_method_count_source`
     PRIMARY KEY (`id`) USING BTREE,
     KEY               `idx_method_count` (`method_count_id`) USING BTREE,
     KEY               `create_date` (`create_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2717 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;

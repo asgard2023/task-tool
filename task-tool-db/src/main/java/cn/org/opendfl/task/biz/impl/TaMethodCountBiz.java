@@ -12,7 +12,7 @@ import cn.org.opendfl.task.po.TaDataMethodPo;
 import cn.org.opendfl.task.po.TaMethodCountPo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
 import cn.org.opendfl.tasktool.utils.InetAddressUtils;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -160,7 +160,7 @@ public class TaMethodCountBiz extends BaseService<TaMethodCountPo> implements IT
         if (StringUtil.isNotEmpty(pageInfo.getOrderBy()) && StringUtil.isNotEmpty(pageInfo.getOrder())) {
             example.setOrderByClause(StringUtil.camelhumpToUnderline(pageInfo.getOrderBy()) + " " + pageInfo.getOrder());
         }
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
         List<TaMethodCountPo> list = this.getMapper().selectByExample(example);
         return new MyPageInfo<>(list);
     }

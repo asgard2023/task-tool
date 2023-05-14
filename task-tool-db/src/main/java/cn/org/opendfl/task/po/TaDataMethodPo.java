@@ -66,8 +66,8 @@ public class TaDataMethodPo implements Serializable {
     /**
      * dataId参数序号
      */
-    @Column(name = "data_id_arg_count")
-    private Integer dataIdArgCount;
+    @Column(name = "data_id_arg")
+    private String dataIdArg;
     /**
      * 是否删除
      */

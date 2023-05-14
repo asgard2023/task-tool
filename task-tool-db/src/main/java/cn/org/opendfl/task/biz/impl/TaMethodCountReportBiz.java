@@ -7,7 +7,7 @@ import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import cn.org.opendfl.task.vo.MethodCountVo;
 import cn.org.opendfl.task.vo.MethodRunTimeVo;
 import cn.org.opendfl.task.vo.MethodTimeValueCountVo;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +30,9 @@ public class TaMethodCountReportBiz implements ITaMethodCountReportBiz {
             orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
         }
         boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
         List<MethodCountStatisticVo> list = mapper.getMethodCountStatistic(dataMethodId, timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
+        pageInfo = new MyPageInfo<>(list);
         pageInfo.setCountTotal(isCountTotal);
         if (!pageInfo.isCountTotal()) {
             pageInfo.setPages(100);
@@ -50,9 +50,9 @@ public class TaMethodCountReportBiz implements ITaMethodCountReportBiz {
             orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
         }
         boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
         List<MethodCountVo> list = mapper.reportMaxRunCount(timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
+        pageInfo = new MyPageInfo<>(list);
         pageInfo.setCountTotal(isCountTotal);
         if (!pageInfo.isCountTotal()) {
             pageInfo.setPages(100);
@@ -70,9 +70,9 @@ public class TaMethodCountReportBiz implements ITaMethodCountReportBiz {
             orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
         }
         boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
         List<MethodCountVo> list = mapper.reportMaxErrorCount(timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
+        pageInfo = new MyPageInfo<>(list);
         pageInfo.setCountTotal(isCountTotal);
         if (!pageInfo.isCountTotal()) {
             pageInfo.setPages(100);
@@ -90,9 +90,9 @@ public class TaMethodCountReportBiz implements ITaMethodCountReportBiz {
             orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
         }
         boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
         List<MethodRunTimeVo> list = mapper.reportMaxRunTime(timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
+        pageInfo = new MyPageInfo<>(list);
         pageInfo.setCountTotal(isCountTotal);
         if (!pageInfo.isCountTotal()) {
             pageInfo.setPages(100);
@@ -110,9 +110,9 @@ public class TaMethodCountReportBiz implements ITaMethodCountReportBiz {
             orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
         }
         boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
         List<MethodRunTimeVo> list = mapper.reportAvgMaxRunTime(timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
+        pageInfo = new MyPageInfo<>(list);
         pageInfo.setCountTotal(isCountTotal);
         if (!pageInfo.isCountTotal()) {
             pageInfo.setPages(100);
@@ -130,9 +130,9 @@ public class TaMethodCountReportBiz implements ITaMethodCountReportBiz {
             orderBy = pageInfo.getOrderBy() + " " + pageInfo.getOrder();
         }
         boolean isCountTotal = pageInfo.isCountTotal();
-        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
+        PageMethod.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), isCountTotal).setOrderBy(orderBy);
         List<MethodTimeValueCountVo> list = mapper.reportTimeValueRunCount(timeType, startTime, endTime);
-        pageInfo = new MyPageInfo(list);
+        pageInfo = new MyPageInfo<>(list);
         pageInfo.setCountTotal(isCountTotal);
         if (!pageInfo.isCountTotal()) {
             pageInfo.setPages(100);

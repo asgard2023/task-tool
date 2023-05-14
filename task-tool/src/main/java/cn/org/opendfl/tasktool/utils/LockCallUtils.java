@@ -40,7 +40,7 @@ public class LockCallUtils {
             }
             return object;
         } catch (Exception e) {
-            log.error("----lockCall--methodName={} key={}", methodName, key);
+            log.error("----lockCall--methodName={} key={}", methodName, key, e);
             return null;
         } finally {
             lock.unlock();
