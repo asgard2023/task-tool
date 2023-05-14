@@ -114,12 +114,12 @@
                 <th align="center" field="taskCompute.pkg" width="100" hidden="true" sortable="true"  data-options="formatter: function(value,row,index){
                                 return row.taskCompute.pkg;
                             }">pkg</th>
-                <th align="center" field="taskCompute.type" width="50" sortable="true" sortable="true" data-options="formatter: function(value,row,index){
+                <th align="center" field="taskCompute.type" width="50" sortable="true" data-options="formatter: function(value,row,index){
                                 return row.taskCompute.type;
                             }">type</th>
-                <th align="center" field="taskCompute.source" width="50" sortable="true" sortable="true" data-options="formatter: function(value,row,index){
-                                return row.taskCompute.source;
-                            }">source</th>
+                <th align="center" field="sourceCounterMap" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                                return JSON.stringify(row.sourceCounterMap).replaceAll(',',',\n');
+                            }">sourceCounterMap</th>
                 <th align="center" field="first.ts" width="50" sortable="true" hidden="true" formatter="firstTs">
                     首次时间
                 </th>
