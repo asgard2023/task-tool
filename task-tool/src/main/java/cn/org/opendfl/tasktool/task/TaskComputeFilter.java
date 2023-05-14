@@ -60,6 +60,7 @@ public class TaskComputeFilter implements Filter {
         String classMethod = className + ":" + uri;
 
         TaskComputeVo computeVo = getServletCompute(className, uri, pkg);
+        taskController.setSource(uri);
         taskController.setTaskCompute(computeVo);
         taskController.readParam(req);
 
@@ -94,7 +95,6 @@ public class TaskComputeFilter implements Filter {
             computeVo.setShowProcessing(true);
             computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
             computeVo.setPkg(pkg);
-            computeVo.setSource(uri);
             return computeVo;
         });
     }

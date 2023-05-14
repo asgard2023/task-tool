@@ -22,6 +22,10 @@ public class TaskControllerVo {
      */
     private String dataId;
     private String userId;
+    /**
+     * 来源
+     */
+    private String source;
 
     public void readTaskParam(ProceedingJoinPoint joinPoint, TaskCompute taskCompute){
         Object[] args = joinPoint.getArgs();

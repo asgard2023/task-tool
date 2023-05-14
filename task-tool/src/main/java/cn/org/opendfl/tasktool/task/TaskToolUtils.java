@@ -56,7 +56,7 @@ public class TaskToolUtils {
         int logCount = startLogCounter.get();
         if(logCount < taskToolConfiguration.getStartLogCount()) {
             logCount = startLogCounter.incrementAndGet();
-            log.debug("---startTask--source={} classMethod={} result={} startLogCount={}", taskControllerVo.getTaskCompute().getSource(), classMethod, result, taskToolConfiguration.getStartLogCount()-logCount);
+            log.debug("---startTask--source={} classMethod={} result={} startLogCount={}", taskControllerVo.getSource(), classMethod, result, taskToolConfiguration.getStartLogCount()-logCount);
         }
     }
 
@@ -84,7 +84,7 @@ public class TaskToolUtils {
             return vo;
         });
         taskCountVo.setNewly(taskInfoVo);
-        String source = taskControllerVo.getTaskCompute().getSource();
+        String source = taskControllerVo.getSource();
         if(taskToolConfiguration.getControllerConfig().isSource()) {
             AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
             sourceCounter.incrementAndGet();

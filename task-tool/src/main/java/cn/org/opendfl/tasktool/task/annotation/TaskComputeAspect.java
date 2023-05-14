@@ -62,6 +62,7 @@ public class TaskComputeAspect {
                 }
             }
         }
+        taskControllerVo.setSource(source);
         Object result = null;
         String key = classMethod;
         TaskComputeVo  taskComputeVV = methodCodeMap.computeIfAbsent(key, k->{
@@ -72,7 +73,7 @@ public class TaskComputeAspect {
             taskComputeVo.setPkg(target.getClass().getPackage().getName());
             return taskComputeVo;
         });
-        taskComputeVV.setSource(source);
+
         taskControllerVo.setTaskCompute(taskComputeVV);
         try {
             taskControllerVo.readTaskParam(joinPoint, taskCompute);

@@ -140,9 +140,6 @@ public class TaskInfoController {
             case "taskCompute.userIdArg":
                 computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getUserIdArg());
                 break;
-            case "taskCompute.source":
-                computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getSource());
-                break;
             default:
                 log.warn("----getSortCompute--sort={} invalid", sort);
         }

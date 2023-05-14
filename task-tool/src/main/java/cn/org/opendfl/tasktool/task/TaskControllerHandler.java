@@ -82,9 +82,9 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 computeVo.setShowProcessing(true);
                 computeVo.setPkg(packageName);
                 computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
-                computeVo.setSource(uri);
                 return computeVo;
             });
+            taskController.setSource(uri);
             taskController.setTaskCompute(compute);
             String classMethod = compute.getMethodCode();
 

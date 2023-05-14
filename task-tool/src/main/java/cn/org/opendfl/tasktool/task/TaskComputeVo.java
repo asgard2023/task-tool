@@ -52,10 +52,6 @@ public class TaskComputeVo {
      * 类型
      */
     private String type;
-    /**
-     * 来源
-     */
-    private String source;
 
 
     public void readTaskParam(TaskToolConfiguration taskToolConfiguration, TaskComputeReq taskComputeReq) {
