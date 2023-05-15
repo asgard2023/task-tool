@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeServlet;
@@ -60,7 +61,8 @@ public class TaskComputeFilter implements Filter {
         String classMethod = className + ":" + uri;
 
         TaskComputeVo computeVo = getServletCompute(className, uri, pkg);
-        taskController.setSource(uri);
+        String sourceUri = getUriBySource(req, uri, computeVo.getSourceType());
+        taskController.setSource(sourceUri);
         taskController.setTaskCompute(computeVo);
         taskController.readParam(req);
 
@@ -80,23 +82,39 @@ public class TaskComputeFilter implements Filter {
     private static Map<String, Class<?>> classMap = new ConcurrentHashMap<>(10);
     private static Map<String, TaskComputeVo> servletComputeMap = new ConcurrentHashMap<>(10);
 
-    private  TaskComputeVo getServletCompute(String className, String uri, String pkg) {
+    private  TaskComputeVo getServletCompute(final String className, final String uri, final String pkg) {
         String key = className+":"+uri;
         return servletComputeMap.computeIfAbsent(key, k->{
             TaskComputeReq taskComputeReqVo = new TaskComputeReq();
             taskComputeReqVo.setType("servlet");
             Class<?> clazz = getClass(pkg+"."+className);
+            TaskComputeVo computeVo = new TaskComputeVo();
             TaskComputeServlet servletCompute = clazz.getDeclaredAnnotation(TaskComputeServlet.class);
             if (servletCompute != null) {
                 taskComputeReqVo.load(servletCompute, uri);
+                computeVo.setSourceType(servletCompute.sourceType());
             }
-            TaskComputeVo computeVo = new TaskComputeVo();
             computeVo.setMethodCode(key);
             computeVo.setShowProcessing(true);
             computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
             computeVo.setPkg(pkg);
             return computeVo;
         });
+    }
+
+    private String getUriBySource(final HttpServletRequest request, final String uriFinal, final String sourceType){
+        String uri = null;
+        if("uri".equals(sourceType)) {
+            uri = uriFinal;
+        }
+        else if("url".equals(sourceType)){
+            uri = uriFinal;
+            String queryString = request.getQueryString();
+            if(CharSequenceUtil.isNotBlank(queryString)) {
+                uri+="?" + queryString;
+            }
+        }
+        return uri;
     }
 
     private static Class<?> getClass(String className) {

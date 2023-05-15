@@ -87,7 +87,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 return computeVo;
             });
 
-            String sourceUri = getUriBySource(request, compute.getSourceType());
+            String sourceUri = getUriBySource(request, uri, compute.getSourceType());
             taskController.setSource(sourceUri);
             taskController.setTaskCompute(compute);
             String classMethod = compute.getMethodCode();
@@ -112,13 +112,13 @@ public class TaskControllerHandler implements HandlerInterceptor {
         }
     }
 
-    private String getUriBySource(HttpServletRequest request, String sourceType){
+    private String getUriBySource(final HttpServletRequest request, final String uriFinal, final String sourceType){
         String uri = null;
         if("uri".equals(sourceType)) {
-            uri = request.getRequestURI();
+            uri = uriFinal;
         }
         else if("url".equals(sourceType)){
-            uri = request.getRequestURI();
+            uri = uriFinal;
             String queryString = request.getQueryString();
             if(CharSequenceUtil.isNotBlank(queryString)) {
                 uri+="?" + queryString;

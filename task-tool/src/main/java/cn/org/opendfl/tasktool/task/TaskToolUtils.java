@@ -60,7 +60,7 @@ public class TaskToolUtils {
         }
     }
 
-    public static TaskCountVo startTask(TaskControllerVo taskControllerVo, TaskCountTypeVo countTypeVo, final String classMethod, Date curDate) {
+    public static TaskCountVo startTask(final TaskControllerVo taskControllerVo, final TaskCountTypeVo countTypeVo, final String classMethod, final Date curDate) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
         final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
 
@@ -115,7 +115,7 @@ public class TaskToolUtils {
         TaskCountSaveThreadTask.saveTaskCount();
     }
 
-    public static void finished(TaskControllerVo taskControllerVo, TaskCountTypeVo countTypeVo, String classMethod, final Date curDate, final long runTime) {
+    public static void finished(final TaskControllerVo taskControllerVo, final TaskCountTypeVo countTypeVo, final String classMethod, final Date curDate, final long runTime) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
         final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);
@@ -145,7 +145,7 @@ public class TaskToolUtils {
         futureAllOff.join();
     }
 
-    public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, String errorInfo, Date curDate) {
+    public static void error(final TaskCountTypeVo countTypeVo, final String classMethod, final String dataId, final String errorInfo, final Date curDate) {
         final Integer timeValue = DateTimeConstant.getDateInt(curDate, countTypeVo.getCode(), countTypeVo.getDateFormat());
         final String countCode = getMethodCountKey(countTypeVo, classMethod, timeValue);
         TaskCountVo taskCountVo = taskCounterMap.get(countCode);

@@ -20,6 +20,7 @@ public class TaskComputeVo {
         this.dataIdArg = "" + taskCompute.dataIdArgCount();
         this.userIdArg = "" + taskCompute.userIdArgCount();
         this.type = "taskCompute";
+        this.sourceType="none";
     }
 
     /**

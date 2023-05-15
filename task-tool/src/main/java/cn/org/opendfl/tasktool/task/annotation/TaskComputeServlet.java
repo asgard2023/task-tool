@@ -41,4 +41,9 @@ public @interface TaskComputeServlet {
      * @return
      */
     String category() default "";
+    /**
+     * sourceType none/uri/url
+     * @return
+     */
+    String sourceType() default "uri";
 }
