@@ -61,7 +61,7 @@ public class TaskComputeFilter implements Filter {
         String classMethod = className + ":" + uri;
 
         TaskComputeVo computeVo = getServletCompute(className, uri, pkg);
-        String sourceUri = getUriBySource(req, uri, computeVo.getSourceType());
+        String sourceUri = RequestUtils.getUriBySource(req, uri, computeVo.getSourceType());
         taskController.setSource(sourceUri);
         taskController.setTaskCompute(computeVo);
         taskController.readParam(req);
@@ -102,20 +102,7 @@ public class TaskComputeFilter implements Filter {
         });
     }
 
-    private String getUriBySource(final HttpServletRequest request, final String uriFinal, final String sourceType){
-        String uri = null;
-        if("uri".equals(sourceType)) {
-            uri = uriFinal;
-        }
-        else if("url".equals(sourceType)){
-            uri = uriFinal;
-            String queryString = request.getQueryString();
-            if(CharSequenceUtil.isNotBlank(queryString)) {
-                uri+="?" + queryString;
-            }
-        }
-        return uri;
-    }
+
 
     private static Class<?> getClass(String className) {
         Class<?> clazz = classMap.get(className);

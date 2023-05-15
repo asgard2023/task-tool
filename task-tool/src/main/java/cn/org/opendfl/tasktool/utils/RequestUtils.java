@@ -62,4 +62,26 @@ public class RequestUtils {
         }
         return null;
     }
+
+    /**
+     * 根据类型获取uri或url
+     * @param request
+     * @param uriFinal
+     * @param sourceType
+     * @return
+     */
+    public static String getUriBySource(final HttpServletRequest request, final String uriFinal, final String sourceType){
+        String uri = null;
+        if("uri".equals(sourceType)) {
+            uri = uriFinal;
+        }
+        else if("url".equals(sourceType)){
+            uri = uriFinal;
+            String queryString = request.getQueryString();
+            if(CharSequenceUtil.isNotBlank(queryString)) {
+                uri+="?" + queryString;
+            }
+        }
+        return uri;
+    }
 }
