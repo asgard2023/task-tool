@@ -35,7 +35,7 @@
 
         .fitem label {
             display: inline-block;
-            width: 60px;
+            width: 80px;
         }
 
         .input_query {
@@ -43,7 +43,7 @@
         }
 
         input, textarea {
-            width: 160px;
+            width: 250px;
             border: 1px solid #ccc;
             padding: 2px;
         }
@@ -93,8 +93,8 @@
             <thead>
             <tr>
                 <th align="center" field="id" width="50" sortable="true" hidden="true">id</th>
-                <th align="center" field="methodCountId" width="30" sortable="true">method_count_id</th>
-                <th align="center" field="dataMethodCode" width="50" sortable="false" data-options="formatter: function(value,row,index){
+                <th align="center" field="methodCountId" width="30" sortable="true" hidden="true">接口方法ID</th>
+                <th align="center" field="dataMethodCode" width="100" sortable="false" data-options="formatter: function(value,row,index){
                                 return row.methodCount.dataMethod.code;
                             }">接口方法</th>
                 <th align="center" field="timeType" width="30" sortable="false" data-options="formatter: function(value,row,index){
@@ -103,40 +103,41 @@
                 <th align="center" field="timeValue" width="40" sortable="false" data-options="formatter: function(value,row,index){
                                 return row.methodCount.timeValue;
                             }">时间值</th>
-                <th align="center" field="source" width="50" sortable="true">source</th>
-                <th align="center" field="runCount" width="30" sortable="true">run_count</th>
+                <th align="center" field="source" width="80" sortable="true">调用来源</th>
+                <th align="center" field="runCount" width="30" sortable="true">执行次数</th>
                 <th align="center" field="ifDel" width="50" sortable="true" hidden="true">if_del</th>
-                <th align="center" field="createTime" width="50" sortable="true">create_time</th>
-                <th align="center" field="modifyTime" width="50" sortable="true">modify_time</th>
+                <th align="center" field="createTime" width="60" sortable="true">创建时间</th>
+                <th align="center" field="modifyTime" width="50" sortable="true">修改时间</th>
             </tr>
             </thead>
         </table>
     </div>
 </div>
 
-<div id="dlg" class="easyui-dialog" style="width:400px;height:300px;padding:5px 10px;display:none;"
+<div id="dlg" class="easyui-dialog" style="width:480px;height:300px;padding:5px 10px;display:none;"
      closed="true" buttons="#dlg-buttons">
     <form id="fm" method="post" novalidate>
         <input type="hidden" name="id">
+        <input type="hidden" name="methodCountId">
         <div class="fitem">
-            <label>method_count_id:</label>
-            <input name="methodCountId" class="easyui-validatebox" required="true">
+            <label>接口方法:</label>
+            <input name="dataMethodCode" id="fm-dataMethodCode" class="easyui-textbox" required="false">
         </div>
         <div class="fitem">
-            <label>source:</label>
+            <label>调用来源:</label>
             <input name="source" class="easyui-validatebox" required="true">
         </div>
         <div class="fitem">
-            <label>run_count:</label>
+            <label>执行次数:</label>
             <input name="runCount" class="easyui-validatebox" required="true">
         </div>
         <input type="hidden" name="ifDel">
         <div class="fitem">
-            <label>create_time:</label>
+            <label>创建时间:</label>
             <input name="createTime" class="easyui-datetimebox" required="true">
         </div>
         <div class="fitem">
-            <label>modify_time:</label>
+            <label>修改时间:</label>
             <input name="modifyTime" class="easyui-datetimebox" required="true">
         </div>
     </form>

@@ -89,6 +89,7 @@ function onEdit() {
         var obj = getRowData(entityName, row);
         $('#dlg').dialog('open').dialog('setTitle', 'Edit taMethodCountSource');
         $('#fm').form('load', obj);
+        $('#fm-dataMethodCode').textbox('setValue', obj.methodCount.dataMethod.code)
     }
 
 }

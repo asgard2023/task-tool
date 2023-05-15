@@ -5,6 +5,7 @@ import java.lang.annotation.*;
 /**
  * 任务计算注解，加了此注解可收集调用量，近期错误等信息
  * 可用于servlet
+ * 注：因为基于Filter处理，不支持接口异常，成功或败的统计，建议用Controller的方式，走拦截器模式才行
  *
  * @author chenjh
  */

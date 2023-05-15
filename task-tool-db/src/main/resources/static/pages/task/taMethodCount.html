@@ -36,7 +36,7 @@
 
         .fitem label {
             display: inline-block;
-            width: 60px;
+            width: 100px;
         }
 
         .input_query {
@@ -44,7 +44,7 @@
         }
 
         input, textarea {
-            width: 160px;
+            width: 230px;
             border: 1px solid #ccc;
             padding: 2px;
         }
@@ -141,10 +141,11 @@
     </div>
 </div>
 
-<div id="dlg" class="easyui-dialog" style="width:400px;height:500px;padding:5px 10px;display:none;"
+<div id="dlg" class="easyui-dialog" style="width:500px;height:500px;padding:5px 10px;display:none;"
      closed="true" buttons="#dlg-buttons">
     <form id="fm" method="post" novalidate>
         <input type="hidden" name="id">
+        <fieldset>
         <div class="fitem">
             <label>接口方法id:</label>
             <input name="dataMethodId" class="easyui-validatebox">
@@ -161,6 +162,8 @@
             <label>运行次数:</label>
             <input name="runCount" class="easyui-validatebox">
         </div>
+        </fieldset>
+        <fieldset>
         <div class="fitem">
             <label>首次运行时间:</label>
             <input name="firstTime" class="easyui-datetimebox">
@@ -169,6 +172,8 @@
             <label>最新运行时间(ms):</label>
             <input name="runTime" class="easyui-validatebox">
         </div>
+        </fieldset>
+        <fieldset>
         <div class="fitem">
             <label>错误次数:</label>
             <input name="errorCount" class="easyui-validatebox">
@@ -189,6 +194,8 @@
             <label>最新错误对应的服务器名:</label>
             <input name="errorNewlyServer" class="easyui-validatebox">
         </div>
+        </fieldset>
+        <fieldset>
         <div class="fitem">
             <label>最大执行时间(ms):</label>
             <input name="maxRunTime" class="easyui-validatebox">
@@ -205,6 +212,7 @@
             <label>最大执行时间对应的服务器名:</label>
             <input name="maxRunServer" class="easyui-validatebox">
         </div>
+        </fieldset>
         <input type="hidden" name="ifDel">
         <div class="fitem">
             <label>是否有效:</label>
@@ -213,14 +221,6 @@
                                 textField: 'name',
                                 //multiple:true, //多选增加此项
                                 data: dict_status"/>
-        </div>
-        <div class="fitem">
-            <label>创建时间:</label>
-            <input name="createTime" class="easyui-datetimebox">
-        </div>
-        <div class="fitem">
-            <label>修改时间:</label>
-            <input name="modifyTime" class="easyui-datetimebox">
         </div>
     </form>
     <div id="dlg-buttons">
