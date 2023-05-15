@@ -42,4 +42,10 @@ public @interface TaskComputeController {
      * @return
      */
     String category() default "";
+
+    /**
+     * sourceType none/uri/url
+     * @return
+     */
+    String sourceType() default "uri";
 }

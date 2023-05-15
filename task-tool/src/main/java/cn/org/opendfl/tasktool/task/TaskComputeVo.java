@@ -53,6 +53,8 @@ public class TaskComputeVo {
      */
     private String type;
 
+    private String sourceType;
+
 
     public void readTaskParam(TaskToolConfiguration taskToolConfiguration, TaskComputeReq taskComputeReq) {
         this.type = taskComputeReq.getType();

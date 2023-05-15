@@ -24,7 +24,7 @@ public class TaskTestScheduler {
     @Resource
     private ITaskTestBiz taskTestBiz;
 
-    @Scheduled(fixedDelay = 500, initialDelay = 1000)
+    @Scheduled(fixedDelay = 10000, initialDelay = 1000)
     public void testSchedulesJob() {
         int v = counter.incrementAndGet();
 

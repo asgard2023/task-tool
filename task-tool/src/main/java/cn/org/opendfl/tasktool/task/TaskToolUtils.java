@@ -85,7 +85,7 @@ public class TaskToolUtils {
         });
         taskCountVo.setNewly(taskInfoVo);
         String source = taskControllerVo.getSource();
-        if(taskToolConfiguration.getControllerConfig().isSource()) {
+        if(taskToolConfiguration.getControllerConfig().isSource() && source!=null) {
             AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
             sourceCounter.incrementAndGet();
         }

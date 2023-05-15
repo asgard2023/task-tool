@@ -2,6 +2,7 @@ package cn.org.opendfl.tasktool.task;
 
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeController;
@@ -75,6 +76,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 computeVo.setMethodCode(classMethod);
                 if (taskComputeController != null) {
                     taskComputeReqVo.load(taskComputeController, uri);
+                    computeVo.setSourceType(taskComputeController.sourceType());
                 }
                 else{
                     taskComputeReqVo.setType("controller");
@@ -84,7 +86,9 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
                 return computeVo;
             });
-            taskController.setSource(uri);
+
+            String sourceUri = getUriBySource(request, compute.getSourceType());
+            taskController.setSource(sourceUri);
             taskController.setTaskCompute(compute);
             String classMethod = compute.getMethodCode();
 
@@ -106,6 +110,21 @@ public class TaskControllerHandler implements HandlerInterceptor {
 
             TaskToolUtils.startTask(taskController, classMethod, new Date(curTime));
         }
+    }
+
+    private String getUriBySource(HttpServletRequest request, String sourceType){
+        String uri = null;
+        if("uri".equals(sourceType)) {
+            uri = request.getRequestURI();
+        }
+        else if("url".equals(sourceType)){
+            uri = request.getRequestURI();
+            String queryString = request.getQueryString();
+            if(CharSequenceUtil.isNotBlank(queryString)) {
+                uri+="?" + queryString;
+            }
+        }
+        return uri;
     }
 
 

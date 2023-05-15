@@ -24,8 +24,14 @@ public class TaskTestController {
     }
 
     @RequestMapping(value = "hello2", method = {RequestMethod.POST, RequestMethod.GET})
-    @TaskComputeController(dataIdParamName = "name",userIdParamName = "uid")
+    @TaskComputeController(dataIdParamName = "name",userIdParamName = "uid", sourceType = "url")
     public String hello2(@RequestParam("name") String name, @RequestParam("uid") String uid, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
+        return taskTestBiz.hello(name, sleep);
+    }
+
+    @RequestMapping(value = "hello3", method = {RequestMethod.POST, RequestMethod.GET})
+    @TaskComputeController(dataIdParamName = "name",userIdParamName = "uid", sourceType = "uri")
+    public String hello3(@RequestParam("name") String name, @RequestParam("uid") String uid, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
         return taskTestBiz.hello(name, sleep);
     }
 
