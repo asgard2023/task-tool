@@ -47,7 +47,9 @@ public class TaskCountSaveThread implements Runnable {
         try {
             long time = System.currentTimeMillis();
             TaskSaveInfoVo saveInfoVo = TaskToolUtils.saveTaskCounts(taskCountSaveBiz);
-            logger.info("-----saveCountToDb--saveCount={} expireCount={} runTime={}", saveInfoVo.getSaveCount(), saveInfoVo.getExpireCount(), System.currentTimeMillis() - time);
+            if(saveInfoVo.getSaveCount()>0) {
+                logger.info("-----saveCountToDb--saveCount={} expireCount={} runTime={}", saveInfoVo.getSaveCount(), saveInfoVo.getExpireCount(), System.currentTimeMillis() - time);
+            }
         } catch (Exception e) {
             logger.warn("-----saveCountToDb--error={}", e.getMessage(), e);
         }

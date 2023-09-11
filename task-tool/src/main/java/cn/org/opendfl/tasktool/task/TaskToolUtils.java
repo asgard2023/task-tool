@@ -233,7 +233,13 @@ public class TaskToolUtils {
         int expireCount = expireKeys.size();
         if (expireCount > 0) {
             for (String key : expireKeys) {
-                taskCounterMap.remove(key);
+                TaskCountVo taskCountVo = taskCounterMap.remove(key);
+                //内存释放
+                taskCountVo.getSourceCounterMap().clear();
+                taskCountVo.getProcessingData().clear();
+                taskCountVo.setTaskCompute(null);
+                taskCountVo.setError(null);
+                taskCountVo.setFirst(null);
             }
             if (taskCountSaveBiz != null) {
                 taskCountSaveBiz.cleanExpirekey(expireKeys);
@@ -241,7 +247,7 @@ public class TaskToolUtils {
         }
         long runTime = System.currentTimeMillis() - curTime;
         int logTime = 2000;
-        if (runTime > logTime) {
+        if (count>0 && runTime > logTime) {
             log.info("----saveTaskCounts--runTime={} expireKeys={}", runTime, expireKeys.size());
         }
 
