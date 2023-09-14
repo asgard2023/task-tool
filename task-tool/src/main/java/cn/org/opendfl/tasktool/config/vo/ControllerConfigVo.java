@@ -36,7 +36,11 @@ public class ControllerConfigVo {
     private String dataIdField = "dataId";
 
     /**
-     * 是事记录来源次数
+     * 是否记录请求来源(按请求参数分别累计)次数
      */
     private boolean source=false;
+    /**
+     * 是否显示正在处理的请求
+     */
+    private boolean processing=false;
 }

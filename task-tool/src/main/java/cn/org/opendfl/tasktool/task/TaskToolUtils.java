@@ -1,5 +1,6 @@
 package cn.org.opendfl.tasktool.task;
 
+import cn.hutool.core.map.MapUtil;
 import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
@@ -69,6 +70,8 @@ public class TaskToolUtils {
         taskInfoVo.setDataId(taskControllerVo.getDataId());
         taskInfoVo.setUid(taskControllerVo.getUserId());
         long startTime = curDate.getTime();
+        final boolean isSource = taskToolConfiguration.getControllerConfig().isSource();
+        final boolean processing = taskToolConfiguration.getControllerConfig().isProcessing();
         TaskCountVo taskCountVo = taskCounterMap.computeIfAbsent(countCode, k -> {
             TaskCountVo vo = new TaskCountVo();
             vo.setCountType(countTypeVo.getCode());
@@ -77,21 +80,25 @@ public class TaskToolUtils {
             vo.setKey(classMethod);
             vo.setFirst(taskInfoVo);
             vo.setMax(taskInfoVo);
-            vo.setProcessingData(new ConcurrentHashMap<>(20));
+            if(processing) {
+                vo.setProcessingData(new ConcurrentHashMap<>(20));
+            }
             vo.setRunCounter(new AtomicInteger());
             vo.setErrorCounter(new AtomicInteger());
-            vo.setSourceCounterMap(new ConcurrentHashMap<>(10));
+            if(isSource) {
+                vo.setSourceCounterMap(new ConcurrentHashMap<>(10));
+            }
             return vo;
         });
         taskCountVo.setNewly(taskInfoVo);
         String source = taskControllerVo.getSource();
-        if(taskToolConfiguration.getControllerConfig().isSource() && source!=null) {
+        if(isSource && source != null) {
             AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
             sourceCounter.incrementAndGet();
         }
         taskCountVo.getRunCounter().incrementAndGet();
         String dataId = taskControllerVo.getDataId();
-        if (dataId != null) {
+        if (processing && dataId != null) {
             taskCountVo.getProcessingData().put(dataId, startTime);
         }
         return taskCountVo;
@@ -127,7 +134,7 @@ public class TaskToolUtils {
         if (runTime > taskToolConfiguration.getRunTimeBase() && runTime > taskCountVo.getMax().getRunTime()) {
             taskCountVo.setMax(taskCountVo.getNewly());
         }
-        if (dataId != null) {
+        if (dataId != null && taskCountVo.getProcessingData()!=null) {
             taskCountVo.getProcessingData().remove(dataId);
         }
     }
@@ -154,7 +161,7 @@ public class TaskToolUtils {
         taskCountVo.getError().setDataId(dataId);
         taskCountVo.getError().setRemark(errorInfo);
         taskCountVo.getErrorCounter().incrementAndGet();
-        if (dataId != null) {
+        if (dataId != null && taskCountVo.getProcessingData()!=null) {
             taskCountVo.getProcessingData().remove(dataId);
         }
     }
@@ -177,6 +184,10 @@ public class TaskToolUtils {
         final List<TaskCountTypeVo> countTypes = taskToolConfiguration.getCounterTimeTypes();
         List<TaskCountVo> list = new ArrayList<>(taskCounterMap.size());
         Set<Map.Entry<String, TaskCountVo>> entrySetSet = taskCounterMap.entrySet();
+        boolean isSource = taskToolConfiguration.getControllerConfig().isSource();
+        boolean isProcessing = taskToolConfiguration.getControllerConfig().isProcessing();
+        Map<String, AtomicInteger> sourceCounterConfigMap = MapUtil.of("controller-config.source="+isSource, new AtomicInteger());
+        Map<String, Long> processingDataConfigMap = MapUtil.of("controller-config.processing="+isProcessing, 0L);
         for (Map.Entry<String, TaskCountVo> entry : entrySetSet) {
             TaskCountVo taskCountVo = entry.getValue().copy();
             Optional<TaskCountTypeVo> countTypeOp = countTypes.stream().filter(t -> t.getCode().equals(taskCountVo.getCountType())).findFirst();
@@ -184,13 +195,21 @@ public class TaskToolUtils {
                 continue;
             }
 
-            Map<String, Long> processingDataMap = entry.getValue().getProcessingData();
-            Set<Map.Entry<String, Long>> msgKeySet = processingDataMap.entrySet();
-            Map<String, Long> pendingTimeMap = new HashMap<>(processingDataMap.size());
-            for (Map.Entry<String, Long> msgKey : msgKeySet) {
-                pendingTimeMap.put(msgKey.getKey(), curTime - msgKey.getValue());
+            if(!isSource){
+                taskCountVo.setSourceCounterMap(sourceCounterConfigMap);
             }
-            taskCountVo.setProcessingData(pendingTimeMap);
+            if(!isProcessing){
+                taskCountVo.setProcessingData(processingDataConfigMap);
+            }
+            else {
+                Map<String, Long> processingDataMap = entry.getValue().getProcessingData();
+                Set<Map.Entry<String, Long>> msgKeySet = processingDataMap.entrySet();
+                Map<String, Long> pendingTimeMap = new HashMap<>(processingDataMap.size());
+                for (Map.Entry<String, Long> msgKey : msgKeySet) {
+                    pendingTimeMap.put(msgKey.getKey(), curTime - msgKey.getValue());
+                }
+                taskCountVo.setProcessingData(pendingTimeMap);
+            }
             list.add(taskCountVo);
         }
         list.sort(Comparator.comparing(taskCountVo -> taskCountVo.getCountType() + ":" + taskCountVo.getKey()));
@@ -235,11 +254,24 @@ public class TaskToolUtils {
             for (String key : expireKeys) {
                 TaskCountVo taskCountVo = taskCounterMap.remove(key);
                 //内存释放
-                taskCountVo.getSourceCounterMap().clear();
-                taskCountVo.getProcessingData().clear();
+                if(taskCountVo.getSourceCounterMap()!=null) {
+                    taskCountVo.getSourceCounterMap().clear();
+                    taskCountVo.setSourceCounterMap(null);
+                }
+                if(taskCountVo.getProcessingData()!=null) {
+                    taskCountVo.getProcessingData().clear();
+                    taskCountVo.setProcessingData(null);
+                }
+                taskCountVo.setNewly(null);
+                taskCountVo.setKey(null);
                 taskCountVo.setTaskCompute(null);
+                taskCountVo.setMax(null);
+                taskCountVo.setTimeValue(null);
+                taskCountVo.setRunCounter(null);
+                taskCountVo.setErrorCounter(null);
                 taskCountVo.setError(null);
                 taskCountVo.setFirst(null);
+                taskCountVo=null;
             }
             if (taskCountSaveBiz != null) {
                 taskCountSaveBiz.cleanExpirekey(expireKeys);
