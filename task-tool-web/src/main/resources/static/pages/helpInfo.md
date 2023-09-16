@@ -1,5 +1,8 @@
 ## 属性说明
-* 来源次数统计，此接口当前时段的不同用户的请求次数。
+* 来源次数统计，此接口当前时段的不同用户的请求次数。  
+   这里的来源是指非*Biz接口被controller调用的次数，来源条件如下：  
+   根据@TaskComputeServlet.sourceType配置的类型，可以是uri或url(含参数)  
+   根据@TaskComputeController.sourceType配置的类型，可以是uri或url(含参数)
 * 正在处理的数据，此接口当前正在执行的求，处理完成则自动消失。
 ## 配置
 ```yml
