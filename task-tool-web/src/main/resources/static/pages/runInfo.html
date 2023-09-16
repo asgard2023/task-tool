@@ -9,6 +9,8 @@
     <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/easyui.comm.valid.js"></script>
     <script type="text/javascript" src="../../assets/easyui/easyui1.7.0/locale/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="../../assets/easyui/easyui.grid.hide.js"></script>
+    <script type="text/javascript" src="../../assets/marked.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../assets/markdown.css">
     <script type="text/javascript" src="../../js/easyui/Common.js"></script>
     <script type="text/javascript" src="../../js/easyui/comm.dict.js"></script>
     <script type="text/javascript" src="../../js/easyui/DateUtils.js"></script>
@@ -78,11 +80,32 @@
                            data-options="iconCls:'icon-search'" id="search-btn" onclick="javascript:doSearch()">查询</a>
                         <a class="easyui-linkbutton"
                            data-options="iconCls:'icon-reload'" id="reset-btn">重置</a>
+                        <a class="easyui-linkbutton"
+                           data-options="iconCls:'icon-help'" id="help-btn" onclick="javascript:onHelp()">帮助</a>
                     </td>
 
                 </tr>
             </table>
         </form>
+    </div>
+    <div id="helpInfo" title="帮助" class="easyui-dialog" style="width:800px;height:400px;" closed="true">
+        <div id="$m" class="markdown-body"></div>
+        <textarea id="$t" style="display:none">
+# doc test
+        </textarea>
+        <script>
+        // $m.innerHTML = marked.parse($t.value);
+ $.ajax({
+        url: 'helpInfo.md',
+        method: 'get',
+        success: function (data) {
+            $m.innerHTML = marked.parse(data);
+        },
+        error: function (e) {
+            error(e);
+        }
+    })
+        </script>
     </div>
 
     <!-- 查询结果 center -->

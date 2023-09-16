@@ -5,6 +5,14 @@ $('#reset-btn').click(function () {
     $('#search-form')[0].reset();
 });
 
+$('#help-btn').click(function () {
+    onHelp();
+});
+
+function onHelp(){
+    $('#helpInfo').dialog('open');
+}
+
 $(function () {
     // doSearch();
     $('#query_countType').combobox({url:'/taskInfo/config?type=timeTypes&authKey=' + securityKey});
