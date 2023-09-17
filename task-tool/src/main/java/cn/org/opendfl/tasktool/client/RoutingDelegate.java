@@ -7,7 +7,6 @@ import cn.org.opendfl.tasktool.utils.CommUtils;
 import cn.org.opendfl.tasktool.utils.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 
@@ -21,7 +20,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-@Service
 @Slf4j
 public class RoutingDelegate {
 

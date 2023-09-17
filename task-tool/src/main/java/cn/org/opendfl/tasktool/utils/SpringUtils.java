@@ -7,6 +7,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author Mr.wanter
  * @time 2021-10-26 0026
@@ -23,10 +26,10 @@ public class SpringUtils implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if(SpringUtils.applicationContext == null) {
+        if (SpringUtils.applicationContext == null) {
             SpringUtils.applicationContext = applicationContext;
         }
-        log.info("ApplicationContext配置成功,applicationContext对象："+SpringUtils.applicationContext);
+        log.info("ApplicationContext配置成功,applicationContext对象：" + SpringUtils.applicationContext);
     }
 
     public static ApplicationContext getApplicationContext() {
@@ -41,8 +44,31 @@ public class SpringUtils implements ApplicationContextAware {
         return getApplicationContext().getBean(clazz);
     }
 
-    public static <T> T getBean(String name,Class<T> clazz) {
-        return getApplicationContext().getBean(name,clazz);
+    public static <T> T getBean(String name, Class<T> clazz) {
+        return getApplicationContext().getBean(name, clazz);
     }
+
+    public static Map<String, Object> beanInitMap = new ConcurrentHashMap<>(10);
+
+    public static Object getBeanOrDefault(String name, final Object obj) {
+        if (getApplicationContext().containsBean(name)) {
+            return getBean(name);
+        }
+        return beanInitMap.computeIfAbsent(name, k -> obj);
+    }
+
+    public static <T> T getBeanOrDefault(Class<T> clazz, final Object obj) {
+        Object object = null;
+        try {
+            object = getApplicationContext().getBean(clazz);
+        } catch (BeansException e) {
+            log.warn("----getBeanOrDefault--clazz={} error={}", clazz, e.getMessage());
+        }
+        if (object!=null) {
+            return getBean(clazz);
+        }
+        return (T)beanInitMap.computeIfAbsent(clazz.getName(), k -> obj);
+    }
+
 }
 

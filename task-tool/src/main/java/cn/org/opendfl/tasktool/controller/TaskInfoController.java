@@ -4,9 +4,10 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
 import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
+import cn.org.opendfl.tasktool.biz.TaskHostBiz;
 import cn.org.opendfl.tasktool.client.RoutingDelegate;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.AppInfoVo;
+import cn.org.opendfl.tasktool.config.vo.TaskToolConfig;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import cn.org.opendfl.tasktool.task.RouteApiVo;
 import cn.org.opendfl.tasktool.task.TaskCountVo;
@@ -15,7 +16,6 @@ import cn.org.opendfl.tasktool.utils.RequestParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Comparator;
@@ -28,18 +28,14 @@ import java.util.stream.Collectors;
  *
  * @author chenjh
  */
-@RestController
-@RequestMapping("taskInfo")
+//@RestController
+//@RequestMapping("taskInfo")
 @Slf4j
 public class TaskInfoController {
 
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
-    @Resource
-    private RoutingDelegate routingDelegate;
-    @Resource
-    private ITaskHostBiz taskHostBiz;
 
+    private RoutingDelegate routingDelegate = new RoutingDelegate();
+    private ITaskHostBiz taskHostBiz = new TaskHostBiz();
     public void setTaskHostBiz(ITaskHostBiz taskHostBiz) {
         this.taskHostBiz = taskHostBiz;
     }
@@ -64,7 +60,7 @@ public class TaskInfoController {
     public Object getTaskInfo(@RequestParam(value = RequestParams.AUTH_KEY, required = false) String authKey,
                               @RequestParam(value = RequestParams.TASK_HOST_CODE, required = false) String taskHostCode, TaskCountVo taskCountVo
             , HttpServletRequest request, HttpServletResponse response) {
-        if (!taskToolConfiguration.isAuth(authKey, request)) {
+        if (!TaskToolUtils.getTaskToolConfig().isAuth(authKey, request)) {
             log.warn("----runInfo--taskHostCode={} authKey={}", taskHostCode, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
@@ -92,24 +88,21 @@ public class TaskInfoController {
     private void sortList(PageVO<TaskCountVo> page, List<TaskCountVo> list) {
         String sort = page.getSort();
         try {
-            if(CharSequenceUtil.isNotBlank(sort)){
+            if (CharSequenceUtil.isNotBlank(sort)) {
                 Comparator<TaskCountVo> comparator = null;
-                if(sort.startsWith("taskCompute.")){
+                if (sort.startsWith("taskCompute.")) {
                     comparator = getSortCompute(sort);
-                }
-                else{
+                } else {
                     comparator = getSort(sort);
                 }
-                if(comparator!=null){
+                if (comparator != null) {
                     boolean asc = "asc".equals(page.getOrder());
-                    if(asc){
+                    if (asc) {
                         list.sort(comparator);
-                    }
-                    else{
+                    } else {
                         list.sort(comparator.reversed());
                     }
-                }
-                else{
+                } else {
                     log.warn("----sortList--sort={} invalid", sort);
                 }
             }
@@ -121,7 +114,7 @@ public class TaskInfoController {
 
     private Comparator<TaskCountVo> getSortCompute(final String sort) {
         Comparator<TaskCountVo> computeCompare = null;
-        switch (sort){
+        switch (sort) {
             case "taskCompute.pkg":
                 computeCompare = Comparator.comparing(temp -> temp.getTaskCompute().getPkg());
                 break;
@@ -145,14 +138,15 @@ public class TaskInfoController {
         }
         return computeCompare;
     }
+
     private Comparator<TaskCountVo> getSort(final String sort) {
         Comparator<TaskCountVo> taskCountCompare = null;
-        switch (sort){
+        switch (sort) {
             case "runCounter":
-                taskCountCompare = Comparator.comparing(temp-> temp.getRunCounter().get());
+                taskCountCompare = Comparator.comparing(temp -> temp.getRunCounter().get());
                 break;
             case "errCounter":
-                taskCountCompare = Comparator.comparing(temp-> temp.getErrorCounter().get());
+                taskCountCompare = Comparator.comparing(temp -> temp.getErrorCounter().get());
                 break;
             case "timeValue":
                 taskCountCompare = Comparator.comparing(TaskCountVo::getTimeValue);
@@ -164,22 +158,22 @@ public class TaskInfoController {
                 taskCountCompare = Comparator.comparing(TaskCountVo::getCountType);
                 break;
             case "first.ts":
-                taskCountCompare = Comparator.comparing(temp-> temp.getFirst().getTs());
+                taskCountCompare = Comparator.comparing(temp -> temp.getFirst().getTs());
                 break;
             case "first.runTime":
-                taskCountCompare = Comparator.comparing(temp-> temp.getFirst().getRunTime());
+                taskCountCompare = Comparator.comparing(temp -> temp.getFirst().getRunTime());
                 break;
             case "newly.ts":
-                taskCountCompare = Comparator.comparing(temp-> temp.getNewly().getTs());
+                taskCountCompare = Comparator.comparing(temp -> temp.getNewly().getTs());
                 break;
             case "newly.runTime":
-                taskCountCompare = Comparator.comparing(temp-> temp.getNewly().getRunTime());
+                taskCountCompare = Comparator.comparing(temp -> temp.getNewly().getRunTime());
                 break;
             case "max.ts":
-                taskCountCompare = Comparator.comparing(temp-> temp.getMax().getTs());
+                taskCountCompare = Comparator.comparing(temp -> temp.getMax().getTs());
                 break;
             case "max.runTime":
-                taskCountCompare = Comparator.comparing(temp-> temp.getMax().getRunTime());
+                taskCountCompare = Comparator.comparing(temp -> temp.getMax().getRunTime());
                 break;
             default:
                 log.warn("----sort={} invalid", sort);
@@ -198,7 +192,8 @@ public class TaskInfoController {
             , @RequestParam(value = "type", required = false) String type
             , @RequestParam(value = "taskHostCode", required = false) String taskHostCode
             , HttpServletRequest request, HttpServletResponse response) {
-        if (!taskToolConfiguration.isAuth(authKey, request)) {
+        TaskToolConfig taskToolConfig = TaskToolUtils.getTaskToolConfig();
+        if (!taskToolConfig.isAuth(authKey, request)) {
             log.warn("----config--type={} authKey={}", type, authKey);
             return "{\"errorMsg\":\"auth fail\"}";
         }
@@ -211,16 +206,16 @@ public class TaskInfoController {
         }
 
         if ("timeTypes".equals(type)) {
-            return taskToolConfiguration.getCounterTimeTypes();
+            return taskToolConfig.getCounterTimeTypes();
         }
 
         long currentTime = System.currentTimeMillis();
         AppInfoVo appInfoVo = new AppInfoVo();
         appInfoVo.setSystemTime(currentTime);
         appInfoVo.setStartTime(START_TIME);
-        appInfoVo.setVersion(taskToolConfiguration.getVersion());
-        appInfoVo.setCounterTimeTypes(taskToolConfiguration.getCounterTimeTypes());
-        appInfoVo.setRunTimeBase(taskToolConfiguration.getRunTimeBase());
+        appInfoVo.setVersion(taskToolConfig.getVersion());
+        appInfoVo.setCounterTimeTypes(taskToolConfig.getCounterTimeTypes());
+        appInfoVo.setRunTimeBase(taskToolConfig.getRunTimeBase());
         return appInfoVo;
 
     }

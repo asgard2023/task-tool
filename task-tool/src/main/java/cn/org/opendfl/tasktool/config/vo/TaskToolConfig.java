@@ -1,30 +1,16 @@
-package cn.org.opendfl.tasktool.config;
+package cn.org.opendfl.tasktool.config.vo;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
-import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
-import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.constant.DateTimeConstant;
 import cn.org.opendfl.tasktool.utils.RequestParams;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * 任务工具配置
- *
- * @author chenjh
- */
-@Configuration
 @Data
-@ConfigurationProperties(prefix = "task-tool")
-@Slf4j
-public class TaskToolConfiguration {
+public class TaskToolConfig {
     /**
      * 版本号
      */
@@ -45,7 +31,7 @@ public class TaskToolConfiguration {
     /**
      * 用于控制日志输出量，使日志只在启动时输出一段时间，后面不再输出
      */
-    private int startLogCount=100;
+    private int startLogCount = 100;
 
     private String securityKey = "tasktooltest";
 
@@ -53,15 +39,15 @@ public class TaskToolConfiguration {
      * 是否保存服务器名
      */
     private boolean isSaveServerName;
-    private boolean restTemplateConfig=true;
+    private boolean restTemplateConfig = true;
 
     private ControllerConfigVo controllerConfig = new ControllerConfigVo();
 
-    private TaskToolVo taskToolCentral=new TaskToolVo();
+    private TaskToolVo taskToolCentral = new TaskToolVo();
     private String taskHostBizName;
 
-    public boolean isAuth(String authKey, HttpServletRequest request){
-        if(CharSequenceUtil.isBlank(authKey)){
+    public boolean isAuth(String authKey, HttpServletRequest request) {
+        if (CharSequenceUtil.isBlank(authKey)) {
             authKey = request.getHeader(RequestParams.AUTH_KEY);
         }
         return getSecurityKey().equals(authKey);

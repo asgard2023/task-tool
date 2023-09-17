@@ -3,6 +3,7 @@ package cn.org.opendfl.tasktool;
 import cn.org.opendfl.tasktool.client.TaskHostRest;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -11,11 +12,14 @@ import javax.annotation.Resource;
 @SpringBootTest
 @ActiveProfiles(value = "test")
 public class TaskHostRestTest {
-    @Resource
+    @Autowired(required = false)
     private TaskHostRest taskHostRest;
 
     @Test
     public void addHost() {
+        if(taskHostRest==null){
+            taskHostRest = new TaskHostRest();
+        }
         TaskHostVo hostVo = new TaskHostVo();
         hostVo.setCode("local");
         hostVo.setType("test");

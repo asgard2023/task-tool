@@ -2,8 +2,8 @@ package cn.org.opendfl.tasktool.utils;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
+import cn.org.opendfl.tasktool.config.vo.TaskToolConfig;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,12 +25,12 @@ public class RequestUtils {
      * @param request
      * @return
      */
-    public static String getDataId(TaskToolConfiguration taskToolConfiguration, HttpServletRequest request) {
+    public static String getDataId(TaskToolConfig taskToolConfiguration, HttpServletRequest request) {
         ControllerConfigVo controllerConfigVo = taskToolConfiguration.getControllerConfig();
         return getRequestValue(request, controllerConfigVo.getDataIdField());
     }
 
-    public static String getUserId(TaskToolConfiguration taskToolConfiguration, HttpServletRequest request) {
+    public static String getUserId(TaskToolConfig taskToolConfiguration, HttpServletRequest request) {
         ControllerConfigVo controllerConfigVo = taskToolConfiguration.getControllerConfig();
         String userId = getRequestValue(request, controllerConfigVo.getUserIdField());
         if (userId == null) {

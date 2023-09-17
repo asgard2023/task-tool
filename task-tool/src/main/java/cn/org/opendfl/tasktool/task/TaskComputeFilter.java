@@ -1,16 +1,12 @@
 package cn.org.opendfl.tasktool.task;
 
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeServlet;
 import cn.org.opendfl.tasktool.utils.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletMapping;
@@ -26,12 +22,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author chenjh
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
-@Component
 @Slf4j
 @WebFilter(urlPatterns = "/*")
 public class TaskComputeFilter implements Filter {
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
 
     private static AtomicInteger startLogCounter=new AtomicInteger();
     @Override
@@ -67,9 +60,9 @@ public class TaskComputeFilter implements Filter {
         taskController.readParam(req);
 
         int logCount = startLogCounter.get();
-        if(logCount < taskToolConfiguration.getStartLogCount()) {
+        if(logCount < TaskToolUtils.getTaskToolConfig().getStartLogCount()) {
             logCount = startLogCounter.incrementAndGet();
-            log.debug("---doFilter--uri={} classMethod={} startLogCount={}", uri, classMethod, taskToolConfiguration.getStartLogCount()-logCount);
+            log.debug("---doFilter--uri={} classMethod={} startLogCount={}", uri, classMethod, TaskToolUtils.getTaskToolConfig().getStartLogCount()-logCount);
         }
 
         TaskToolUtils.startTask(taskController, classMethod, new Date(curTime));
@@ -96,7 +89,7 @@ public class TaskComputeFilter implements Filter {
             }
             computeVo.setMethodCode(key);
             computeVo.setShowProcessing(true);
-            computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
+            computeVo.readTaskParam(TaskToolUtils.getTaskToolConfig(), taskComputeReqVo);
             computeVo.setPkg(pkg);
             return computeVo;
         });

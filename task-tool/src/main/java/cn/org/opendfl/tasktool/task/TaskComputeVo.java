@@ -1,7 +1,7 @@
 package cn.org.opendfl.tasktool.task;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
+import cn.org.opendfl.tasktool.config.vo.TaskToolConfig;
 import cn.org.opendfl.tasktool.task.annotation.TaskCompute;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import lombok.Data;
@@ -57,7 +57,7 @@ public class TaskComputeVo {
     private String sourceType;
 
 
-    public void readTaskParam(TaskToolConfiguration taskToolConfiguration, TaskComputeReq taskComputeReq) {
+    public void readTaskParam(TaskToolConfig taskToolConfiguration, TaskComputeReq taskComputeReq) {
         this.type = taskComputeReq.getType();
         this.category = taskComputeReq.getCategory();
         if (CharSequenceUtil.isNotBlank(taskComputeReq.getMethodCode())) {

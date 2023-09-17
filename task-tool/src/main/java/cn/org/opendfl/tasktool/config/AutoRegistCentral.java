@@ -3,12 +3,15 @@ package cn.org.opendfl.tasktool.config;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.biz.ITaskHostBiz;
+import cn.org.opendfl.tasktool.biz.TaskHostBiz;
 import cn.org.opendfl.tasktool.client.TaskHostRest;
 import cn.org.opendfl.tasktool.config.vo.TaskLocalVo;
+import cn.org.opendfl.tasktool.config.vo.TaskToolConfig;
 import cn.org.opendfl.tasktool.config.vo.TaskToolVo;
 import cn.org.opendfl.tasktool.controller.TaskHostController;
 import cn.org.opendfl.tasktool.controller.TaskInfoController;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
+import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import cn.org.opendfl.tasktool.utils.CommUtils;
 import cn.org.opendfl.tasktool.utils.RestTemplateUtils;
 import cn.org.opendfl.tasktool.utils.SpringUtils;
@@ -19,8 +22,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
 /**
  * 自动把当前服务注册到taskToolCentral，方便查看
  *
@@ -29,8 +30,6 @@ import javax.annotation.Resource;
 @Component
 @Slf4j
 public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEvent> {
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
 
     @Value("${project.build.timestamp}")
     private String buildTime;
@@ -38,8 +37,12 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        this.taskHostBizInit();
-        this.autoRegistHost();
+        try {
+            this.taskHostBizInit();
+            this.autoRegistHost();
+        } catch (Exception e) {
+           log.warn("---init-buildTime={}",buildTime, e);
+        }
     }
 
     private TaskHostVo toHost(TaskLocalVo taskLocalVo) {
@@ -49,8 +52,9 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
     }
 
     public void taskHostBizInit() {
-        if (CharSequenceUtil.isNotBlank(taskToolConfiguration.getTaskHostBizName())) {
-            Object taskHostBiz = SpringUtils.getBean(taskToolConfiguration.getTaskHostBizName());
+        TaskToolConfig taskToolConfig = TaskToolUtils.getTaskToolConfig();
+        if (CharSequenceUtil.isNotBlank(taskToolConfig.getTaskHostBizName())) {
+            Object taskHostBiz = SpringUtils.getBeanOrDefault(taskToolConfig.getTaskHostBizName(), new TaskHostBiz());
             if (taskHostBiz instanceof ITaskHostBiz) {
                 TaskHostController taskHostController = SpringUtils.getBean(TaskHostController.class);
                 taskHostController.setTaskHostBiz((ITaskHostBiz) taskHostBiz);
@@ -63,14 +67,15 @@ public class AutoRegistCentral implements ApplicationListener<ApplicationReadyEv
     }
 
     private void autoRegistHost() {
-        TaskToolVo taskToolCentral = taskToolConfiguration.getTaskToolCentral();
+        TaskToolConfig taskToolConfig = TaskToolUtils.getTaskToolConfig();
+        TaskToolVo taskToolCentral = taskToolConfig.getTaskToolCentral();
         boolean isContainRestTemplate = RestTemplateUtils.isContainRestTemplate();
         if (taskToolCentral.isOpen() && isContainRestTemplate) {
-            TaskHostRest taskHostRest = SpringUtils.getBean(TaskHostRest.class);
+            TaskHostRest taskHostRest = SpringUtils.getBeanOrDefault(TaskHostRest.class, new TaskHostRest());
             Environment environment = SpringUtils.getBean(Environment.class);
             TaskLocalVo taskLocal = taskToolCentral.getTaskLocal();
             if (CharSequenceUtil.isBlank(taskLocal.getAuthKey())) {
-                taskLocal.setAuthKey(taskToolConfiguration.getSecurityKey());
+                taskLocal.setAuthKey(taskToolConfig.getSecurityKey());
             }
             if (taskLocal.getPort() == 0 && !initServerPort(environment, taskLocal)) {
                 log.warn("----autoRegistHost--serverPort is null");

@@ -1,34 +1,26 @@
 package cn.org.opendfl.task.dbdemo.config;
 
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
+import cn.org.opendfl.tasktool.task.TaskControllerHandler;
+import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-
-import javax.annotation.Resource;
 
 /**
  * web请求拦截器
  *
  * @author chenjh
  */
-@Configuration
 @Slf4j
 public class TaskDbDemoInterceptor extends WebMvcConfigurationSupport {
-    @Resource(name = "taskControllerHandler")
-    private HandlerInterceptor controllerHandler;
 
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        if (taskToolConfiguration.getControllerConfig().isEnable()) {
-            log.info("----addInterceptors--packages={}", taskToolConfiguration.getControllerConfig().getPackages());
-            registry.addInterceptor(controllerHandler)
+        if (TaskToolUtils.getTaskToolConfig().getControllerConfig().isEnable()) {
+            log.info("----addInterceptors--packages={}", TaskToolUtils.getTaskToolConfig().getControllerConfig().getPackages());
+            registry.addInterceptor(new TaskControllerHandler())
                     .addPathPatterns("/**");
         }
     }

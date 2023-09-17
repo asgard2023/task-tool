@@ -1,22 +1,18 @@
 package cn.org.opendfl.tasktool.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
+import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-
 @RestController
 @RequestMapping("systemInfo")
 @Slf4j
 public class SystemInfoController {
 
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
 
     /**
      * 配置查询
@@ -35,7 +31,7 @@ public class SystemInfoController {
     public Object checkKey(@RequestParam(value = "authKey", required = false) String authKey) {
         boolean isOk = false;
         String info=null;
-        if (CharSequenceUtil.equals(authKey, taskToolConfiguration.getSecurityKey())) {
+        if (CharSequenceUtil.equals(authKey, TaskToolUtils.getTaskToolConfig().getSecurityKey())) {
             isOk = true;
             info = "ok";
         }

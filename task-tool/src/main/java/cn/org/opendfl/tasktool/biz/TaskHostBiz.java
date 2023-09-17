@@ -2,17 +2,14 @@ package cn.org.opendfl.tasktool.biz;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.org.opendfl.tasktool.base.PageVO;
-import cn.org.opendfl.tasktool.task.RouteApiVo;
 import cn.org.opendfl.tasktool.task.TaskHostVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
 public class TaskHostBiz implements ITaskHostBiz {
     private static Map<String, TaskHostVo> taskHostMap = new ConcurrentHashMap<>(20);

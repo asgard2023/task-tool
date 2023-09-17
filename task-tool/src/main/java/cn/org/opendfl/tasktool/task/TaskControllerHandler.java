@@ -2,8 +2,6 @@ package cn.org.opendfl.tasktool.task;
 
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeController;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
@@ -11,11 +9,9 @@ import cn.org.opendfl.tasktool.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.annotation.Resource;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,15 +26,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author chenjh
  */
-@Service
+
 public class TaskControllerHandler implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskControllerHandler.class);
 
     private final ThreadLocal<TaskControllerVo> taskComputeVo = new ThreadLocal<>();
 
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
+
 
 
     private String getMethodKey(HandlerMethod handler) {
@@ -83,7 +78,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 }
                 computeVo.setShowProcessing(true);
                 computeVo.setPkg(packageName);
-                computeVo.readTaskParam(taskToolConfiguration, taskComputeReqVo);
+                computeVo.readTaskParam(TaskToolUtils.getTaskToolConfig(), taskComputeReqVo);
                 return computeVo;
             });
 
@@ -102,9 +97,9 @@ public class TaskControllerHandler implements HandlerInterceptor {
             taskComputeVo.set(taskController);
 
             int logCount = startLogCounter.get();
-            if(logCount < taskToolConfiguration.getStartLogCount()) {
+            if(logCount < TaskToolUtils.getTaskToolConfig().getStartLogCount()) {
                 logCount = startLogCounter.incrementAndGet();
-                logger.debug("---preTaskCompute--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, taskToolConfiguration.getStartLogCount()-logCount);
+                logger.debug("---preTaskCompute--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, TaskToolUtils.getTaskToolConfig().getStartLogCount()-logCount);
             }
 
 
@@ -151,7 +146,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             isSkip = true;
         } else {
-            ControllerConfigVo controllerConfigVo = taskToolConfiguration.getControllerConfig();
+            ControllerConfigVo controllerConfigVo = TaskToolUtils.getTaskToolConfig().getControllerConfig();
             final String uriWhiteList = controllerConfigVo.getUriWhitelist();
             //uri接口白名单检查
             if (!"none".equals(uriWhiteList) && uriWhiteList.contains(uri + ",")) {
@@ -164,7 +159,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
 
     private boolean isContainPackage(String packageName) {
         boolean isContainPackage;
-        List<String> basePackages = taskToolConfiguration.getControllerConfig().getPackages();
+        List<String> basePackages = TaskToolUtils.getTaskToolConfig().getControllerConfig().getPackages();
 
         if (CollUtil.isEmpty(basePackages) || PKG_MATCH_ALL.equals(basePackages.get(0))) {
             isContainPackage = true;
