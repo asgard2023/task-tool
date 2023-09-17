@@ -12,8 +12,8 @@ import cn.org.opendfl.task.vo.MethodCountStatisticVo;
 import cn.org.opendfl.task.vo.MethodCountVo;
 import cn.org.opendfl.task.vo.MethodRunTimeVo;
 import cn.org.opendfl.task.vo.MethodTimeValueCountVo;
-import cn.org.opendfl.tasktool.config.TaskToolConfiguration;
 import cn.org.opendfl.tasktool.config.vo.TaskCountTypeVo;
+import cn.org.opendfl.tasktool.task.TaskToolUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -48,8 +48,6 @@ public class TaMethodCountReportController extends BaseController {
     @Resource
     private ITaMethodCountReportBiz taMethodCountReportBiz;
 
-    @Resource
-    private TaskToolConfiguration taskToolConfiguration;
 
     @ApiOperation(value = "任务运行次数统计", notes = "任务运行次数统计记录列表翻页查询，用于兼容easyui的rows方式")
     @RequestMapping(value = "/methodCountStatistic", method = {RequestMethod.POST, RequestMethod.GET})
@@ -201,7 +199,7 @@ public class TaMethodCountReportController extends BaseController {
         }
 
         if (timeValueCount > 0) {
-            Optional<TaskCountTypeVo> opType = this.taskToolConfiguration.getCounterTimeTypes().stream().filter(t -> t.getCode().equals(timeType)).findFirst();
+            Optional<TaskCountTypeVo> opType = TaskToolUtils.getTaskToolConfig().getCounterTimeTypes().stream().filter(t -> t.getCode().equals(timeType)).findFirst();
             if (!opType.isPresent()) {
                 throw new FailedException("timeType:" + timeType + " 无效");
             }
