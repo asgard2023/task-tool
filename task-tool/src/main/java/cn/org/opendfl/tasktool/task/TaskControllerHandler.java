@@ -3,6 +3,7 @@ package cn.org.opendfl.tasktool.task;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.org.opendfl.tasktool.config.vo.ControllerConfigVo;
+import cn.org.opendfl.tasktool.config.vo.TaskToolConfig;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeController;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeReq;
 import cn.org.opendfl.tasktool.utils.RequestUtils;
@@ -61,16 +62,17 @@ public class TaskControllerHandler implements HandlerInterceptor {
         TaskControllerVo taskController = new TaskControllerVo();
         taskController.setStartTime(curTime);
         String packageName = handlerMethod.getBean().getClass().getPackage().getName();
+        TaskToolConfig taskToolConfig = TaskToolUtils.getTaskToolConfig();
         if (isContainPackage(packageName)) {
-            String key= request.getMethod()+"/"+uri;
+            final String classMethod = getMethodKey(handlerMethod);
+            String key= request.getMethod()+"/"+classMethod;
             TaskComputeVo compute = methodUriMap.computeIfAbsent(key, k->{
-                String classMethod = getMethodKey(handlerMethod);
                 TaskComputeVo computeVo = new TaskComputeVo();
                 TaskComputeController taskComputeController =  handlerMethod.getMethodAnnotation(TaskComputeController.class);
                 TaskComputeReq taskComputeReqVo = new TaskComputeReq();
                 computeVo.setMethodCode(classMethod);
                 if (taskComputeController != null) {
-                    taskComputeReqVo.load(taskComputeController, uri);
+                    taskComputeReqVo.load(taskComputeController);
                     computeVo.setSourceType(taskComputeController.sourceType());
                 }
                 else{
@@ -78,14 +80,13 @@ public class TaskControllerHandler implements HandlerInterceptor {
                 }
                 computeVo.setShowProcessing(true);
                 computeVo.setPkg(packageName);
-                computeVo.readTaskParam(TaskToolUtils.getTaskToolConfig(), taskComputeReqVo);
+                computeVo.readTaskParam(taskToolConfig, taskComputeReqVo);
                 return computeVo;
             });
 
             String sourceUri = RequestUtils.getUriBySource(request, uri, compute.getSourceType());
             taskController.setSource(sourceUri);
             taskController.setTaskCompute(compute);
-            String classMethod = compute.getMethodCode();
 
             if(request.getDispatcherType() == DispatcherType.ERROR){
                 taskController.setDataId(request.getQueryString());
@@ -99,7 +100,7 @@ public class TaskControllerHandler implements HandlerInterceptor {
             int logCount = startLogCounter.get();
             if(logCount < TaskToolUtils.getTaskToolConfig().getStartLogCount()) {
                 logCount = startLogCounter.incrementAndGet();
-                logger.debug("---preTaskCompute--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, TaskToolUtils.getTaskToolConfig().getStartLogCount()-logCount);
+                logger.debug("---preTaskCompute--packageName={} uri={} classMethod={} startLogCount={}", packageName, uri, classMethod, taskToolConfig.getStartLogCount()-logCount);
             }
 
 

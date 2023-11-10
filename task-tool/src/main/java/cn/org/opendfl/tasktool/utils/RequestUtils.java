@@ -72,7 +72,7 @@ public class RequestUtils {
      */
     public static String getUriBySource(final HttpServletRequest request, final String uriFinal, final String sourceType){
         String uri = null;
-        if("uri".equals(sourceType)) {
+        if(sourceType==null || "uri".equals(sourceType)) {
             uri = uriFinal;
         }
         else if("url".equals(sourceType)){

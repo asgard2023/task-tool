@@ -50,10 +50,12 @@ task-tool:
       time-seconds: 60
       date-format: ddHHmm
       hisCount: 5
+      source: true
     - code: H
       name: 'Hour'
       time-seconds: 3600
       hisCount: 5
+      source: true
     - code: D
       name: 'Day'
       time-seconds: 86400

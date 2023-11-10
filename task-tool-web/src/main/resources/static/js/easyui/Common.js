@@ -38,12 +38,50 @@ var app = {
     authorToken: function () {
         return getToken();
     },
+    paramToQuery: function (param, key, encode) {
+        if (param == null) return '';
+        var paramStr = '';
+        var t = typeof (param);
+        if (t == 'string' || t == 'number' || t == 'boolean') {
+            paramStr += '&' + key + '=' + ((encode == null || encode) ? encodeURIComponent(param) : param);
+        } else {
+            for (var i in param) {
+                var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
+                paramStr += this.paramToQuery(param[i], k, encode);
+            }
+        }
+        return paramStr;
+    },
     getQueryString: function (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
         if (r != null)
             return unescape(r[2]);
         return null;
+    },
+    getQueryObject: function () {
+        let obj = {};
+        // 获取url的参数
+        let search = location.search
+        // 干掉参数中的?
+        let searchStr = search.slice(1);
+        // 通过 & 符号将 字符串分割成 数组
+        let searchStrArr = searchStr.split("&")
+        // 遍历数组
+        searchStrArr.forEach(function (v) {
+            // 通过=将字符串分割成数组
+            let vArr = v.split("=")
+            console.log(vArr[0], "key");
+            obj[vArr[0]] = vArr[1]
+        });
+        if (obj.startTime) {
+            obj.startTime = decodeURIComponent(obj.startTime);
+        }
+        if (obj.endTime) {
+            obj.endTime = decodeURIComponent(obj.endTime);
+        }
+        console.log(obj);
+        return obj;
     },
     headers: {'source': header_source, 'sysType': header_sysType, 'authorization': getToken()},
     typeItemApi: '/dflBasedata/dflTypeItem/typeItems',
@@ -121,44 +159,46 @@ var appUtil =
 
 var Common = {
     //格式化日期,
-    formatDate:function(date,format){
-        var paddNum = function(num){
+    formatDate: function (date, format) {
+        var paddNum = function (num) {
             num += "";
-            return num.replace(/^(\d)$/,"0$1");
+            return num.replace(/^(\d)$/, "0$1");
         }
         //指定格式字符
         var cfg = {
-            yyyy : date.getFullYear() //年 : 4位
-            ,yy : date.getFullYear().toString().substring(2)//年 : 2位
-            ,M  : date.getMonth() + 1  //月 : 如果1位的时候不补0
-            ,MM : paddNum(date.getMonth() + 1) //月 : 如果1位的时候补0
-            ,d  : date.getDate()   //日 : 如果1位的时候不补0
-            ,dd : paddNum(date.getDate())//日 : 如果1位的时候补0
-            ,h  : date.getHours()
-            ,hh : paddNum(date.getHours())  //时
-            ,m : date.getMinutes() //分
-            ,mm : paddNum(date.getMinutes()) //分
-            ,s : date.getSeconds() //秒
-            ,ss : paddNum(date.getSeconds()) //秒
+            yyyy: date.getFullYear() //年 : 4位
+            , yy: date.getFullYear().toString().substring(2)//年 : 2位
+            , M: date.getMonth() + 1  //月 : 如果1位的时候不补0
+            , MM: paddNum(date.getMonth() + 1) //月 : 如果1位的时候补0
+            , d: date.getDate()   //日 : 如果1位的时候不补0
+            , dd: paddNum(date.getDate())//日 : 如果1位的时候补0
+            , h: date.getHours()
+            , hh: paddNum(date.getHours())  //时
+            , m: date.getMinutes() //分
+            , mm: paddNum(date.getMinutes()) //分
+            , s: date.getSeconds() //秒
+            , ss: paddNum(date.getSeconds()) //秒
         }
         format || (format = "yyyy-MM-dd hh:mm:ss");
-        return format.replace(/([a-z])(\1)*/ig,function(m){return cfg[m];});
-    } ,
+        return format.replace(/([a-z])(\1)*/ig, function (m) {
+            return cfg[m];
+        });
+    },
 
     //EasyUI用DataGrid用日期格式化
     TimeFormatter: function (value, rec, index) {
         if (value == undefined) {
             return "";
         }
-        var formatStr="hh:mm:ss";
-        return Common.formatDate(new Date(value),formatStr);
+        var formatStr = "hh:mm:ss";
+        return Common.formatDate(new Date(value), formatStr);
     },
     DateTimeFormatter: function (value, rec, index) {
         if (value == undefined) {
             return "";
         }
-        var formatStr="yyyy-MM-dd hh:mm:ss";
-        return Common.formatDate(new Date(value),formatStr);
+        var formatStr = "yyyy-MM-dd hh:mm:ss";
+        return Common.formatDate(new Date(value), formatStr);
     },
 
     //EasyUI用DataGrid用日期格式化
@@ -166,10 +206,10 @@ var Common = {
         if (value == undefined) {
             return "";
         }
-        var formatStr="yyyy-MM-dd";
-        return Common.formatDate(new Date(value),formatStr);
+        var formatStr = "yyyy-MM-dd";
+        return Common.formatDate(new Date(value), formatStr);
     },
-    TitleFormatter : function (value, rec, index) {
+    TitleFormatter: function (value, rec, index) {
         if (value.length > 10) value = value.substr(0, 8) + "...";
         return value;
     },
@@ -179,8 +219,8 @@ var Common = {
     }
 };
 
-function initQueryDate(){
-    var recentlyDate=new Date(new Date().getTime()-7*24*3600*1000);//7天内
+function initQueryDate() {
+    var recentlyDate = new Date(new Date().getTime() - 7 * 24 * 3600 * 1000);//7天内
     $('#query_startTime').datetimebox('setValue', Common.DateFormatter(recentlyDate));
 
 }
@@ -251,18 +291,17 @@ if (typeof jQuery != 'undefined') {
 }
 
 function initStartEndTime(beforeDay) {
-    var recentlyDate=new Date(new Date().getTime()-beforeDay*24*3600*1000);//7天内
+    var recentlyDate = new Date(new Date().getTime() - beforeDay * 24 * 3600 * 1000);//7天内
     // $("#query_startTime").val(Common.DateFormatter(recentlyDate));
-    console.log('----initStartEndTime-beforeDay='+beforeDay)
+    console.log('----initStartEndTime-beforeDay=' + beforeDay)
     $("#query_startTime").datetimebox("setValue", Common.DateFormatter(recentlyDate));
 }
 
-function getDataGridIds(dgId){
-    var rows = $("#"+dgId).datagrid("getRows");
-    var ids='';
-    for(var i=0; i<rows.length; i++)
-    {
-        ids+=rows[i].id+',';
+function getDataGridIds(dgId) {
+    var rows = $("#" + dgId).datagrid("getRows");
+    var ids = '';
+    for (var i = 0; i < rows.length; i++) {
+        ids += rows[i].id + ',';
     }
     console.log(ids);
     return ids;

@@ -4,13 +4,13 @@ package cn.org.opendfl.tasktooldemo.controller;
 import cn.org.opendfl.tasktool.task.annotation.TaskComputeController;
 import cn.org.opendfl.tasktooldemo.biz.ITaskTestBiz;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("taskTest")
@@ -24,13 +24,13 @@ public class TaskTestController {
     }
 
     @RequestMapping(value = "hello2", method = {RequestMethod.POST, RequestMethod.GET})
-    @TaskComputeController(dataIdParamName = "name",userIdParamName = "uid", sourceType = "url")
+    @TaskComputeController(dataIdParamName = "name", userIdParamName = "uid", sourceType = "url")
     public String hello2(@RequestParam("name") String name, @RequestParam("uid") String uid, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
         return taskTestBiz.hello(name, sleep);
     }
 
     @RequestMapping(value = "hello3", method = {RequestMethod.POST, RequestMethod.GET})
-    @TaskComputeController(dataIdParamName = "name",userIdParamName = "uid", sourceType = "uri")
+    @TaskComputeController(dataIdParamName = "name", userIdParamName = "uid", sourceType = "uri")
     public String hello3(@RequestParam("name") String name, @RequestParam("uid") String uid, @RequestParam(value = "sleep", defaultValue = "1") Integer sleep) {
         return taskTestBiz.hello(name, sleep);
     }
@@ -50,5 +50,21 @@ public class TaskTestController {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.getWriter().append("fail");
         return null;
+    }
+
+    @GetMapping(value = "vod/{lineCode}/{roomId}")
+    public Object vodM3u8(@PathVariable("lineCode") String lineCode, @PathVariable("roomId") String roomId
+            , HttpServletRequest request, HttpServletResponse response) {
+        String uri = request.getRequestURI();
+        String sign = request.getParameter("sign");
+        String t = request.getParameter("t");
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("success", "ok");
+
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("lineCode", lineCode);
+        dataMap.put("roomId", roomId);
+        resultMap.put("data", dataMap);
+        return resultMap;
     }
 }

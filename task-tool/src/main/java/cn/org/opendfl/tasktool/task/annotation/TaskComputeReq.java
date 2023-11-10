@@ -4,25 +4,26 @@ import lombok.Data;
 
 @Data
 public class TaskComputeReq {
-    public TaskComputeReq(){
+    public TaskComputeReq() {
 
     }
-    public void load(TaskComputeServlet taskComputeServlet, String uri){
-        this.type = "TaskComputeServlet";
+
+    public void load(TaskComputeServlet taskComputeServlet) {
+        this.type = "servlet";
         this.methodCode = taskComputeServlet.methodCode();
         this.dataIdParamName = taskComputeServlet.dataIdParamName();
         this.userIdParamName = taskComputeServlet.userIdParamName();
         this.category = taskComputeServlet.category();
-        this.uri = uri;
     }
-    public void load(TaskComputeController taskComputeController, String uri){
-        this.type = "TaskComputeController";
+
+    public void load(TaskComputeController taskComputeController) {
+        this.type = "controller";
         this.methodCode = taskComputeController.methodCode();
         this.dataIdParamName = taskComputeController.dataIdParamName();
         this.userIdParamName = taskComputeController.userIdParamName();
         this.category = taskComputeController.category();
-        this.uri = uri;
     }
+
     /**
      * 方法编码，方法名，类名加方法名唯一，为空默认为当前方法名
      *
@@ -53,5 +54,4 @@ public class TaskComputeReq {
      */
     private String category;
     private String type;
-    private String uri;
 }

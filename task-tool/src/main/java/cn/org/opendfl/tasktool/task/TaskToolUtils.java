@@ -94,13 +94,13 @@ public class TaskToolUtils {
         });
         taskCountVo.setNewly(taskInfoVo);
         String source = taskControllerVo.getSource();
-        if (isSource && source != null) {
+        if (isSource && countTypeVo.isSource() && source != null) {
             AtomicInteger sourceCounter = taskCountVo.getSourceCounterMap().computeIfAbsent(source, k -> new AtomicInteger());
             sourceCounter.incrementAndGet();
         }
         taskCountVo.getRunCounter().incrementAndGet();
         String dataId = taskControllerVo.getDataId();
-        if (processing && dataId != null) {
+        if (processing && countTypeVo.isProcessing() && dataId != null) {
             taskCountVo.getProcessingData().put(dataId, startTime);
         }
         return taskCountVo;
@@ -202,7 +202,8 @@ public class TaskToolUtils {
             }
             if (!isProcessing) {
                 taskCountVo.setProcessingData(processingDataConfigMap);
-            } else {
+            }
+            else {
                 Map<String, Long> processingDataMap = entry.getValue().getProcessingData();
                 Set<Map.Entry<String, Long>> msgKeySet = processingDataMap.entrySet();
                 Map<String, Long> pendingTimeMap = new HashMap<>(processingDataMap.size());

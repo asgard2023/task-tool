@@ -35,6 +35,15 @@ public class TaskCountTypeVo {
      */
     private int hisCount=1;
     /**
+     * 与TaskToolConfiguration.source共同起作用，即都为true才开启接口来源统计
+     */
+    private boolean source;
+
+    /**
+     * 与TaskToolConfiguration.processing共同起作用，即都为true才开启接口来源统计执行过程
+     */
+    private boolean processing;
+    /**
      * 是否保存到数据库
      */
     private boolean saveDb;

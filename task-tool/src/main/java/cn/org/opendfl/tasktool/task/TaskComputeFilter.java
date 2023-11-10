@@ -84,7 +84,7 @@ public class TaskComputeFilter implements Filter {
             TaskComputeVo computeVo = new TaskComputeVo();
             TaskComputeServlet servletCompute = clazz.getDeclaredAnnotation(TaskComputeServlet.class);
             if (servletCompute != null) {
-                taskComputeReqVo.load(servletCompute, uri);
+                taskComputeReqVo.load(servletCompute);
                 computeVo.setSourceType(servletCompute.sourceType());
             }
             computeVo.setMethodCode(key);
