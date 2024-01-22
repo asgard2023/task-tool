@@ -27,7 +27,7 @@ task-tool:
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://192.168.1.254:3306/generator?allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.2.80:3306/generator?allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: generator
     password: jh@123456
     driver-class-name: com.mysql.cj.jdbc.Driver

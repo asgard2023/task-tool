@@ -62,7 +62,7 @@ spring:
     name: task-tool-db-demo
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://192.168.0.40:3306/task_tool_test?allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.2.80:3306/task_tool_test?allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: task
     password: jh@123456
     driver-class-name: com.mysql.cj.jdbc.Driver
